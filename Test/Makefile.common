@@ -1,0 +1,89 @@
+#Define project name
+PROJECT=Encoder_Test
+
+LDFILE = Linker.ld
+MAPFILE = MAP.txt
+
+#Define BUILDDIR
+BUILDDIR = bin
+SOURCEDIR = sources
+ASSEMBLYDIR = sources
+
+#C source files
+C_SOURCES = $(wildcard $(SOURCEDIR)/*.c) #Grab all .c files in source dir
+#Assembly source files
+AS_SOURCES = $(wildcard $(ASSEMBLYDIR)/*.S) #Grab all .S files in assemblydir dir
+
+
+#if SINGLEMODULE is defined, we make a C file which includes all others, and only compiles that
+ifdef SINGLEMODULE
+	SOURCES = MASTER.c
+else
+SOURCES = $(C_SOURCES:$(SOURCEDIR)/%=%) #Remove leading $(SOURCEDIR)/
+endif
+
+SOURCES += $(AS_SOURCES:$(ASSEMBLYDIR)/%=%) #Remove leading $(ASSEMBLYDIR)/
+
+
+OBJECTS_ = $(join $(addsuffix ${BUILDDIR}/, $(dir $(SOURCES))), $(notdir $(SOURCES:.c=.o)))
+OBJECTS = $(OBJECTS_:.S=.o)
+
+
+#define linkerfile and ENTRY
+SCATTERgcc_${PROJECT}=$(LDFILE)
+ENTRY_${PROJECT}=ResetISR
+
+#Define linker, archiver, etc. Compiler is defined in main makefile
+PREFIX=arm-none-eabi-
+AR=${PREFIX}ar
+LD=${PREFIX}ld
+AS=${PREFIX}gcc
+OBJCOPY=${PREFIX}objcopy
+
+#define CPU and FPU
+CPU=-mcpu=cortex-m4
+FPU=-mfpu=fpv4-sp-d16 -mfloat-abi=hard
+
+#
+# The flags passed to the compiler.
+#
+CFLAGS=-mthumb             	\
+       ${CPU}              	\
+       ${FPU}              	\
+       -nostdlib						\
+       -ffunction-sections 	\
+       -fdata-sections     	\
+       -std=c99            	\
+       -Wall               	\
+       -Wextra             	\
+       -Wmissing-prototypes \
+			 -Wshadow							\
+			 -Wpointer-arith			\
+			 -Wstrict-prototypes	\
+			 -Wcast-qual					\
+			 -Wno-keyword-macro		\
+       -Werror							\
+       -pedantic           	\
+     
+     
+#
+# Add optimisation arguments
+#
+CFLAGS+=${OPTS}
+
+       
+#
+# The flags passed to the assembler.
+#
+
+AFLAGS=-mthumb \
+       ${CPU}  \
+       ${FPU}  \
+       -MD
+
+LDFLAGS=--gc-sections 								\
+ 				-Map=${MAPFILE} 							\
+ 				-T ${LDFILE} 									\
+ 				--entry=${ENTRY_${PROJECT}}		\
+
+include Makefile.rules

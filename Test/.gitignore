@@ -1,0 +1,20 @@
+#which files that git whould ignore.
+
+# ignore objects and archives, anywhere in the tree.
+*.o
+*.a
+# ignore dependency tracking files
+*.d
+# ignore axf files
+*.axf
+#ignore compiled bin files
+*.bin
+#ignore MAP file
+MAP.txt
+#ignore eclipse files
+.cproject
+.project
+.settings
+
+#ignore c file for single module compilation
+MASTER.c

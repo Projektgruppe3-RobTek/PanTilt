@@ -3,8 +3,8 @@ Copyright (c) 1995-2010 Xilinx, Inc.  All rights reserved.
 
 Project Information
 --------------------
-ProjectID=75701422CC124D33AC0C9C8BD42809CF
-ProjectIteration=3
+ProjectID=0ce82ecf43334f3cafcd99b352cd0842
+ProjectIteration=2
 
 WebTalk Summary
 ----------------
@@ -13,4 +13,4 @@ INFO:WebTalk:1 - WebTalk is enabled because you are using a WebPACK license.
 INFO:WebTalk:8 - WebTalk Install setting is ON.
 INFO:WebTalk:6 - WebTalk User setting is ON.
 
-INFO:WebTalk:4 - C:/Users/nwl1515/Dropbox/RobTek - F15 Projekt/DIG/Kode/PWM_test/PWM_test/usage_statistics_webtalk.html WebTalk report has been successfully sent to Xilinx on 2015-03-07T22:36:50.  For additional details about this file, please refer to the WebTalk help file at D:/14.7/ISE_DS/ISE/data/reports/webtalk_introduction.html
+INFO:WebTalk:5 - /home/stefan/PanTilt/FPGA/PWM_test/PWM_test/usage_statistics_webtalk.html WebTalk report has not been sent to Xilinx.  Please check your network and proxy settings.  For additional details about this file, please refer to the WebTalk help file at /opt/Xilinx/14.7/ISE_DS/ISE/data/reports/webtalk_introduction.html
