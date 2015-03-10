@@ -1,0 +1,514 @@
+Release 14.7 - xst P.20131013 (nt64)
+Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved.
+--> Parameter TMPDIR set to xst/projnav.tmp
+
+
+Total REAL time to Xst completion: 0.00 secs
+Total CPU time to Xst completion: 0.05 secs
+ 
+--> Parameter xsthdpdir set to xst
+
+
+Total REAL time to Xst completion: 0.00 secs
+Total CPU time to Xst completion: 0.05 secs
+ 
+--> Reading design: main.prj
+
+TABLE OF CONTENTS
+  1) Synthesis Options Summary
+  2) HDL Compilation
+  3) Design Hierarchy Analysis
+  4) HDL Analysis
+  5) HDL Synthesis
+     5.1) HDL Synthesis Report
+  6) Advanced HDL Synthesis
+     6.1) Advanced HDL Synthesis Report
+  7) Low Level Synthesis
+  8) Partition Report
+  9) Final Report
+	9.1) Device utilization summary
+	9.2) Partition Resource Summary
+	9.3) TIMING REPORT
+
+
+=========================================================================
+*                      Synthesis Options Summary                        *
+=========================================================================
+---- Source Parameters
+Input File Name                    : "main.prj"
+Input Format                       : mixed
+Ignore Synthesis Constraint File   : NO
+
+---- Target Parameters
+Output File Name                   : "main"
+Output Format                      : NGC
+Target Device                      : xc3s500e-4-fg320
+
+---- Source Options
+Top Module Name                    : main
+Automatic FSM Extraction           : YES
+FSM Encoding Algorithm             : Auto
+Safe Implementation                : No
+FSM Style                          : LUT
+RAM Extraction                     : Yes
+RAM Style                          : Auto
+ROM Extraction                     : Yes
+Mux Style                          : Auto
+Decoder Extraction                 : YES
+Priority Encoder Extraction        : Yes
+Shift Register Extraction          : YES
+Logical Shifter Extraction         : YES
+XOR Collapsing                     : YES
+ROM Style                          : Auto
+Mux Extraction                     : Yes
+Resource Sharing                   : YES
+Asynchronous To Synchronous        : NO
+Multiplier Style                   : Auto
+Automatic Register Balancing       : No
+
+---- Target Options
+Add IO Buffers                     : YES
+Global Maximum Fanout              : 500
+Add Generic Clock Buffer(BUFG)     : 24
+Register Duplication               : YES
+Slice Packing                      : YES
+Optimize Instantiated Primitives   : NO
+Use Clock Enable                   : Yes
+Use Synchronous Set                : Yes
+Use Synchronous Reset              : Yes
+Pack IO Registers into IOBs        : Auto
+Equivalent register Removal        : YES
+
+---- General Options
+Optimization Goal                  : Speed
+Optimization Effort                : 1
+Keep Hierarchy                     : No
+Netlist Hierarchy                  : As_Optimized
+RTL Output                         : Yes
+Global Optimization                : AllClockNets
+Read Cores                         : YES
+Write Timing Constraints           : NO
+Cross Clock Analysis               : NO
+Hierarchy Separator                : /
+Bus Delimiter                      : <>
+Case Specifier                     : Maintain
+Slice Utilization Ratio            : 100
+BRAM Utilization Ratio             : 100
+Verilog 2001                       : YES
+Auto BRAM Packing                  : NO
+Slice Utilization Ratio Delta      : 5
+
+=========================================================================
+
+
+=========================================================================
+*                          HDL Compilation                              *
+=========================================================================
+Compiling vhdl file "C:/Users/nwl1515/Dropbox/RobTek - F15 Projekt/DIG/Kode/PWM_test/PWM_test/RS_NorLatch.vhd" in Library work.
+Architecture behav of Entity rs_norlatch is up to date.
+Compiling vhdl file "C:/Users/nwl1515/Dropbox/RobTek - F15 Projekt/DIG/Kode/PWM_test/PWM_test/UnsignedPWM.vhd" in Library work.
+Architecture behav of Entity unsignedpwm is up to date.
+Compiling vhdl file "C:/Users/nwl1515/Dropbox/RobTek - F15 Projekt/DIG/Kode/PWM_test/PWM_test/SignedPWM.vhd" in Library work.
+Architecture behav of Entity signedpwm is up to date.
+Compiling vhdl file "C:/Users/nwl1515/Dropbox/RobTek - F15 Projekt/DIG/Kode/PWM_test/PWM_test/Memory1Byte.vhd" in Library work.
+Architecture behav of Entity memory1byte is up to date.
+Compiling vhdl file "C:/Users/nwl1515/Dropbox/RobTek - F15 Projekt/DIG/Kode/PWM_test/PWM_test/main.vhd" in Library work.
+Entity <main> compiled.
+Entity <main> (Architecture <behav>) compiled.
+
+=========================================================================
+*                     Design Hierarchy Analysis                         *
+=========================================================================
+Analyzing hierarchy for entity <main> in library <work> (architecture <behav>).
+
+Analyzing hierarchy for entity <SignedPWM> in library <work> (architecture <behav>) with generics.
+	SignedBitWidth = 8
+
+Analyzing hierarchy for entity <Memory1Byte> in library <work> (architecture <behav>).
+
+Analyzing hierarchy for entity <UnsignedPWM> in library <work> (architecture <behav>) with generics.
+	UnsignedBitWidth = 7
+
+Analyzing hierarchy for entity <RS_NorLatch> in library <work> (architecture <behav>).
+
+
+=========================================================================
+*                            HDL Analysis                               *
+=========================================================================
+Analyzing Entity <main> in library <work> (Architecture <behav>).
+Entity <main> analyzed. Unit <main> generated.
+
+Analyzing generic Entity <SignedPWM> in library <work> (Architecture <behav>).
+	SignedBitWidth = 8
+Entity <SignedPWM> analyzed. Unit <SignedPWM> generated.
+
+Analyzing generic Entity <UnsignedPWM> in library <work> (Architecture <behav>).
+	UnsignedBitWidth = 7
+Entity <UnsignedPWM> analyzed. Unit <UnsignedPWM> generated.
+
+Analyzing Entity <Memory1Byte> in library <work> (Architecture <behav>).
+Entity <Memory1Byte> analyzed. Unit <Memory1Byte> generated.
+
+Analyzing Entity <RS_NorLatch> in library <work> (Architecture <behav>).
+Entity <RS_NorLatch> analyzed. Unit <RS_NorLatch> generated.
+
+
+=========================================================================
+*                           HDL Synthesis                               *
+=========================================================================
+
+Performing bidirectional port resolution...
+
+Synthesizing Unit <UnsignedPWM>.
+    Related source file is "C:/Users/nwl1515/Dropbox/RobTek - F15 Projekt/DIG/Kode/PWM_test/PWM_test/UnsignedPWM.vhd".
+    Found 1-bit register for signal <Output>.
+    Found 1-bit register for signal <direction<0>>.
+    Found 32-bit comparator greatequal for signal <Output$cmp_ge0000> created at line 49.
+    Found 32-bit register for signal <val>.
+    Found 32-bit addsub for signal <val$mux0000> created at line 36.
+    Summary:
+	inferred  34 D-type flip-flop(s).
+	inferred   1 Adder/Subtractor(s).
+	inferred   1 Comparator(s).
+Unit <UnsignedPWM> synthesized.
+
+
+Synthesizing Unit <RS_NorLatch>.
+    Related source file is "C:/Users/nwl1515/Dropbox/RobTek - F15 Projekt/DIG/Kode/PWM_test/PWM_test/RS_NorLatch.vhd".
+Unit <RS_NorLatch> synthesized.
+
+
+Synthesizing Unit <SignedPWM>.
+    Related source file is "C:/Users/nwl1515/Dropbox/RobTek - F15 Projekt/DIG/Kode/PWM_test/PWM_test/SignedPWM.vhd".
+Unit <SignedPWM> synthesized.
+
+
+Synthesizing Unit <Memory1Byte>.
+    Related source file is "C:/Users/nwl1515/Dropbox/RobTek - F15 Projekt/DIG/Kode/PWM_test/PWM_test/Memory1Byte.vhd".
+Unit <Memory1Byte> synthesized.
+
+
+Synthesizing Unit <main>.
+    Related source file is "C:/Users/nwl1515/Dropbox/RobTek - F15 Projekt/DIG/Kode/PWM_test/PWM_test/main.vhd".
+Unit <main> synthesized.
+
+INFO:Xst:1767 - HDL ADVISOR - Resource sharing has identified that some arithmetic operations in this design can share the same physical resources for reduced device utilization. For improved clock frequency you may try to disable resource sharing.
+
+=========================================================================
+HDL Synthesis Report
+
+Macro Statistics
+# Adders/Subtractors                                   : 2
+ 32-bit addsub                                         : 2
+# Registers                                            : 6
+ 1-bit register                                        : 4
+ 32-bit register                                       : 2
+# Comparators                                          : 2
+ 32-bit comparator greatequal                          : 2
+
+=========================================================================
+
+=========================================================================
+*                       Advanced HDL Synthesis                          *
+=========================================================================
+
+
+=========================================================================
+Advanced HDL Synthesis Report
+
+Macro Statistics
+# Adders/Subtractors                                   : 2
+ 32-bit addsub                                         : 2
+# Registers                                            : 68
+ Flip-Flops                                            : 68
+# Comparators                                          : 2
+ 32-bit comparator greatequal                          : 2
+
+=========================================================================
+
+=========================================================================
+*                         Low Level Synthesis                           *
+=========================================================================
+WARNING:Xst:2170 - Unit main : the following signal(s) form a combinatorial loop: Mem1/Latch5/s0_or0000.
+WARNING:Xst:2170 - Unit main : the following signal(s) form a combinatorial loop: Mem2/Latch2/s0_or0000.
+WARNING:Xst:2170 - Unit main : the following signal(s) form a combinatorial loop: Mem2/Latch5/s0_or0000.
+WARNING:Xst:2170 - Unit main : the following signal(s) form a combinatorial loop: Mem1/Latch1/s0_or0000.
+WARNING:Xst:2170 - Unit main : the following signal(s) form a combinatorial loop: Mem1/Latch4/s0_or0000.
+WARNING:Xst:2170 - Unit main : the following signal(s) form a combinatorial loop: Mem1/Latch7/s0_or0000.
+WARNING:Xst:2170 - Unit main : the following signal(s) form a combinatorial loop: Mem2/Latch1/s0_or0000.
+WARNING:Xst:2170 - Unit main : the following signal(s) form a combinatorial loop: Mem2/Latch4/s0_or0000.
+WARNING:Xst:2170 - Unit main : the following signal(s) form a combinatorial loop: Mem2/Latch7/s0_or0000.
+WARNING:Xst:2170 - Unit main : the following signal(s) form a combinatorial loop: Mem1/Latch0/s0_or0000.
+WARNING:Xst:2170 - Unit main : the following signal(s) form a combinatorial loop: Mem1/Latch3/s0_or0000.
+WARNING:Xst:2170 - Unit main : the following signal(s) form a combinatorial loop: Mem1/Latch6/s0_or0000.
+WARNING:Xst:2170 - Unit main : the following signal(s) form a combinatorial loop: Mem2/Latch0/s0_or0000.
+WARNING:Xst:2170 - Unit main : the following signal(s) form a combinatorial loop: Mem2/Latch3/s0_or0000.
+WARNING:Xst:2170 - Unit main : the following signal(s) form a combinatorial loop: Mem2/Latch6/s0_or0000.
+WARNING:Xst:2170 - Unit main : the following signal(s) form a combinatorial loop: Mem1/Latch2/s0_or0000.
+
+Optimizing unit <main> ...
+
+Optimizing unit <UnsignedPWM> ...
+
+Optimizing unit <SignedPWM> ...
+
+Mapping all equations...
+Building and optimizing final netlist ...
+Found area constraint ratio of 100 (+ 5) on block main, actual ratio is 2.
+FlipFlop PWM1/PWM/direction_0 has been replicated 1 time(s)
+FlipFlop PWM2/PWM/direction_0 has been replicated 1 time(s)
+
+Final Macro Processing ...
+
+=========================================================================
+Final Register Report
+
+Macro Statistics
+# Registers                                            : 70
+ Flip-Flops                                            : 70
+
+=========================================================================
+
+=========================================================================
+*                           Partition Report                            *
+=========================================================================
+
+Partition Implementation Status
+-------------------------------
+
+  No Partitions were found in this design.
+
+-------------------------------
+
+=========================================================================
+*                            Final Report                               *
+=========================================================================
+Final Results
+RTL Top Level Output File Name     : main.ngr
+Top Level Output File Name         : main
+Output Format                      : NGC
+Optimization Goal                  : Speed
+Keep Hierarchy                     : No
+
+Design Statistics
+# IOs                              : 33
+
+Cell Usage :
+# BELS                             : 330
+#      GND                         : 1
+#      INV                         : 6
+#      LUT2                        : 70
+#      LUT3                        : 22
+#      LUT3_L                      : 2
+#      LUT4                        : 58
+#      LUT4_L                      : 2
+#      MUXCY                       : 104
+#      VCC                         : 1
+#      XORCY                       : 64
+# FlipFlops/Latches                : 70
+#      FD                          : 64
+#      FDR                         : 2
+#      FDSE                        : 4
+# Clock Buffers                    : 1
+#      BUFGP                       : 1
+# IO Buffers                       : 32
+#      IBUF                        : 18
+#      OBUF                        : 14
+=========================================================================
+
+Device utilization summary:
+---------------------------
+
+Selected Device : 3s500efg320-4 
+
+ Number of Slices:                       91  out of   4656     1%  
+ Number of Slice Flip Flops:             70  out of   9312     0%  
+ Number of 4 input LUTs:                160  out of   9312     1%  
+ Number of IOs:                          33
+ Number of bonded IOBs:                  33  out of    232    14%  
+ Number of GCLKs:                         1  out of     24     4%  
+
+---------------------------
+Partition Resource Summary:
+---------------------------
+
+  No Partitions were found in this design.
+
+---------------------------
+
+
+=========================================================================
+TIMING REPORT
+
+NOTE: THESE TIMING NUMBERS ARE ONLY A SYNTHESIS ESTIMATE.
+      FOR ACCURATE TIMING INFORMATION PLEASE REFER TO THE TRACE REPORT
+      GENERATED AFTER PLACE-and-ROUTE.
+
+Clock Information:
+------------------
+-----------------------------------+------------------------+-------+
+Clock Signal                       | Clock buffer(FF name)  | Load  |
+-----------------------------------+------------------------+-------+
+Clock                              | BUFGP                  | 70    |
+-----------------------------------+------------------------+-------+
+
+Asynchronous Control Signals Information:
+----------------------------------------
+No asynchronous control signals found in this design
+
+Timing Summary:
+---------------
+Speed Grade: -4
+
+   Minimum period: 9.906ns (Maximum Frequency: 100.949MHz)
+   Minimum input arrival time before clock: 9.987ns
+   Maximum output required time after clock: 5.609ns
+   Maximum combinational path delay: 10.941ns
+
+Timing Detail:
+--------------
+All values displayed in nanoseconds (ns)
+
+=========================================================================
+Timing constraint: Default period analysis for Clock 'Clock'
+  Clock period: 9.906ns (frequency: 100.949MHz)
+  Total number of paths / destination ports: 19176 / 74
+-------------------------------------------------------------------------
+Delay:               9.906ns (Levels of Logic = 29)
+  Source:            PWM2/PWM/direction_0 (FF)
+  Destination:       PWM2/PWM/direction_0 (FF)
+  Source Clock:      Clock rising
+  Destination Clock: Clock rising
+
+  Data Path: PWM2/PWM/direction_0 to PWM2/PWM/direction_0
+                                Gate     Net
+    Cell:in->out      fanout   Delay   Delay  Logical Name (Net Name)
+    ----------------------------------------  ------------
+     FDSE:C->Q            25   0.591   1.339  PWM2/PWM/direction_0 (PWM2/PWM/direction_0)
+     LUT2:I1->O            1   0.704   0.000  PWM2/PWM/Maddsub_val_mux0000_lut<7> (PWM2/PWM/Maddsub_val_mux0000_lut<7>)
+     MUXCY:S->O            1   0.464   0.000  PWM2/PWM/Maddsub_val_mux0000_cy<7> (PWM2/PWM/Maddsub_val_mux0000_cy<7>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Maddsub_val_mux0000_cy<8> (PWM2/PWM/Maddsub_val_mux0000_cy<8>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Maddsub_val_mux0000_cy<9> (PWM2/PWM/Maddsub_val_mux0000_cy<9>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Maddsub_val_mux0000_cy<10> (PWM2/PWM/Maddsub_val_mux0000_cy<10>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Maddsub_val_mux0000_cy<11> (PWM2/PWM/Maddsub_val_mux0000_cy<11>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Maddsub_val_mux0000_cy<12> (PWM2/PWM/Maddsub_val_mux0000_cy<12>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Maddsub_val_mux0000_cy<13> (PWM2/PWM/Maddsub_val_mux0000_cy<13>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Maddsub_val_mux0000_cy<14> (PWM2/PWM/Maddsub_val_mux0000_cy<14>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Maddsub_val_mux0000_cy<15> (PWM2/PWM/Maddsub_val_mux0000_cy<15>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Maddsub_val_mux0000_cy<16> (PWM2/PWM/Maddsub_val_mux0000_cy<16>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Maddsub_val_mux0000_cy<17> (PWM2/PWM/Maddsub_val_mux0000_cy<17>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Maddsub_val_mux0000_cy<18> (PWM2/PWM/Maddsub_val_mux0000_cy<18>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Maddsub_val_mux0000_cy<19> (PWM2/PWM/Maddsub_val_mux0000_cy<19>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Maddsub_val_mux0000_cy<20> (PWM2/PWM/Maddsub_val_mux0000_cy<20>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Maddsub_val_mux0000_cy<21> (PWM2/PWM/Maddsub_val_mux0000_cy<21>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Maddsub_val_mux0000_cy<22> (PWM2/PWM/Maddsub_val_mux0000_cy<22>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Maddsub_val_mux0000_cy<23> (PWM2/PWM/Maddsub_val_mux0000_cy<23>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Maddsub_val_mux0000_cy<24> (PWM2/PWM/Maddsub_val_mux0000_cy<24>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Maddsub_val_mux0000_cy<25> (PWM2/PWM/Maddsub_val_mux0000_cy<25>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Maddsub_val_mux0000_cy<26> (PWM2/PWM/Maddsub_val_mux0000_cy<26>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Maddsub_val_mux0000_cy<27> (PWM2/PWM/Maddsub_val_mux0000_cy<27>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Maddsub_val_mux0000_cy<28> (PWM2/PWM/Maddsub_val_mux0000_cy<28>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Maddsub_val_mux0000_cy<29> (PWM2/PWM/Maddsub_val_mux0000_cy<29>)
+     MUXCY:CI->O           0   0.059   0.000  PWM2/PWM/Maddsub_val_mux0000_cy<30> (PWM2/PWM/Maddsub_val_mux0000_cy<30>)
+     XORCY:CI->O           3   0.804   0.535  PWM2/PWM/Maddsub_val_mux0000_xor<31> (PWM2/PWM/val_mux0000<31>)
+     LUT4:I3->O            1   0.704   0.000  PWM2/PWM/direction_0_cmp_eq00001_wg_lut<6> (PWM2/PWM/direction_0_cmp_eq00001_wg_lut<6>)
+     MUXCY:S->O            2   0.864   0.482  PWM2/PWM/direction_0_cmp_eq00001_wg_cy<6> (PWM2/PWM/direction_0_cmp_eq00001_wg_cy<6>)
+     LUT3:I2->O            2   0.704   0.447  PWM2/PWM/direction_0_cmp_eq000133 (PWM2/PWM/direction_0_not0001_inv)
+     FDSE:S                    0.911          PWM2/PWM/direction_0
+    ----------------------------------------
+    Total                      9.906ns (7.103ns logic, 2.803ns route)
+                                       (71.7% logic, 28.3% route)
+
+=========================================================================
+Timing constraint: Default OFFSET IN BEFORE for Clock 'Clock'
+  Total number of paths / destination ports: 252 / 2
+-------------------------------------------------------------------------
+Offset:              9.987ns (Levels of Logic = 19)
+  Source:            BTN<3> (PAD)
+  Destination:       PWM2/PWM/Output (FF)
+  Destination Clock: Clock rising
+
+  Data Path: BTN<3> to PWM2/PWM/Output
+                                Gate     Net
+    Cell:in->out      fanout   Delay   Delay  Logical Name (Net Name)
+    ----------------------------------------  ------------
+     IBUF:I->O             4   1.218   0.666  BTN_3_IBUF (BTN_3_IBUF)
+     LUT2:I1->O            8   0.704   0.932  Mem2/Latch0/s0_or000011 (N0)
+     LUT4:I0->O            2   0.704   0.622  Mem2/Latch7/s0_or00001 (Mem2/Latch7/s0_or0000)
+     LUT4:I0->O            9   0.704   0.899  Mem2/O<7>1 (Speed2<7>)
+     LUT3:I1->O            1   0.704   0.000  PWM2/PWM/Mcompar_Output_cmp_ge0000_lut<0> (PWM2/PWM/Mcompar_Output_cmp_ge0000_lut<0>)
+     MUXCY:S->O            1   0.464   0.000  PWM2/PWM/Mcompar_Output_cmp_ge0000_cy<0> (PWM2/PWM/Mcompar_Output_cmp_ge0000_cy<0>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Mcompar_Output_cmp_ge0000_cy<1> (PWM2/PWM/Mcompar_Output_cmp_ge0000_cy<1>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Mcompar_Output_cmp_ge0000_cy<2> (PWM2/PWM/Mcompar_Output_cmp_ge0000_cy<2>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Mcompar_Output_cmp_ge0000_cy<3> (PWM2/PWM/Mcompar_Output_cmp_ge0000_cy<3>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Mcompar_Output_cmp_ge0000_cy<4> (PWM2/PWM/Mcompar_Output_cmp_ge0000_cy<4>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Mcompar_Output_cmp_ge0000_cy<5> (PWM2/PWM/Mcompar_Output_cmp_ge0000_cy<5>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Mcompar_Output_cmp_ge0000_cy<6> (PWM2/PWM/Mcompar_Output_cmp_ge0000_cy<6>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Mcompar_Output_cmp_ge0000_cy<7> (PWM2/PWM/Mcompar_Output_cmp_ge0000_cy<7>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Mcompar_Output_cmp_ge0000_cy<8> (PWM2/PWM/Mcompar_Output_cmp_ge0000_cy<8>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Mcompar_Output_cmp_ge0000_cy<9> (PWM2/PWM/Mcompar_Output_cmp_ge0000_cy<9>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Mcompar_Output_cmp_ge0000_cy<10> (PWM2/PWM/Mcompar_Output_cmp_ge0000_cy<10>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Mcompar_Output_cmp_ge0000_cy<11> (PWM2/PWM/Mcompar_Output_cmp_ge0000_cy<11>)
+     MUXCY:CI->O           1   0.059   0.000  PWM2/PWM/Mcompar_Output_cmp_ge0000_cy<12> (PWM2/PWM/Mcompar_Output_cmp_ge0000_cy<12>)
+     MUXCY:CI->O           1   0.331   0.420  PWM2/PWM/Mcompar_Output_cmp_ge0000_cy<13> (PWM2/PWM/Output_cmp_ge0000)
+     FDR:R                     0.911          PWM2/PWM/Output
+    ----------------------------------------
+    Total                      9.987ns (6.448ns logic, 3.539ns route)
+                                       (64.6% logic, 35.4% route)
+
+=========================================================================
+Timing constraint: Default OFFSET OUT AFTER for Clock 'Clock'
+  Total number of paths / destination ports: 4 / 4
+-------------------------------------------------------------------------
+Offset:              5.609ns (Levels of Logic = 2)
+  Source:            PWM1/PWM/Output (FF)
+  Destination:       IN2A (PAD)
+  Source Clock:      Clock rising
+
+  Data Path: PWM1/PWM/Output to IN2A
+                                Gate     Net
+    Cell:in->out      fanout   Delay   Delay  Logical Name (Net Name)
+    ----------------------------------------  ------------
+     FDR:C->Q              2   0.591   0.622  PWM1/PWM/Output (PWM1/PWM/Output)
+     LUT2:I0->O            1   0.704   0.420  PWM1/Output_1_mux00001 (IN2A_OBUF)
+     OBUF:I->O                 3.272          IN2A_OBUF (IN2A)
+    ----------------------------------------
+    Total                      5.609ns (4.567ns logic, 1.042ns route)
+                                       (81.4% logic, 18.6% route)
+
+=========================================================================
+Timing constraint: Default path analysis
+  Total number of paths / destination ports: 42 / 10
+-------------------------------------------------------------------------
+Delay:               10.941ns (Levels of Logic = 6)
+  Source:            BTN<3> (PAD)
+  Destination:       IN1A (PAD)
+
+  Data Path: BTN<3> to IN1A
+                                Gate     Net
+    Cell:in->out      fanout   Delay   Delay  Logical Name (Net Name)
+    ----------------------------------------  ------------
+     IBUF:I->O             4   1.218   0.666  BTN_3_IBUF (BTN_3_IBUF)
+     LUT2:I1->O            8   0.704   0.932  Mem2/Latch0/s0_or000011 (N0)
+     LUT4:I0->O            2   0.704   0.622  Mem2/Latch7/s0_or00001 (Mem2/Latch7/s0_or0000)
+     LUT4:I0->O            9   0.704   0.995  Mem2/O<7>1 (Speed2<7>)
+     LUT2:I0->O            1   0.704   0.420  PWM2/Output_0_mux00001 (IN1B_OBUF)
+     OBUF:I->O                 3.272          IN1B_OBUF (IN1B)
+    ----------------------------------------
+    Total                     10.941ns (7.306ns logic, 3.635ns route)
+                                       (66.8% logic, 33.2% route)
+
+=========================================================================
+
+
+Total REAL time to Xst completion: 3.00 secs
+Total CPU time to Xst completion: 3.72 secs
+ 
+--> 
+
+Total memory usage is 260516 kilobytes
+
+Number of errors   :    0 (   0 filtered)
+Number of warnings :   16 (   0 filtered)
+Number of infos    :    1 (   0 filtered)
+

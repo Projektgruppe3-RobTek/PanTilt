@@ -1,0 +1,17 @@
+PROMGEN: Xilinx Prom Generator P.20131013
+Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved.
+
+promgen -w -p mcs -c FF -o "C:\Users\nwl1515\Dropbox\RobTek - F15 Projekt\DIG\Kode\PWM_test//Test_1" -x xcf04s -u 00000000 "C:/Users/nwl1515/Dropbox/RobTek - F15 Projekt/DIG/Kode/PWM_test/PWM_test/main.bit" 
+
+PROM C:\Users\nwl1515\Dropbox\RobTek - F15 Projekt\DIG\Kode\PWM_test\Test_1.prm map: Sat Mar 07 21:54:57 2015
+
+Calculating PROM checksum with fill value ff
+
+Format        Mcs86 (32-bit)
+Size          512K
+PROM start    0000:0000
+PROM end      0007:ffff
+PROM checksum 03aab4e7
+
+        Addr1        Addr2                     Date File(s)
+    0000:0000    0004:547f     Mar 07 21:52:10 2015 C:/Users/nwl1515/Dropbox/RobTek - F15 Projekt/DIG/Kode/PWM_test/PWM_test/main.bit

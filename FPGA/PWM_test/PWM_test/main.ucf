@@ -1,0 +1,37 @@
+
+# PlanAhead Generated physical constraints 
+
+NET "BTN[0]" LOC = B18;
+NET "BTN[1]" LOC = D18;
+NET "BTN[2]" LOC = E18;
+NET "BTN[3]" LOC = H13;
+NET "LD[0]" LOC = J14;
+NET "LD[1]" LOC = J15;
+NET "LD[2]" LOC = K15;
+NET "LD[3]" LOC = K14;
+NET "LD[4]" LOC = E17;
+NET "LD[5]" LOC = P15;
+NET "LD[6]" LOC = F4;
+NET "LD[7]" LOC = R4;
+NET "SW[0]" LOC = G18;
+NET "SW[1]" LOC = H18;
+NET "SW[2]" LOC = K18;
+NET "SW[3]" LOC = K17;
+NET "SW[4]" LOC = L14;
+NET "SW[5]" LOC = L13;
+NET "SW[6]" LOC = N17;
+NET "SW[7]" LOC = R17;
+NET "Clock" LOC = B8;
+
+NET "ENA" LOC = R16;
+NET "HS1A" LOC = M14;
+NET "HS1b" LOC = L17;
+NET "ENB" LOC = M13;
+NET "HS2A" LOC = M15;
+NET "HS2B" LOC = M16;
+NET "I0" LOC = K12;
+NET "I1" LOC = L16;
+NET "IN1B" LOC = R18;
+NET "IN2A" LOC = T18;
+NET "IN1A" LOC = R15;
+NET "IN2B" LOC = P17;

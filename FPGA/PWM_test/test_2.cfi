@@ -1,0 +1,11 @@
+# PROMGEN: Xilinx Prom Generator P.20131013
+# Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved.
+
+SOFTWARE_VERSION P.20131013
+DATE            03/07/2015 - 22:38
+SOURCE          C:\Users\nwl1515\Dropbox\RobTek - F15 Projekt\DIG\Kode\PWM_test\test_2.mcs
+DEVICE          XCF04S
+DATA_WIDTH      8
+FILL_DATA       0xFF
+SIGNATURE       0x03AAE2A0
+START_ADDRESS   0x00000000 END_ADDRESS 0x0004547F DIRECTION_UP   "C:/Users/nwl1515/Dropbox/RobTek - F15 Projekt/DIG/Kode/PWM_test/PWM_test/main.bit" 3s500efg320

@@ -1,0 +1,4 @@
+vhdl work "D_FlipFlop.vhd"
+vhdl work "Debounce.vhd"
+vhdl work "PISO.vhd"
+vhdl work "main.vhd"

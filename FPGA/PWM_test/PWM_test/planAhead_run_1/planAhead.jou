@@ -1,0 +1,116 @@
+#-----------------------------------------------------------
+# PlanAhead v14.7 (64-bit)
+# Build 321239 by xbuild on Fri Sep 27 19:29:51 MDT 2013
+# Start of session at: Sat Mar 07 21:47:40 2015
+# Process ID: 3132
+# Log file: C:/Users/nwl1515/Dropbox/RobTek - F15 Projekt/DIG/Kode/PWM_test/PWM_test/planAhead_run_1/planAhead.log
+# Journal file: C:/Users/nwl1515/Dropbox/RobTek - F15 Projekt/DIG/Kode/PWM_test/PWM_test/planAhead_run_1/planAhead.jou
+#-----------------------------------------------------------
+start_gui
+source {C:/Users/nwl1515/Dropbox/RobTek - F15 Projekt/DIG/Kode/PWM_test/PWM_test/pa.fromNetlist.tcl}
+startgroup
+set_property package_pin B18 [get_ports {BTN[0]}]
+endgroup
+startgroup
+set_property package_pin D18 [get_ports {BTN[1]}]
+endgroup
+startgroup
+set_property package_pin E18 [get_ports {BTN[2]}]
+endgroup
+startgroup
+set_property package_pin H13 [get_ports {BTN[3]}]
+endgroup
+startgroup
+set_property package_pin J14 [get_ports {LD[0]}]
+endgroup
+startgroup
+set_property package_pin J15 [get_ports {LD[1]}]
+endgroup
+startgroup
+set_property package_pin K15 [get_ports {LD[2]}]
+endgroup
+startgroup
+set_property package_pin K14 [get_ports {LD[3]}]
+endgroup
+startgroup
+set_property package_pin E17 [get_ports {LD[4]}]
+endgroup
+startgroup
+set_property package_pin P15 [get_ports {LD[5]}]
+endgroup
+startgroup
+set_property package_pin F4 [get_ports {LD[6]}]
+endgroup
+startgroup
+set_property package_pin R4 [get_ports {LD[7]}]
+endgroup
+startgroup
+set_property package_pin G18 [get_ports {SW[0]}]
+endgroup
+startgroup
+set_property package_pin H18 [get_ports {SW[1]}]
+endgroup
+startgroup
+set_property package_pin K18 [get_ports {SW[2]}]
+endgroup
+startgroup
+set_property package_pin K17 [get_ports {SW[3]}]
+endgroup
+startgroup
+set_property package_pin L14 [get_ports {SW[4]}]
+endgroup
+startgroup
+set_property package_pin L13 [get_ports {SW[5]}]
+endgroup
+startgroup
+set_property package_pin N17 [get_ports {SW[6]}]
+endgroup
+startgroup
+set_property package_pin R17 [get_ports {SW[7]}]
+endgroup
+startgroup
+set_property package_pin B8 [get_ports Clock]
+endgroup
+startgroup
+set_property package_pin R16 [get_ports ENA]
+endgroup
+startgroup
+set_property package_pin M13 [get_ports ENB]
+endgroup
+startgroup
+set_property package_pin M14 [get_ports HS1A]
+endgroup
+startgroup
+set_property package_pin L17 [get_ports HS1b]
+endgroup
+startgroup
+set_property package_pin M13 [get_ports ENB]
+endgroup
+startgroup
+set_property package_pin M15 [get_ports HS2A]
+endgroup
+startgroup
+set_property package_pin M16 [get_ports HS2B]
+endgroup
+startgroup
+set_property package_pin K12 [get_ports I0]
+endgroup
+startgroup
+set_property package_pin L16 [get_ports I1]
+endgroup
+startgroup
+set_property package_pin R15 [get_ports IN1A]
+endgroup
+startgroup
+set_property package_pin R18 [get_ports IN1B]
+endgroup
+startgroup
+set_property package_pin T18 [get_ports IN2A]
+endgroup
+startgroup
+set_property package_pin R15 [get_ports IN1A]
+endgroup
+startgroup
+set_property package_pin P17 [get_ports IN2B]
+endgroup
+save_constraints
