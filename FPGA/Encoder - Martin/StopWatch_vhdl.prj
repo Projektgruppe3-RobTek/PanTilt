@@ -1,0 +1,7 @@
+vhdl work "C:\Users\Martin\DIG-Projekter\Test_Project\T_FlipFlop.vhd"
+vhdl work "C:\Users\Martin\DIG-Projekter\Test_Project\D_FlipFlop.vhd"
+vhdl work "C:\Users\Martin\DIG-Projekter\Test_Project\Display_Driver.vhd"
+vhdl work "C:\Users\Martin\DIG-Projekter\Test_Project\Debounce.vhd"
+vhdl work "C:\Users\Martin\DIG-Projekter\Test_Project\Counter.vhd"
+vhdl work "C:\Users\Martin\DIG-Projekter\Test_Project\ClockPrescaler.vhd"
+vhdl work "C:\Users\Martin\DIG-Projekter\Test_Project\StopWatch.vhd"

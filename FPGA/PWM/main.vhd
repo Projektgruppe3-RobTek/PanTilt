@@ -10,19 +10,12 @@ entity main is
 		Clock: in std_logic;
 		SW: in std_logic_vector(7 downto 0);
 		
-		JA1: in std_logic;
-		JA2: in std_logic;
-		JA3: in std_logic;
-		JA5: in std_logic;
-		JA6: in std_logic;
-		JA7: in std_logic;
-		
-		JB0: out std_logic;
 		JB1: out std_logic;
 		JB2: out std_logic;
-		JB4: out std_logic;
-		JB5: out std_logic;
-		JB6: out std_logic;
+		JB3: out std_logic;
+		JB7: out std_logic;
+		JB8: out std_logic;
+		JB9: out std_logic;
 		
 		LD: out std_logic_vector(7 downto 0)
 	);
@@ -44,38 +37,33 @@ architecture behav of main is
 	
 	end component;
 	
-	component Memory1Byte is
+	component Memory is
+		generic(
+			BitWidth: positive
+		);
 		port(
 			EI, R, EO: in std_logic;
-			I: in std_logic_vector(7 downto 0);
+			Input: in std_logic_vector(7 downto 0);
 			O: out std_logic_vector(7 downto 0)
 		);
 	end component;
 	
-	signal Motor1, Motor2, sEI: std_logic_vector(1 downto 0);
+	signal Motor1, Motor2: std_logic_vector(1 downto 0);
 	signal Speed1, Speed2: std_logic_vector(7 downto 0);
 	
 	begin
 	
-	sEI(0) <= BTN(0) and (not BTN(3));
-	sEI(1) <= BTN(1) and (not BTN(3));
+	-- enable h-bridge
+	JB8 <= '1'; -- ENA
+	JB1 <= '1'; -- ENB
 	
-	LD(0) <= JA6;
-	LD(1) <= JA2;
-	LD(2) <= JA3;
-	LD(3) <= JA7;
-	LD(4) <= JA1;
-	LD(5) <= JA5;
-	LD(6) <= '0';
-	LD(7) <= '0';
+	-- set motor output
+	JB3 <= Motor1(0); -- IN1A
+	JB9 <= Motor1(1); -- IN2A
+	JB2 <= Motor2(0); -- IN1B
+	JB7 <= Motor2(1); -- IN2B
 	
-	JB5 <= '1';
-	JB0 <= '1';
-	
-	JB3 <= Motor1(0);
-	JB9 <= Motor1(1);
-	JB2 <= Motor2(0);
-	JB7 <= Motor2(1);
+	LD <= SW;
 	
 	PWM1: SignedPWM
 		generic map(
@@ -99,20 +87,30 @@ architecture behav of main is
 		)
 	;
 	
-	Mem1: Memory1Byte port map(
-		EI => sEI(0),
-		R => BTN(2),
-		EO => '1',
-		I => SW,
-		O => Speed1
-	);
+	Mem1: Memory
+		generic map(
+			BitWidth => 8
+		)
+		port map(
+			EI => BTN(1),
+			R => BTN(2),
+			EO => '1',
+			Input => SW,
+			O => Speed1
+		)
+	;
 	
-	Mem2: Memory1Byte port map(
-		EI => sEI(1),
-		R => BTN(2),
-		EO => '1',
-		I => SW,
-		O => Speed2
-	);
+	Mem2: Memory 
+		generic map(
+			BitWidth => 8
+		)
+		port map(
+			EI => BTN(0),
+			R => BTN(2),
+			EO => '1',
+			Input => SW,
+			O => Speed2
+		)
+	;
 	
 end behav;

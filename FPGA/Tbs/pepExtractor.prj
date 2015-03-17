@@ -1,0 +1,2 @@
+work	"../../PWM/SignedPWM.vhd"
+work	"../../PWM/UnsignedPWM.vhd"

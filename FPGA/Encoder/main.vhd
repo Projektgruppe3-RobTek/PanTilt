@@ -34,19 +34,6 @@ architecture behav of main is
 		);
 	end component;
 	
-	component SIPO is
-		generic(
-			constant DataWidth: positive := 8
-		);
-		port(
-			CLK: in std_logic;
-			RST: in std_logic;
-			Input: in std_logic;
-			Latch: in std_logic;
-			Output: out std_logic_vector((DataWidth - 1) downto 0)
-		);
-	end component;
-	
 	component Debounce is
 		generic(
 			CounterSize: integer := 19
@@ -86,15 +73,9 @@ architecture behav of main is
 	
 	signal Reset, sClock: std_logic;
 	
-	signal SPIClock, SPISS, SPIMOSI: std_logic;
-	
 	begin
 	
 	Reset <= '1';
-	
-	SPIClock <= not JC1 when SW(0) = '1' else BTN2;
-	SPIMOSI <= JC3 when SW(0) = '1' else BTN1;
-	SPISS <= JC2 when SW(0) = '1' else BTN0;
 	
 	LD(0) <= JA9;		-- HS1A
 	LD(1) <= JA4;		-- HS2A
@@ -103,19 +84,8 @@ architecture behav of main is
 	LD(4) <= JA2;		-- Index0
 	LD(5) <= JA8;		-- Index1
 	LD(6) <= '0';
---	LD(7) <= '0';
+	LD(7) <= '0';
 	
-	--LD(6 downto 0) <= "0000000";
-	
-	ScalerStefan1: ScalerStefan
-		generic map(
-			SCALE => 29
-		)
-		port map(
-			in_sig => JA10,
-			out_sig => LD(7)
-		);
-		
 	--LD <= Speed1 when BTN3 = '0' else Speed2;
 	
 	JB8 <= '1';		-- ENA
@@ -130,7 +100,7 @@ architecture behav of main is
 	
 	ScalerStefan0: ScalerStefan
 		generic map(
-			SCALE => 7
+			SCALE => 8
 		)
 		port map(
 			in_sig => Clock,
@@ -158,19 +128,10 @@ architecture behav of main is
 		)
 	;
 	
-	SIPO0: SIPO 
-		generic map(
-			DataWidth => 16
-		)
-		port map(
-			CLK => SPIClock,	-- CLK -- JC1
-			RST => Reset,
-			Input => SPIMOSI,	-- MOSI -- JC3
-			Latch => SPISS,		-- !SS -- JC2
-			Output(7 downto 0) => Speed1,
-			Output(15 downto 8) => Speed2
-		)
-	;
+	Speed1 <= "00100000" when BTN(0) = '1' and BTN(1) = '1' else
+		"11011111" when BTN(0) = '1' and BTN(1) = '0' else "00000000";
+	Speed2 <= "00100000" when BTN(3) = '1' and BTN(2) = '1' else
+		"11011111" when BTN(3) = '1' and BTN(2) = '0' else "00000000";
 	
 	DisplayDriver0: DisplayDriver port map(
 		I0 => Speed1,
@@ -180,9 +141,9 @@ architecture behav of main is
 		AN_Output => AN
 	);
 	
-	Debounce0: Debounce port map(CLK => Clock, Input => BTN(0), Output => BTN0);
-	Debounce1: Debounce port map(CLK => Clock, Input => BTN(1), Output => BTN1);
-	Debounce2: Debounce port map(CLK => Clock, Input => BTN(2), Output => BTN2);
-	Debounce3: Debounce port map(CLK => Clock, Input => BTN(3), Output => BTN3);
+--	Debounce0: Debounce port map(CLK => Clock, Input => BTN(0), Output => BTN0);
+--	Debounce1: Debounce port map(CLK => Clock, Input => BTN(1), Output => BTN1);
+--	Debounce2: Debounce port map(CLK => Clock, Input => BTN(2), Output => BTN2);
+--	Debounce3: Debounce port map(CLK => Clock, Input => BTN(3), Output => BTN3);
 	
 end behav;

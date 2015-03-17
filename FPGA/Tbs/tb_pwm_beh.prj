@@ -1,0 +1,3 @@
+vhdl work "../../PWM/UnsignedPWM.vhd"
+vhdl work "../../PWM/SignedPWM.vhd"
+vhdl work "tb_pwm.vhd"
