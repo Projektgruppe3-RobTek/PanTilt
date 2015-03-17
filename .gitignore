@@ -43,4 +43,14 @@ MASTER.c
 *.xrpt
 *.gise
 *.xml
-
+*.vho
+*.vdbx
+*.vdbl
+*.xbcd
+*.ref
+*.webtalk
+*xmsgs
+*lst
+*jou
+*xreport
+*/xst/*
