@@ -6,7 +6,7 @@
 include  Makefile.common
 
 #define compiler
-COMPILER=clang-3.6
+COMPILER=clang
 CC=${COMPILER}
 #Locate gcc libraries
 

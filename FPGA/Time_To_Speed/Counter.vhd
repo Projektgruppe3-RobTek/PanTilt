@@ -13,8 +13,10 @@ entity Counter is
 	port(
 		input, RST: in std_logic;
 		MAX: in std_logic_vector(size-1 downto 0);
+		overflow_val: in std_logic_vector(size-1 downto 0) := (others => '0');
 		output: out std_logic_vector(size-1 downto 0); 
-		carry_out: out std_logic
+		carry_out: out std_logic;
+		overflow: out std_logic
 	);
 end Counter;
 
@@ -34,6 +36,11 @@ begin
 				carry_out <= '1';
 			end if;
 		end if;
+	if(storage >= overflow_val ) then
+		overflow <= '1';
+	else
+		overflow <= '0';
+	end if;
 	end process;	   
 	
 	output <= storage;

@@ -16,7 +16,7 @@ net "SW<5>" loc = L13;
 net "SW<6>" loc = N17;
 net "SW<7>" loc = R17;
 
-#net "LD<0>" loc = J14;
+net "LD<0>" loc = J14;
 #net "LD<1>" loc = J15;
 #net "LD<2>" loc = K15;
 #net "LD<3>" loc = K14;
@@ -41,9 +41,9 @@ net "AN<3>" loc = F15;
 
 net "CLK" loc = B8;
 
-NET "JA0" CLOCK_DEDICATED_ROUTE = FALSE;
+//NET "JA0" CLOCK_DEDICATED_ROUTE = FALSE;
 #NET "JA1" CLOCK_DEDICATED_ROUTE = FALSE;
-net "JA0" loc = L15;
+//net "JA0" loc = L15;
 #net "JA1" loc = K12;
 #net "JA2" loc = L17;
 #net "JA3" loc = M15;
@@ -53,6 +53,8 @@ net "JA0" loc = L15;
 #net "JA5" loc = L16;
 #net "JA6" loc = M14;
 #net "JA7" loc = M16;
+net "JA9" loc = M14;	// HS1A
+NET "JA9" CLOCK_DEDICATED_ROUTE = FALSE;
 
 #net "JB1" loc = M13;	// ENB
 #net "JB2" loc = R18;	// IN1B

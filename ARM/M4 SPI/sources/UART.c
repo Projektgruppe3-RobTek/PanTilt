@@ -41,12 +41,12 @@ void uart0_out_clear(void)
 
 char uart0_in_char(void){
   while(uart0_data_avaliable() == 0 && (UART0_FR_R & UART_FR_RXFE)); //wait while both ringbuffer and FIFO is empty
-	
+
 	//Fill ringbuffer from fifo if avaliable
 	if ( !(UART0_FR_R & UART_FR_RXFE))
 		uart0_rx_isr();
-		
-	disable_uart0_int();	
+
+	disable_uart0_int();
 	char returnval = sys_ringbuf_uchar_pop(buffer_in);
 	enable_uart0_int();
   return returnval;
@@ -55,15 +55,15 @@ char uart0_in_char(void){
 void uart0_out_char(char data){
 	if(!(UART0_FR_R & UART_FR_TXFF) && sys_ringbuf_uchar_size(buffer_out) == 0)  //check if transmit fifo is full, if not, and buffer is empty, just push to FIFO
 	  UART0_DR_R = data;
-	else	
+	else
 	{
 		while(sys_ringbuf_uchar_full(buffer_out));
-		
+
 		disable_uart0_int();
 		sys_ringbuf_uchar_push(buffer_out, data);
 		enable_uart0_int();
 	}
-  
+
 }
 RBUF_INDEX_TYPE uart0_in_space_left(void)
 {
@@ -80,7 +80,7 @@ RBUF_INDEX_TYPE uart0_data_avaliable(void)
 	//Fill ringbuffer from fifo if avaliable
 	if ( !(UART0_FR_R & UART_FR_RXFE))
 		uart0_rx_isr(); //
-		
+
 	return sys_ringbuf_uchar_size(buffer_in);
 }
 
@@ -93,31 +93,31 @@ void setup_uart0(void){
   __asm__("NOP");
   __asm__("NOP");
   UART0_CTL_R &= ~UART_CTL_UARTEN;      // disable UART
-  UART0_IBRD_R = IBRD;                    
-  UART0_FBRD_R = FBRD;                 
+  UART0_IBRD_R = IBRD;
+  UART0_FBRD_R = FBRD;
                                         // 8 bit word length (no parity bits, one stop bit, FIFOs)
   UART0_LCRH_R = (UART_LCRH_WLEN_8|UART_LCRH_FEN);
   UART0_CTL_R |= UART_CTL_UARTEN;       // enable UART
   GPIO_PORTA_AFSEL_R |= 0x01 | 0x02;           // enable alt funct on PA1-0
   GPIO_PORTA_DEN_R |= 0x01 | 0x02;             // enable digital I/O on PA1-0
-                                        
+
                                         // configure PA1-0 as UART
   GPIO_PORTA_PCTL_R = (GPIO_PORTA_PCTL_R & ~(GPIO_PCTL_PA0_M | GPIO_PCTL_PA1_M)) |
   										GPIO_PCTL_PA0_U0RX | GPIO_PCTL_PA1_U0TX;
-  	
+
   GPIO_PORTA_AMSEL_R &= ~(0x01 | 0x02);          // disable analog functionality on PA
-  
+
   //Interrupt on recieve and transmit
   UART0_IM_R |= UART_IM_RXIM | UART_IM_TXIM;
-  
+
   //interrupt on 4/8 full FIFO recieve
   UART0_IFLS_R = (UART0_IFLS_R &  ~UART_IFLS_RX_M) | UART_IFLS_RX4_8 ;
   //Interrupt on 7/8 empty FIFO transmit.
   UART0_IFLS_R = (UART0_IFLS_R &  ~UART_IFLS_TX_M) | UART_IFLS_TX7_8 ;
-  
+
   //Enable uart interrupts
   enable_uart0_int();
-  
+
 }
 
 void uart0_isr(void)
@@ -141,7 +141,7 @@ static void uart0_tx_isr(void)
 	}
 	//clear interrupt
 	UART0_ICR_R |= UART_ICR_TXIC;
-	
+
 	GPIO_PORTF_DATA_R &= ~LED_GREEN;
 }
 
