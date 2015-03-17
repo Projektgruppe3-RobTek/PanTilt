@@ -70,3 +70,4 @@ MASTER.c
 *.ncd
 *.xwbt
 *.cmd_log
+*.ut
