@@ -7,7 +7,9 @@ use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity ClockPrescaler is
+
     port(
+    		prescaler: in std_logic_vector (14 downto 0) ;
         clk_in: in std_logic;
         scaled_clk: out std_logic
     );
@@ -15,7 +17,6 @@ end ClockPrescaler;
 
 architecture logic of ClockPrescaler is
 
-   signal prescaler: std_logic_vector(14 downto 0) := "110000110101000"; -- 2kHz
    signal prescaler_counter: std_logic_vector(14 downto 0) := (others => '0');
    signal new_clk : std_logic := '0';
 

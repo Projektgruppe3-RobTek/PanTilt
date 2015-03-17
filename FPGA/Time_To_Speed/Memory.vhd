@@ -8,9 +8,9 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity Memory is
 	port(
-		input: in std_logic_vector(1 downto 0);
+		input: in std_logic_vector(15 downto 0);
 		SET, RST, clk_in: in std_logic;
-		output: out std_logic_vector(1 downto 0)
+		output: out std_logic_vector(15 downto 0)
 	);
 end Memory;
 

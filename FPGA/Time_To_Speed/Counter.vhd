@@ -1,12 +1,12 @@
 ----------------------
---      Counter_T     --
+--      Counter     --
 ----------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
-entity Counter_T is
+entity Counter is
 	generic(
 		size: integer := 4
 	);
@@ -25,7 +25,7 @@ begin
 	process(input, RST) begin	
 		if (RST = '1') then
 			storage <= (others => '0');
-		elsif (input'event and input = '1' ) then
+		elsif (rising_edge(input)) then
 			if (storage < MAX) then
 				storage <= storage + '1';
 				carry_out <= '0';

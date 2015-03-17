@@ -4,9 +4,9 @@
 #program variable, in this example main.
 
 
-PROGRAM=main
+PROGRAM=StopWatch
 PART=xc3s500e-fg320-4
-
+UCFFILE=Ports.ucf
 
 TOOL_PATH_= $(shell locate ISE_DS/ISE/bin/lin64/xst)
 TOOL_PATH=$(TOOL_PATH_:%xst=%)
@@ -91,7 +91,7 @@ $(PROGRAM).ngc: $(PROGRAM).xst
 	$(XST) -intstyle ise -ifn $(PROGRAM).xst -ofn $(PROGRAM).syr
 
 $(PROGRAM).ngd: $(PROGRAM).ngc
-	$(NGDBUILD) -p $(PART) -uc $(PROGRAM).ucf $(PROGRAM).ngc
+	$(NGDBUILD) -p $(PART) -uc $(UCFFILE) $(PROGRAM).ngc
 
 $(PROGRAM).ncd: $(PROGRAM).ngd
 	$(MAP) -detail -pr b $(PROGRAM).ngd
