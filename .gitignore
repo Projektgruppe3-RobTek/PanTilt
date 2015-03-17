@@ -44,6 +44,14 @@ MASTER.c
 *.gise
 *.xml
 *.vho
+*planAhead*
+*.wpc
+*.unroutes
+*.twx
+*.twr
+*.pad
+*.ngr
+*.pcf
 *.vdbx
 *.vdbl
 *.xbcd
