@@ -52,6 +52,7 @@ MASTER.c
 *.pad
 *.ngr
 *.pcf
+*.projectmgr
 *.vdbx
 *.vdbl
 *.xbcd
