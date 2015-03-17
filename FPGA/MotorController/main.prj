@@ -1,0 +1,5 @@
+vhdl work "RS_NorLatch.vhd"
+vhdl work "Memory.vhd"
+vhdl work "UnsignedPWM.vhd"
+vhdl work "SignedPWM.vhd"
+vhdl work "main.vhd"
