@@ -18,3 +18,29 @@ MAP.txt
 
 #ignore c file for single module compilation
 MASTER.c
+
+#ignore files for FPGA
+*.bld
+*.cdm_log
+*.lso
+*.ngc
+*.ngd
+*.xst
+*.syr
+*.html
+*.map
+*.mrp
+*.tcl
+*.debug
+*.par
+*.ptwx
+*.stx
+*.trw
+*.drc
+*.xpi
+*.csv
+*.txt
+*.xrpt
+*.gise
+*.xml
+
