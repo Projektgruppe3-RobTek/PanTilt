@@ -54,3 +54,10 @@ MASTER.c
 *jou
 *xreport
 */xst/*
+*.log
+*.bgn
+*.ppr
+*.ngm
+*.ncd
+*.xwbt
+*.cmd_log
