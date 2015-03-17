@@ -1,0 +1,7 @@
+vhdl work "StopWatch.vhd"
+vhdl work "ClockPrescaler.vhd"
+vhdl work "Counter.vhd"
+vhdl work "Debounce.vhd"
+vhdl work "Display_Driver.vhd"
+vhdl work "Memory.vhd"
+vhdl work "SpeedTest.vhd"
