@@ -10,6 +10,7 @@
 #include "../headers/system_buffers.h"
 #include "../headers/UART.h"
 #include "../headers/SSI.h"
+#include "../headers/leds.h"
 
 /*****************************    Defines    ********************************/
 #define STATUS_BLINK_TIME 500 // Blink time for status led in ms.
@@ -60,12 +61,22 @@ int main(void)
 		//sw1_event 	= get_button_event(&sw1);
 		//sw2_event 	= get_button_event(&sw2);
 		
-		if (uart0_data_avaliable())
+		set_leds(0);
+		
+		if (uart0_data_avaliable() > 2)
 		{
-			uint8_t temp = uart0_in_char();
-			SSI0_DR_R = (temp);
-			//set_leds(temp % 8);
-			
+			set_leds(1);
+			INT8U temp1 = uart0_in_char();
+			INT8U temp2 = uart0_in_char();
+			ssi0_out_16bit((temp1 << 8) || temp2);
+		}
+		
+		if (ssi0_data_avaliable())
+		{
+			set_leds(2);
+			INT16U temp = ssi0_in_16bit();
+			uart0_out_char((temp >> 8) && 0xFF);
+			uart0_out_char((temp >> 8) && 0xFF);
 		}
 		
 	}
