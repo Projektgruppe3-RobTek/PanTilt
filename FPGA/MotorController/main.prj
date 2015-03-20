@@ -1,5 +1,8 @@
-vhdl work "RS_NorLatch.vhd"
-vhdl work "Memory.vhd"
-vhdl work "UnsignedPWM.vhd"
-vhdl work "SignedPWM.vhd"
+		vhdl work "ENCController.vhd"
+			vhdl work "PWM.vhd"
+			vhdl work "Prescaler.vhd"
+		vhdl work "PWMController.vhd"
+		vhdl work "SPIController.vhd"
+	vhdl work "MotorController.vhd"
 vhdl work "main.vhd"
+
