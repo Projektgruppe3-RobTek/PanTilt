@@ -45,11 +45,14 @@ architecture behav of main is
 	
 	component MotorController is
 		generic(
-			constant ControlerPWMBitWidth: positive := 8;		-- 8-bit signed PWM
-			constant ControlerPWMPrescaler: positive := 25;		-- 50MHz / (PWMPrescaler * 2) | (1000KHz)
-			constant ControlerENCTimeBitWidth: positive := 8;		-- 8-bit timer
-			constant ControlerENCTimePrescaler: positive := 25;	-- 50MHz / (ENCTimePrescaler * 2) | (1000KHz)
-			constant ControlerENCValBitWidth: positive := 8		-- 8-bit Encoder value
+			-- PWM constants
+			constant ControllerPWMBitWidth: positive := 8;		-- 8-bit signed PWM
+			constant ControllerPWMPrescaler: positive := 5;		-- 50MHz / (PWMPrescaler * 2) = (5MHz)
+										-- 50MHz / (PWMPrescaler * 2 * 252) = (20KHz)
+			-- ENC constants
+			constant ControllerENCTimeBitWidth: positive := 8;	-- 8-bit timer
+			constant ControllerENCTimePrescaler: positive := 25;	-- 50MHz / (ENCTimePrescaler * 2) | (1000KHz)
+			constant ControllerENCValBitWidth: positive := 8		-- 8-bit Encoder value
 		);
 		port(
 			Reset: in std_logic;	-- Reset
@@ -74,18 +77,18 @@ architecture behav of main is
 	-- Sensor Output
 	LD(0) <= JA2;	-- Index0	HallSensor 0
 	LD(1) <= JA8;	-- Index1	HallSensor 1
-	LD(2) <= JA2;	-- HS1A		Motor 0 sensor 0
-	LD(3) <= JA8;	-- HS1B		Motor 0 sensor 1
-	LD(4) <= JA2;	-- HS2A		Motor 1 sensor 0
-	LD(5) <= JA8;	-- HS2B		Motor 1 sensor 1
+	LD(2) <= JA9;	-- HS1A		Motor 0 sensor 0
+	LD(3) <= JA3;	-- HS1B		Motor 0 sensor 1
+	LD(4) <= JA4;	-- HS2A		Motor 1 sensor 0
+	LD(5) <= JA10;	-- HS2B		Motor 1 sensor 1
 	
 	Motor1: MotorController
 	generic map(
-		ControlerPWMBitWidth => 8,		-- 8-bit signed PWM
-		ControlerPWMPrescaler => 25,		-- 50MHz / (PWMPrescaler * 2) | (1000KHz)
-		ControlerENCTimeBitWidth => 8,		-- 8-bit timer
-		ControlerENCTimePrescaler => 25,	-- 50MHz / (ENCTimePrescaler * 2) | (1000KHz)
-		ControlerENCValBitWidth	=> 8		-- 8-bit signed encoder value
+		ControllerPWMBitWidth => 8,		-- 8-bit signed PWM
+		ControllerPWMPrescaler => 5,		-- 50MHz / (PWMPrescaler * 2) | (1000KHz)
+		ControllerENCTimeBitWidth => 8,		-- 8-bit timer
+		ControllerENCTimePrescaler => 25,	-- 50MHz / (ENCTimePrescaler * 2) | (1000KHz)
+		ControllerENCValBitWidth	=> 8		-- 8-bit signed encoder value
 	)
 	port map(
 		
@@ -107,11 +110,11 @@ architecture behav of main is
 	
 	Motor2: MotorController
 	generic map(
-		ControlerPWMBitWidth => 8,		-- 8-bit signed PWM
-		ControlerPWMPrescaler => 25,		-- 50MHz / (PWMPrescaler * 2) | (1000KHz)
-		ControlerENCTimeBitWidth => 8,		-- 8-bit timer
-		ControlerENCTimePrescaler => 25,	-- 50MHz / (ENCTimePrescaler * 2) | (1000KHz)
-		ControlerENCValBitWidth	=> 8		-- 8-bit signed encoder value
+		ControllerPWMBitWidth => 8,		-- 8-bit signed PWM
+		ControllerPWMPrescaler => 5,		-- 50MHz / (PWMPrescaler * 2) | (1000KHz)
+		ControllerENCTimeBitWidth => 8,		-- 8-bit timer
+		ControllerENCTimePrescaler => 25,	-- 50MHz / (ENCTimePrescaler * 2) | (1000KHz)
+		ControllerENCValBitWidth	=> 8		-- 8-bit signed encoder value
 	)
 	port map(
 		

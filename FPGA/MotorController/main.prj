@@ -2,7 +2,8 @@
 			vhdl work "PWM.vhd"
 			vhdl work "Prescaler.vhd"
 		vhdl work "PWMController.vhd"
+			vhdl work "PISO.vhd"
+			vhdl work "SIPO.vhd"
 		vhdl work "SPIController.vhd"
 	vhdl work "MotorController.vhd"
 vhdl work "main.vhd"
-
