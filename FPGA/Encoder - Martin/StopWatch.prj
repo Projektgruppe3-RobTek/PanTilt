@@ -1,3 +1,4 @@
+vhdl work "Counter.vhd"
 vhdl work "T_FlipFlop.vhd"
 vhdl work "Memory.vhd"
 vhdl work "Encoder.vhd"

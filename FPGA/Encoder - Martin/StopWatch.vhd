@@ -8,9 +8,10 @@ use IEEE.NUMERIC_STD.all;
 entity StopWatch is
 
 	port (
-			CLK	: 	IN STD_LOGIC;
-			SW		: 	IN STD_LOGIC_VECTOR(1 downto 0);
-			BTN	: 	IN STD_LOGIC_VECTOR(3 downto 0);
+			CLK	: 	IN  STD_LOGIC;
+			SW		: 	IN  STD_LOGIC_VECTOR(1 downto 0);
+			BTN	: 	IN  STD_LOGIC_VECTOR(3 downto 0);
+			LD		:	OUT STD_LOGIC_VECTOR(1 downto 0);
 			DP		: 	OUT STD_LOGIC_VECTOR(6 downto 0);
 			AN		: 	OUT STD_LOGIC_VECTOR(3 downto 0) -- Used to select a segment on the display
 	);
@@ -20,15 +21,20 @@ architecture logic of StopWatch is
 
 ----------    Encoder     ----------
 	component Encoder is
+		generic(
+			Size	: 	integer := 8
+		);	
 		port(
-			RST		: 	in  std_logic;
-			Input		:	in  std_logic_vector(1 downto 0);
-			Test		:	out std_logic_vector(1 downto 0);
-			Output	:	out std_logic_vector(7 downto 0)
+			CLK			:  in	 std_logic;
+			RST			: 	in  std_logic;
+			Input			:	in  std_logic_vector(1 downto 0);
+			Timer_Out	:	out std_logic_vector(7 downto 0);
+			Output		:	out std_logic_vector(7 downto 0)
 		);
 	end component;
 
 	signal Encoder_Val: std_logic_vector(7 downto 0);
+	signal Encoder_Timer: std_logic_vector(7 downto 0);
 	signal Encoder_Test: std_logic_vector(1 downto 0);
 
 ----------   T_FlipFlop   ----------
@@ -92,17 +98,32 @@ architecture logic of StopWatch is
 begin
 
 	-- Prescaler
-	ClockPrescaler0: 	ClockPrescaler port map(clk_in => clk, scaled_clk => clk_2kHz);
+	ClockPrescaler0: 	ClockPrescaler port map(
+		clk_in => clk,
+		scaled_clk => clk_2kHz
+	);
 
 	-- Encoder
-	Encoder0: 	Encoder port map(Input => memory_storage, RST => BTN2, Output => Encoder_Val, Test => Encoder_Test);
+	Encoder0: 	Encoder port map(
+		CLK => CLK,
+		RST => BTN2,
+		Input => memory_storage,
+		Output => Encoder_Val,
+		Timer_Out => Encoder_Timer
+	);
 	
 	-- T_FlipFlop
 	DP_Select_T_FlipFlop0: T_FlipFlop port map(input => clk_2kHz,  	output => state(0));
 	DP_Select_T_FlipFlop1: T_FlipFlop port map(input => not state(0), output => state(1));
 
 	-- Memory
-	Memory0: Memory port map(clk_in => CLK, input => SW, RST => BTN2, SET => BTN0, output => memory_storage);
+	Memory0: Memory port map(
+		SET => BTN0,	
+		RST => BTN2,
+		input => SW,
+		clk_in => CLK,
+		output => memory_storage
+	);
 	
 	-- Display Decoder
 	Display_Driver0: Display_Driver port map(input => display_temp, output => display_out);
@@ -122,13 +143,12 @@ begin
 				"1111" when others;
 
 	with state select -- Select Output for current display
-		display_temp <= Test(7 downto 4) when "11",
-							 Test(3 downto 0) when "10",
-							 Encoder_Val(7 downto 4) 	when "01",
-							 Encoder_Val(3 downto 0) 	when "00",
+		display_temp <= Encoder_Val(7 downto 4) when "11",
+							 Encoder_Val(3 downto 0) when "10",
+							 Encoder_Timer(7 downto 4) when "01",
+							 Encoder_Timer(3 downto 0) when "00",
 							 "0000" when others;
-							 
-	Test <= "00" & Encoder_Test & "0000";
+
 	DP <= display_out;
 		
 end logic;
