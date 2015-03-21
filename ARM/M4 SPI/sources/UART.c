@@ -152,7 +152,7 @@ static void uart0_rx_isr(void)
 	INT8U inchar;
 	while( !(UART0_FR_R & UART_FR_RXFE) ) //while FIFO not empty.
 	{
-		inchar = (INT8U)(UART0_DR_R&0xFF);
+		inchar = (INT8U)(UART0_DR_R & 0xFF);
 		if (!sys_ringbuf_uchar_full(buffer_in))	//char is discarded if buffer is full.
 		{
 			disable_uart0_int();

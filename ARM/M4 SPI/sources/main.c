@@ -61,8 +61,9 @@ int main(void)
 		//sw1_event 	= get_button_event(&sw1);
 		//sw2_event 	= get_button_event(&sw2);
 		
-		set_leds(0);
+		set_leds(1);
 		
+		/*
 		if (uart0_data_avaliable() > 2)
 		{
 			set_leds(1);
@@ -78,7 +79,7 @@ int main(void)
 			uart0_out_char((temp >> 8) && 0xFF);
 			uart0_out_char((temp >> 8) && 0xFF);
 		}
-		
+		*/
 	}
 	return (0);
 }

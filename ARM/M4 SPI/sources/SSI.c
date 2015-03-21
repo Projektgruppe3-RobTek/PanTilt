@@ -22,7 +22,7 @@ static void disable_ssi0_int(void)
 }
 static void enable_ssi0_int(void)
 {
-	NVIC_EN0_R |= (0x01 << (INT_SSI0-16));
+	//NVIC_EN0_R |= (0x01 << (INT_SSI0-16));
 }
 
 
@@ -144,11 +144,11 @@ void setup_ssi0()
 	//Setup buffers//
 	ssi0_buffer_in = sys_ringbuf_uchar_request(); //we use 8 bit buffers, and use two values each time
 	ssi0_buffer_out = sys_ringbuf_uchar_request();
-
+	
 	//Setup SSI//
 	// Step 1
 	SYSCTL_RCGCSSI_R |= SYSCTL_RCGCSSI_R0;	// enable and provide a clock to SSI module 0 in Run mode.
-
+	
 	// Step 2
 	SYSCTL_RCGC1_R |= SYSCTL_RCGC1_SSI0;
 	SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOA;
@@ -156,21 +156,20 @@ void setup_ssi0()
 	__asm__("NOP");
 	// Step 3
 	GPIO_PORTA_AFSEL_R |= (0xF << 2);	// enable alternative functions
-
+	
 	// Step 4
 	GPIO_PORTA_PCTL_R = (GPIO_PORTA_PCTL_R & ~(GPIO_PCTL_PA2_M | GPIO_PCTL_PA3_M | GPIO_PCTL_PA4_M | GPIO_PCTL_PA5_M));
 	GPIO_PORTA_PCTL_R |= GPIO_PCTL_PA2_SSI0CLK | GPIO_PCTL_PA3_SSI0FSS | GPIO_PCTL_PA4_SSI0RX | GPIO_PCTL_PA5_SSI0TX;
-
+	
 	// Step 5
 	GPIO_PORTA_DEN_R |= (0xF << 2);             // enable digital I/O on PD3-0
-
-
+	
 	// disable ssi
 	SSI0_CR1_R &= ~SSI_CR1_SSE;
 
 	// set master
 	SSI0_CR1_R &=~SSI_CR1_MS;
-
+	
 	// use 16 MHz clock
 	SSI0_CC_R = SSI_CC_CS_PIOSC;
 
@@ -178,21 +177,21 @@ void setup_ssi0()
 	SSI0_CR0_R &= ~SSI_CR0_SCR_M;
 	SSI0_CR0_R |= (1 << SSI_CR0_SCR_S);
 	SSI0_CPSR_R = 2;
-
+	
 	// data is captured on the secon01111111d clock edge transition
 	SSI0_CR0_R |= SSI_CR0_SPH;
-
+	
 	// SSI0_CLK steady state high
 	SSI0_CR0_R |= SSI_CR0_SPO;
-
+	
 	//Select Freescale SPI Format
 	SSI0_CR0_R &= ~SSI_CR0_FRF_MOTO;
 	SSI0_CR0_R |= SSI_CR0_FRF_MOTO;
-
+	
 	//Select 16 bit datasize
 	SSI0_CR0_R &= ~SSI_CR0_DSS_M;
 	SSI0_CR0_R |= SSI_CR0_DSS_16;
-
+	
 	//Enable SSI
 	SSI0_CR1_R |= SSI_CR1_SSE;
 	
@@ -201,10 +200,9 @@ void setup_ssi0()
 	
 	//Interrupt on recieve and transmit, half full/empty
 	SSI0_IM_R |= SSI_IM_RXIM | SSI_IM_TXIM;
-
+	
 	enable_ssi0_int();
-
-
+	
 	////////////////////
 	// SSI0 registers //
 	////////////////////
