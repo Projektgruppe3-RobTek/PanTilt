@@ -1,0 +1,4 @@
+vhdl work "PWM.vhd"
+vhdl work "Prescaler.vhd"
+vhdl work "PWMController.vhd"
+vhdl work "main.vhd"

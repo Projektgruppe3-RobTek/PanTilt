@@ -1,0 +1,55 @@
+net "BTN<0>" loc = B18; net "BTN<0>" clock_dedicated_route = false;
+//net "BTN<1>" loc = D18; net "BTN<1>" CLOCK_dedicated_route = false;
+//net "BTN<2>" loc = E18; net "BTN<2>" CLOCK_dedicated_route = false;
+//net "BTN<3>" loc = H13; net "BTN<3>" CLOCK_dedicated_route = false;
+
+net "SW<0>" loc = G18;	net "SW<1>" loc = H18;
+net "SW<2>" loc = K18;	net "SW<3>" loc = K17;
+net "SW<4>" loc = L14;	net "SW<5>" loc = L13;
+net "SW<6>" loc = N17;	net "SW<7>" loc = R17;
+
+net "LD<0>" loc = J14;	net "LD<1>" loc = J15;
+net "LD<2>" loc = K15;	net "LD<3>" loc = K14;
+net "LD<4>" loc = E17;	net "LD<5>" loc = P15;
+net "LD<6>" loc = F4;	net "LD<7>" loc = R4;
+
+//net "DP<0>" loc = L18;net "DP<1>" loc = F18;net "DP<2>" loc = D17;net "DP<3>" loc = D16;net "DP<4>" loc = G14;net "DP<5>" loc = J17;net "DP<6>" loc = H14;net "DP<7>" loc = C17;net "AN<0>" loc = F17;net "AN<1>" loc = H17;net "AN<2>" loc = C18;net "AN<3>" loc = F15;
+
+net "CLOCK" loc = B8;
+
+//net "JA1" loc = L15;	//
+//net "JA2" loc = K12;	// Index0
+//net "JA3" loc = L17;	// HS1B
+//net "JA4" loc = M15;	// HS2A
+//net "JA7" loc = K13;	// 
+//net "JA8" loc = L16;	// Index1
+//net "JA9" loc = M14;	// HS1A
+//net "JA10" CLOCK_dedicated_route = false;
+//net "JA10" loc = M16;	// HS2B
+
+//net "JB1" loc = M13;	// ENB
+//net "JB2" loc = R18;	// IN1B
+//net "JB3" loc = R15;	// IN1A
+//net "JB4" loc = T17;	// 
+//net "JB7" loc = P17;	// IN2B
+//net "JB8" loc = R16;	// ENA
+//net "JB9" loc = T18;	// IN2A
+//net "JB10" loc = U18;	// 
+
+net "JC1" loc = G15;	// SPI0CLK
+net "JC2" loc = J16;	// SPI0SS
+net "JC3" loc = G13;	// SPI0MOSI
+net "JC4" loc = H16;	// SPI0MISO
+//net "JC7" loc = H15;	// SPI1CLK
+//net "JC8" loc = F14;	// SPI1SS
+//net "JC9" loc = G16;	// SPI1MOSI
+//net "JC10" loc = J12;	// SPI1MISO
+
+//net "JD1" loc = J13;	// 
+//net "JD2" loc = M18;	// 
+//net "JD3" loc = N18;	// 
+//net "JD4" loc = P18;	// 
+//net "JD7" loc = K14;	// 
+//net "JD8" loc = K15;	// 
+//net "JD9" loc = J15;	// 
+//net "JD10" loc = J14;	// 
