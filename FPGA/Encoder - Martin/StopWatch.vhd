@@ -22,14 +22,13 @@ architecture logic of StopWatch is
 ----------    Encoder     ----------
 	component Encoder is
 		generic(
-			Size	: 	integer := 8
+			EncoderBitWidth	: 	integer := 8
 		);	
 		port(
 			CLK			:  in	 std_logic;
 			RST			: 	in  std_logic;
 			Input			:	in  std_logic_vector(1 downto 0);
-			Timer_Out	:	out std_logic_vector(7 downto 0);
-			Output		:	out std_logic_vector(7 downto 0)
+			Output		:	out std_logic_vector(EncoderBitWidth-1 downto 0)
 		);
 	end component;
 
@@ -104,12 +103,15 @@ begin
 	);
 
 	-- Encoder
-	Encoder0: 	Encoder port map(
+	Encoder0: 	Encoder 
+	generic map(
+		EncoderBitWidth => 4
+	)
+	port map(
 		CLK => CLK,
 		RST => BTN2,
 		Input => memory_storage,
-		Output => Encoder_Val,
-		Timer_Out => Encoder_Timer
+		Output => Encoder_Val(7 downto 4)
 	);
 	
 	-- T_FlipFlop
@@ -145,8 +147,8 @@ begin
 	with state select -- Select Output for current display
 		display_temp <= Encoder_Val(7 downto 4) when "11",
 							 Encoder_Val(3 downto 0) when "10",
-							 Encoder_Timer(7 downto 4) when "01",
-							 Encoder_Timer(3 downto 0) when "00",
+							 "0000" when "01",
+							 "0000" when "00",
 							 "0000" when others;
 
 	DP <= display_out;

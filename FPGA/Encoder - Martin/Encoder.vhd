@@ -5,7 +5,7 @@ use IEEE.std_logic_unsigned.all;
 
 entity Encoder is
 	generic(
-		EncoderBitWidth: integer := 8
+		EncoderBitWidth: integer := 8 -- Size of the output vector
 	);	
 	port(
 		CLK		 :  in  std_logic;
@@ -36,30 +36,32 @@ begin
 			
 				-- Loop around positive direction - Count up
 				if Input = "00" and LastInput = "11" then
-					Count <= Count + '1';
+					if Count /= 2**(EncoderBitWidth-1)-1 then
+						Count <= Count + '1';
+					end if;
 					
 				-- Loop around negative direction - Count down
 				elsif Input = "11" and LastInput = "00" then
-					Count <= Count - '1';
+					if Count /= 2**(EncoderBitWidth-1) then
+						Count <= Count - '1';
+					end if;
 				
 				-- Count down
 				elsif Input < LastInput then
-					Count <= Count - '1';
+					if Count /= 2**(EncoderBitWidth-1) then
+						Count <= Count - '1';
+					end if;
 				
 				-- Count up
 				elsif Input > LastInput then
-					Count <= Count + '1';
+					if Count /= 2**(EncoderBitWidth-1)-1 then
+						Count <= Count + '1';
+					end if;
 				end if;
 			end if;
 		end if;
 		
-		
-		if Count(EncoderBitWidth-1) = '1' then
-			Output(EncoderBitWidth-2 downto 0) <= not Count(EncoderBitWidth-2 downto 0);
-			Output(EncoderBitWidth-1) <= Count(EncoderBitWidth-1);
-		else
-			Output <= Count;
-		end if;
+		Output <= Count;
 		
 	end process;
 end logic;
