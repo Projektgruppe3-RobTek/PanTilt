@@ -75,8 +75,8 @@ int main(void)
 		{
 			set_leds(2);
 			INT16U temp = ssi0_in_16bit();
-			uart0_out_char((INT8U)(temp & 0xFF));
 			uart0_out_char((INT8U)((temp >> 8) & 0xFF));
+			uart0_out_char((INT8U)(temp & 0xFF));
 		}
 		}
 	return (0);
