@@ -195,7 +195,10 @@ void setup_ssi0()
 
 	//Enable SSI
 	SSI0_CR1_R |= SSI_CR1_SSE;
-
+	
+	// Connect MISO to MOSI			-- Only for test !!!!!!!!!!!!
+	SSI0_CR1_R |= SSI_CR1_LBM;
+	
 	//Interrupt on recieve and transmit, half full/empty
 	SSI0_IM_R |= SSI_IM_RXIM | SSI_IM_TXIM;
 
