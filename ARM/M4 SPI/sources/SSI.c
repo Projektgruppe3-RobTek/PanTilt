@@ -3,6 +3,10 @@
 
 static void enable_ssi0_int(void);
 static void disable_ssi0_int(void);
+static void enable_rx_int(void);
+static void disable_rx_int(void);
+static void disable_tx_int(void);
+static void enable_tx_int(void);
 static void ssi0_rx_isr(void);
 static void ssi0_tx_isr(void);
 
@@ -23,6 +27,23 @@ static void disable_ssi0_int(void)
 static void enable_ssi0_int(void)
 {
 	NVIC_EN0_R |= (0x01 << (INT_SSI0-16));
+}
+
+static void enable_rx_int(void)
+{
+	SSI0_IM_R |= SSI_IM_RXIM;
+}
+static void disable_rx_int(void)
+{
+	SSI0_IM_R &= ~SSI_IM_RXIM;
+}
+static void disable_tx_int(void)
+{
+		SSI0_IM_R &= ~SSI_IM_TXIM;
+}
+static void enable_tx_int(void)
+{
+		SSI0_IM_R |= SSI_IM_TXIM;
 }
 
 
@@ -58,7 +79,7 @@ INT16U ssi0_in_16bit(void)
 void ssi0_out_16bit(INT16U data)
 {
 	if((SSI0_SR_R & SSI_SR_TNF) && sys_ringbuf_uchar_size(ssi0_buffer_out) == 0)  //check if transmit fifo is full, if not, and buffer is empty, just push to FIFO
-		SSI0_DR_R = data;
+		SSI0_DR_R = data & 0xFFFF;
 	else
 	{
 		while(sys_ringbuf_uchar_full(ssi0_buffer_out));
@@ -69,6 +90,7 @@ void ssi0_out_16bit(INT16U data)
 		sys_ringbuf_uchar_push(ssi0_buffer_out, first_8_bit);
 		sys_ringbuf_uchar_push(ssi0_buffer_out, last_8_bit);
 		enable_ssi0_int();
+		enable_tx_int();
 	}
 }
 
@@ -113,6 +135,8 @@ static void ssi0_tx_isr(void)
 		SSI0_DR_R = data;
 		enable_ssi0_int();
 	}
+	//if buffer is empty, disable tx interrupt. Will be enabled again next time there is something in the buffer.
+	if(!sys_ringbuf_uchar_size(ssi0_buffer_out)) disable_tx_int();
 	//we can't clear SSI interrupt? Does it do it itself? I don't think so.
 	///////////////////////////////////////////////////////////////////////
 	/////////////////////////This is probably a problem////////////////////
@@ -122,10 +146,9 @@ static void ssi0_tx_isr(void)
 static void ssi0_rx_isr(void)
 {
 	//fill ringbuffer from FIFO
-	INT16U in_data;
 	while(SSI0_SR_R & SSI_SR_RNE ) //while FIFO not empty.
 	{
-		in_data = (INT16U)SSI0_DR_R;
+		INT16U in_data = SSI0_DR_R;
 		if (!sys_ringbuf_uchar_full(ssi0_buffer_in))	//discarded if buffer is full.
 		{
 			disable_ssi0_int();
@@ -155,14 +178,14 @@ void setup_ssi0()
 	//Wait a bit
 	__asm__("NOP");
 	// Step 3
-	GPIO_PORTA_AFSEL_R |= (0xF << 2);	// enable alternative functions
+	GPIO_PORTA_AFSEL_R |= (1 << 2) | (1<<3) | (1<<4) | (1<<5);	// enable alternative functions
 
 	// Step 4
-	GPIO_PORTA_PCTL_R = (GPIO_PORTA_PCTL_R & ~(GPIO_PCTL_PA2_M | GPIO_PCTL_PA3_M | GPIO_PCTL_PA4_M | GPIO_PCTL_PA5_M));
+	GPIO_PORTA_PCTL_R &=  ~(GPIO_PCTL_PA2_M | GPIO_PCTL_PA3_M | GPIO_PCTL_PA4_M | GPIO_PCTL_PA5_M);
 	GPIO_PORTA_PCTL_R |= GPIO_PCTL_PA2_SSI0CLK | GPIO_PCTL_PA3_SSI0FSS | GPIO_PCTL_PA4_SSI0RX | GPIO_PCTL_PA5_SSI0TX;
 
 	// Step 5
-	GPIO_PORTA_DEN_R |= (0xF << 2);             // enable digital I/O on PD3-0
+	GPIO_PORTA_DEN_R |= (1 << 2) | (1<<3) | (1<<4) | (1<<5);;             // enable digital I/O on PD3-0
 
 
 	// disable ssi
