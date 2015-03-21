@@ -1,0 +1,4 @@
+vhdl work "PISO.vhd"
+vhdl work "SIPO.vhd"
+vhdl work "SPIController.vhd"
+vhdl work "main.vhd"

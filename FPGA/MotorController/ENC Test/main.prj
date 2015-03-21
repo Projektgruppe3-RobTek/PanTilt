@@ -1,0 +1,5 @@
+vhdl work "Timer.vhd"
+vhdl work "Prescaler.vhd"
+vhdl work "Encoder.vhd"
+vhdl work "ENCController.vhd"
+vhdl work "main.vhd"
