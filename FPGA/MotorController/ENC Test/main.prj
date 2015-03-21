@@ -1,4 +1,4 @@
-vhdl work "Timer.vhd"
+vhdl work "Counter.vhd"
 vhdl work "Prescaler.vhd"
 vhdl work "Encoder.vhd"
 vhdl work "ENCController.vhd"

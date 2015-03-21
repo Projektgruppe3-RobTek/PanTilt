@@ -23,7 +23,7 @@ net "SW<7>" loc = R17;
 
 //net "DP<0>" loc = L18;net "DP<1>" loc = F18;net "DP<2>" loc = D17;net "DP<3>" loc = D16;net "DP<4>" loc = G14;net "DP<5>" loc = J17;net "DP<6>" loc = H14;net "DP<7>" loc = C17;net "AN<0>" loc = F17;net "AN<1>" loc = H17;net "AN<2>" loc = C18;net "AN<3>" loc = F15;
 
-net "CLOCK" loc = B8;
+net "CLK" loc = B8;
 
 //net "JA1" loc = L15;	//
 //net "JA2" loc = K12;	// Index0

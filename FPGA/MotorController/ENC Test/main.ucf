@@ -1,9 +1,9 @@
 net "BTN<0>" loc = B18; net "BTN<0>" clock_dedicated_route = false;
-//net "BTN<1>" loc = D18; net "BTN<1>" CLOCK_dedicated_route = false;
+net "BTN<1>" loc = D18; net "BTN<1>" CLOCK_dedicated_route = false;
 //net "BTN<2>" loc = E18; net "BTN<2>" CLOCK_dedicated_route = false;
 //net "BTN<3>" loc = H13; net "BTN<3>" CLOCK_dedicated_route = false;
 
-//net "SW<0>" loc = G18;	net "SW<1>" loc = H18;
+net "SW<0>" loc = G18;	net "SW<1>" loc = H18;
 //net "SW<2>" loc = K18;	net "SW<3>" loc = K17;
 //net "SW<4>" loc = L14;	net "SW<5>" loc = L13;
 //net "SW<6>" loc = N17;	net "SW<7>" loc = R17;
@@ -15,15 +15,15 @@ net "LD<6>" loc = F4;	net "LD<7>" loc = R4;
 
 //net "DP<0>" loc = L18;net "DP<1>" loc = F18;net "DP<2>" loc = D17;net "DP<3>" loc = D16;net "DP<4>" loc = G14;net "DP<5>" loc = J17;net "DP<6>" loc = H14;net "DP<7>" loc = C17;net "AN<0>" loc = F17;net "AN<1>" loc = H17;net "AN<2>" loc = C18;net "AN<3>" loc = F15;
 
-net "CLOCK" loc = B8;
+net "CLK" loc = B8;
 
 //net "JA1" loc = L15;	//
 //net "JA2" loc = K12;	// Index0
-net "JA3" loc = L17;	// HS1B
-/net "JA4" loc = M15;	// HS2A
+//net "JA3" loc = L17;	// HS1B
+//net "JA4" loc = M15;	// HS2A
 //net "JA7" loc = K13;	// 
 //net "JA8" loc = L16;	// Index1
-net "JA9" loc = M14;	// HS1A
+//net "JA9" loc = M14;	// HS1A
 //net "JA10" loc = M16;	// HS2B
 
 //net "JB1" loc = M13;	// ENB
