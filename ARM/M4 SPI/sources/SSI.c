@@ -185,8 +185,7 @@ void setup_ssi0()
 	GPIO_PORTA_PCTL_R |= GPIO_PCTL_PA2_SSI0CLK | GPIO_PCTL_PA3_SSI0FSS | GPIO_PCTL_PA4_SSI0RX | GPIO_PCTL_PA5_SSI0TX;
 
 	// Step 5
-	GPIO_PORTA_DEN_R |= (1 << 2) | (1<<3) | (1<<4) | (1<<5);;             // enable digital I/O on PD3-0
-
+	GPIO_PORTA_DEN_R |= (1 << 2) | (1<<3) | (1<<4) | (1<<5);;             // enable digital I/O on PA2-5
 
 	// disable ssi
 	SSI0_CR1_R &= ~SSI_CR1_SSE;
@@ -216,6 +215,10 @@ void setup_ssi0()
 	SSI0_CR0_R &= ~SSI_CR0_DSS_M;
 	SSI0_CR0_R |= SSI_CR0_DSS_16;
 
+	// Connect MISO to MOSI			-- Only for test !!!!!!!!!!!!
+	SSI0_CR1_R |= SSI_CR1_LBM;
+
+
 	//Enable SSI
 	SSI0_CR1_R |= SSI_CR1_SSE;
 
@@ -223,7 +226,6 @@ void setup_ssi0()
 	SSI0_IM_R |= SSI_IM_RXIM | SSI_IM_TXIM;
 
 	enable_ssi0_int();
-
 
 	////////////////////
 	// SSI0 registers //

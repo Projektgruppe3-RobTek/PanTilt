@@ -43,8 +43,8 @@ int main(void)
 
 	while (1)
 	{
-		//while (!ticks);
-		//ticks--;
+		while (!ticks);
+		ticks--;
 
 		/************ Start Status LED  ************/
 		if (led_status_timer > 0)
@@ -61,9 +61,9 @@ int main(void)
 		//sw1_event 	= get_button_event(&sw1);
 		//sw2_event 	= get_button_event(&sw2);
 
-		set_leds(0);
+		set_leds(1);
 
-		if (uart0_data_avaliable() >=  2)
+		if (uart0_data_avaliable() >= 2)
 		{
 			set_leds(1);
 			INT16U temp_data = uart0_in_char() << 8;
@@ -75,11 +75,10 @@ int main(void)
 		{
 			set_leds(2);
 			INT16U temp = ssi0_in_16bit();
-			uart0_out_char(temp && 0xFF);
-			uart0_out_char((temp >> 8) && 0xFF);
+			uart0_out_char((INT8U)(temp & 0xFF));
+			uart0_out_char((INT8U)((temp >> 8) & 0xFF));
 		}
-
-	}
+		}
 	return (0);
 }
 
