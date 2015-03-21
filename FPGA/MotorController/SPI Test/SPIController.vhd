@@ -6,117 +6,138 @@ use ieee.std_logic_1164.all;
 
 entity SPIController is
 	generic(
-		constant PWMBitWidth: positive := 8;
-		constant ENCTimeBitWidth: positive := 8;
-		constant ENCValBitWidth: positive := 8
+		constant PWMBitWidth	:	positive := 8;	-- Size of the output vector
+		constant ENCBitWidth	:	positive := 8;	-- Size of the input vector
+		constant TimeBitWidth	:	positive := 8	-- Size of the input vector
 	);
 	port(
-		-- 
-		Reset: in std_logic;
-		Clock: in std_logic;
+		RST		:	in  std_logic;
+		CLK		:	in  std_logic;
 		
 		-- SPI signals
-		SPICLK: in std_logic;
-		SPISS: in std_logic;
-		SPIMOSI: in std_logic;
-		SPIMISO: out std_logic;
+		SPICLK		:	in  std_logic;
+		SPISS		:	in  std_logic;
+		SPIMOSI		:	in  std_logic;
+		SPIMISO		:	out std_logic;
+			
+		-- Test
+		ReadWrite	:	out std_logic;
+				
+		-- ENC signals
+		ENCVal		: 	in  std_logic_vector(ENCBitWidth-1 downto 0);
+		ENCTime		:	in  std_logic_vector(TimeBitWidth-1 downto 0);
 		
 		-- PWM signals
-		PWMCompareMatch: out std_logic_vector((PWMBitWidth - 1) downto 0);
-		
-		-- ENC signals
-		ENCTime: in std_logic_vector((ENCTimeBitWidth - 1) downto 0);
-		ENCVal: in std_logic_vector((ENCValBitWidth - 1) downto 0)
+		PWMCompareMatch	:	out std_logic_vector(PWMBitWidth-1 downto 0)
 	);
 end SPIController;
 
-architecture behav of SPIController is
-	
+architecture logic of SPIController is
+
+----------   Components   ----------
+
 	component SIPO is
 		generic(
-			constant BitWidth: positive := 8
+			constant BitWidth	:	positive := 8	-- Size of the output vector
 		);
 		port(
-			Reset: in std_logic;
-			Clock: in std_logic;
+			RST		:	in  std_logic;
 			
-			Latch: in std_logic;
+			Latch		: 	in  std_logic;
+			CLK		: 	in  std_logic;
+			SI		: 	in  std_logic;
 			
-			SerialInput: in std_logic;
-			SerialOutput: out std_logic;
-			
-			ParallelOutput: out std_logic_vector((BitWidth - 1) downto 0)
+			ReadWrite	: 	out std_logic;
+			PO		:	out std_logic_vector(BitWidth-1 downto 0)
 		);
 	end component;
 	
 	component PISO is
 		generic(
-			constant PISOBitWidth: positive := 8
+			constant ENCBitWidth	:	positive := 8;	-- Size of the input vector
+			constant TimeBitWidth	:	positive := 8	-- Size of the input vector
 		);
 		port(
-			Reset: in std_logic;
-			Clock: in std_logic;
-			
-			Latch: in std_logic;
-			
-			SerialInput: in std_logic;
-			SerialOutput: out std_logic;
-			
-			ParallelInput: in std_logic_vector((PISOBitWidth - 1) downto 0)
+			RST	:	in  std_logic;
+		
+			Latch	:	in  std_logic;
+			CLK	:	in  std_logic;
+		
+			PIENC	:	in  std_logic_vector(ENCBitWidth-1 downto 0);
+			PITime	:	in  std_logic_vector(TimeBitWidth-1 downto 0);
+		
+			SO	:	out std_logic
 		);
 	end component;
 	
-	signal sReset: std_logic;
-	signal sClock: std_logic;
-	signal sSIPOLatch: std_logic;
-	signal sPISOLatch: std_logic;
-	signal sReadWrite: std_logic;
+	component Pulser is
+		port(
+			RST		:	in  std_logic;
+			CLK		: 	in  std_logic;
+			
+			Input		:	in  std_logic;
+			Output		:	out std_logic
+		);
+	end component;
+
+----------   Signals   ----------
+
+	signal sCLK		:	std_logic;
+	signal sSIPOLatch	:	std_logic;
+	signal sPISOLatch	:	std_logic;
+	signal sReadWrite	:	std_logic;
 	
-	signal sParallelOutput: std_logic_vector((PWMBitWidth) downto 0);
+begin
 	
-	begin
+	-- Test
+	ReadWrite <= sReadWrite;
 	
-	sReset <= Reset;
-	sClock <= Clock and (not SPISS);
+	-- When ss is high the clock is disabled
+	sCLK <= CLK and not SPISS;
 	
-	sSIPOLatch <= SPISS;
-	sPISOLatch <= sReadWrite and (not SPISS);
-	
-	PWMCompareMatch <= sParallelOutput((PWMBitWidth - 2) downto 0);
-	sReadWrite <= sParallelOutput(PWMBitWidth - 1);
+	-- Ensures data cant be latched into the PISO aslong as ss is high and ReadWrite = 0
+	sPISOLatch <= sSIPOLatch nand not sReadWrite;
 	
 	SIPO0: SIPO
 	generic map(
-		BitWidth => PWMBitWidth + 1
+		BitWidth => PWMBitWidth
 	)
 	port map(
-		Reset => sReset,
-		Clock => sClock,
+		RST => RST,
 		
 		Latch => sSIPOLatch,
+		CLK => sCLK,
 		
-		SerialInput => SPIMOSI,
-		SerialOutput => open,
-		ParallelOutput => sParallelOutput
+		SI => SPIMOSI,
+		
+		ReadWrite => sReadWrite,
+		
+		PO => PWMCompareMatch
 	);
 	
 	PISO0: PISO
 	generic map(
-		PISOBitWidth => ENCTimeBitWidth + ENCValBitWidth
+		ENCBitWidth => ENCBitWidth,
+		TimeBitWidth => TimeBitWidth
 	)
 	port map(
-		Reset => sReset,
-		Clock => sClock,
+		RST => RST,
 		
 		Latch => sPISOLatch,
+		CLK => sCLK,
 		
-		SerialInput => '0',
-		SerialOutput => SPIMISO,
+		PIENC => ENCVal,
+		PITime => ENCTime,
 		
-		--ParallelInput((ENCTimeBitWidth + ENCValBitWidth - 1) downto ENCValBitWidth) => ENCTime,
-		--ParallelInput((ENCValBitWidth - 1) downto 0) => ENCVal
-		ParallelInput((8 + 8 - 1) downto 8) => ENCTime,
-		ParallelInput((8 - 1) downto 0) => ENCVal
+		SO => SPIMISO
 	);
 	
-end behav;
+	Pulser0: Pulser
+	port map(
+		RST => RST,
+		CLK => CLK,
+		
+		Input => SPISS,
+		Output => sSIPOLatch
+	);	
+end logic;

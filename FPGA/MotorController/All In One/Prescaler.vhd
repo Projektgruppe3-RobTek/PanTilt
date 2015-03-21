@@ -36,7 +36,7 @@ begin
 	process(CLK)
 	begin
 		if RST = '1' then
-			Count := 0;
+			Count <= 0;
 			Output <= '0';
 			
 		elsif rising_edge(CLK) then
