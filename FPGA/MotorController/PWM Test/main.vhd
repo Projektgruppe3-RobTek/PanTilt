@@ -37,6 +37,7 @@ architecture logic of main is
 			CLK		:	in  std_logic;
 		
 			PWMCompareMatch	:	in  std_logic_vector((PWMBitWidth - 1) downto 0);
+			
 			PWMOutput	:	out std_logic_vector(1 downto 0)
 		);
 	end component;
@@ -56,7 +57,9 @@ begin
 	port map(
 		RST => '0',
 		CLK => CLK,
+		
 		PWMCompareMatch => SW(7 downto 0),
+		
 		PWMOutput(0) => JB3,
 		PWMOutput(1) => JB9
 	);

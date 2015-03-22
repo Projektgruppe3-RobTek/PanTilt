@@ -9,19 +9,19 @@ use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity SIPO is
-		generic(
-			constant BitWidth	:	positive := 8	-- Size of the output vector
-		);
-		port(
-			RST		:	in  std_logic;
-			
-			Latch		: 	in  std_logic;
-			CLK		: 	in  std_logic;
-			SI		: 	in  std_logic;
-			
-			ReadWrite	: 	out std_logic;
-			PO		:	out std_logic_vector(BitWidth-1 downto 0)
-		);
+	generic(
+		constant BitWidth	:	positive := 8	-- Size of the output vector
+	);
+	port(
+		RST		:	in  std_logic;
+		
+		Latch		: 	in  std_logic;
+		CLK		: 	in  std_logic;
+		SI		: 	in  std_logic;
+		
+		ReadWrite	: 	out std_logic;
+		PO		:	out std_logic_vector(BitWidth-1 downto 0)
+	);
 end SIPO;
 
 architecture logic of SIPO is
@@ -45,14 +45,14 @@ begin
 			ReadWrite <= '0';
 			
 		-- Latch data to output
-		elsif rising_edge(Latch) then
+		elsif Latch = '1' then
 			ReadWrite <= Data(BitWidth);
 			
 			-- Latch if ReadWrite-bit = '0'
 			if Data(BitWidth) = '0' then
 				Output <= Data(BitWidth-1 downto 0);
 			end if;
-					
+			
 		-- Clock data out of shift register
 		elsif rising_edge(CLK) then
 			Data(0) <= SI;

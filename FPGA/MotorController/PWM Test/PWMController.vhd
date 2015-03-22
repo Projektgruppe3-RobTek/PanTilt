@@ -20,6 +20,7 @@ entity PWMController is
 		CLK		:	in  std_logic;
 		
 		PWMCompareMatch	:	in  std_logic_vector((PWMBitWidth - 1) downto 0);
+		
 		PWMOutput	:	out std_logic_vector(1 downto 0)
 	);
 end PWMController;

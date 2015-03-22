@@ -1,33 +1,65 @@
-----------
--- SIPO --
-----------
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.std_logic_arith.all;
-use ieee.std_logic_unsigned.all;
+-------------------------
+--                     --
+--        SIPO         --
+--                     --
+-------------------------
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity SIPO is
 	generic(
-		constant BitWidth: positive := 8
+		constant BitWidth	:	positive := 8	-- Size of the output vector
 	);
 	port(
-		Reset: in std_logic;
-		Clock: in std_logic;
+		RST		:	in  std_logic;
 		
-		Latch: in std_logic;
+		Latch		: 	in  std_logic;
+		CLK		: 	in  std_logic;
+		SI		: 	in  std_logic;
 		
-		SerialInput: in std_logic;
-		SerialOutput: out std_logic;
-		
-		ParallelOutput: out std_logic_vector((BitWidth - 1) downto 0)
+		ReadWrite	: 	out std_logic;
+		PO		:	out std_logic_vector(BitWidth-1 downto 0)
 	);
 end SIPO;
 
-architecture behav of SIPO is
+architecture logic of SIPO is
 	
-	begin
+----------   Signals   ----------
 	
-	SerialOutput <= '0';
-	ParallelOutput <= "00000000";
+	-- Data in shift register
+	signal Data	:	std_logic_vector(BitWidth downto 0);
 	
-end behav;
+	-- Data in output register
+	signal Output	:	std_logic_vector(BitWidth-1 downto 0);
+	
+begin
+	
+	process(CLK, Latch, RST) begin
+		
+		-- Reset shift register
+		if RST = '1' then
+			Data <= (others => '0');
+			Output <= (others => '0');
+			ReadWrite <= '0';
+			
+		-- Latch data to output
+		elsif Latch = '1' then
+			ReadWrite <= Data(BitWidth);
+			
+			-- Latch if ReadWrite-bit = '0'
+			if Data(BitWidth) = '0' then
+				Output <= Data(BitWidth-1 downto 0);
+			end if;
+			
+		-- Clock data out of shift register
+		elsif rising_edge(CLK) then
+			Data(0) <= SI;
+			Data(BitWidth downto 1) <= Data(BitWidth-1 downto 0);
+		end if;
+		
+		PO <= Output;
+		
+	end process;
+end logic;
