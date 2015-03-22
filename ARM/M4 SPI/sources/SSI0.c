@@ -1,10 +1,10 @@
-#include "../headers/SSI.h"
+#include "../headers/SSI0.h"
 #include "../headers/tm4c123gh6pm.h"
 
 static void enable_ssi0_int(void);
 static void disable_ssi0_int(void);
-static void enable_rx_int(void);
-static void disable_rx_int(void);
+__attribute__((unused)) static void enable_rx_int(void);
+__attribute__((unused)) static void disable_rx_int(void);
 static void disable_tx_int(void);
 static void enable_tx_int(void);
 static void ssi0_rx_isr(void);
@@ -200,8 +200,8 @@ void setup_ssi0()
 	SSI0_CR0_R &= ~SSI_CR0_SCR_M;
 	//SSI0_CR0_R |= (1 << SSI_CR0_SCR_S);
 	//SSI0_CPSR_R = 2;
-	SSI0_CR0_R |= (254 << SSI_CR0_SCR_S);		// Only for test !!!!!!!!!!!!
-	SSI0_CPSR_R = 255;
+	SSI0_CR0_R |= (SCR << SSI_CR0_SCR_S);		//divisors is defined in SSI.h.
+	SSI0_CPSR_R = CPSDVSR;
 
 	// data is captured on the second clock edge transition
 	SSI0_CR0_R |= SSI_CR0_SPH;	// SPH = 1

@@ -1,18 +1,10 @@
-#ifndef SPI_H
-#define SPI_H
+#pragma once
 
-#include <stdint.h>
-#include "emp_type.h"
-#include "system_buffers.h"
+#include "SSI0.h"
+#include "SSI2.h"
+#include "SSI3.h"
 
-INT16U ssi0_in_16bit(void);
-void ssi0_out_16bit(INT16U data);
-RBUF_INDEX_TYPE ssi0_data_avaliable(void);
-RBUF_INDEX_TYPE ssi0_in_space_left(void);
-RBUF_INDEX_TYPE ssi0_out_space_left(void);
-void setup_ssi0(void);
-void ssi0_isr(void);
-void ssi0_in_clear(void);
-void ssi0_out_clear(void);
 
-#endif
+//Define the clock divisors. The formula is BR=SysClk/(CPSDVSR * (1 + SCR))
+#define CPSDVSR 254 //must be an even number 2-254
+#define SCR 255 //Must be a number 0-255

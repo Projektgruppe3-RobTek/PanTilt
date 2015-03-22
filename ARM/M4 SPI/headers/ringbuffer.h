@@ -7,8 +7,6 @@
 #define _RINGBUFFER_H_
 
 #define BUFFER_SIZE 200
-#define BUFFER_NUM 10
-
 #if BUFFER_SIZE<(1<<8-1)
 #define RBUF_INDEX_TYPE INT8U
 #elif BUFFER_SIZE<(1<<16-1)

@@ -42,6 +42,9 @@ static void IntDefaultHandler(void);
 //*****************************************************************************
 extern void systick_timer_isr(void);
 extern void ssi0_isr(void);
+extern void ssi2_isr(void);
+extern void ssi3_isr(void);
+
 extern void uart0_isr(void);
 
 //*****************************************************************************
@@ -141,8 +144,8 @@ void (* const g_pfnVectors[])(void) =
     IntDefaultHandler,                      // GPIO Port J
     IntDefaultHandler,                      // GPIO Port K
     IntDefaultHandler,                      // GPIO Port L
-    IntDefaultHandler,                      // SSI2 Rx and Tx
-    IntDefaultHandler,                      // SSI3 Rx and Tx
+    ssi2_isr,                               // SSI2 Rx and Tx
+    ssi3_isr,                               // SSI3 Rx and Tx
     IntDefaultHandler,                      // UART3 Rx and Tx
     IntDefaultHandler,                      // UART4 Rx and Tx
     IntDefaultHandler,                      // UART5 Rx and Tx
