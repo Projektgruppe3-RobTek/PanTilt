@@ -1,5 +1,5 @@
-//net "BTN<0>" loc = B18; net "BTN<0>" clock_dedicated_route = false;
-//net "BTN<1>" loc = D18; net "BTN<1>" CLOCK_dedicated_route = false;
+net "BTN<0>" loc = B18; net "BTN<0>" clock_dedicated_route = false;
+net "BTN<1>" loc = D18; net "BTN<1>" CLOCK_dedicated_route = false;
 //net "BTN<2>" loc = E18; net "BTN<2>" CLOCK_dedicated_route = false;
 //net "BTN<3>" loc = H13; net "BTN<3>" CLOCK_dedicated_route = false;
 

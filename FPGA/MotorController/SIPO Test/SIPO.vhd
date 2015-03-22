@@ -52,7 +52,7 @@ begin
 			if Data(BitWidth) = '0' then
 				Output <= Data(BitWidth-1 downto 0);
 			end if;
-					
+			
 		-- Clock data out of shift register
 		elsif rising_edge(CLK) then
 			Data(0) <= SI;

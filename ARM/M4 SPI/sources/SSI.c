@@ -198,14 +198,16 @@ void setup_ssi0()
 
 	// set prescaler
 	SSI0_CR0_R &= ~SSI_CR0_SCR_M;
-	SSI0_CR0_R |= (1 << SSI_CR0_SCR_S);
-	SSI0_CPSR_R = 2;
+	//SSI0_CR0_R |= (1 << SSI_CR0_SCR_S);
+	//SSI0_CPSR_R = 2;
+	SSI0_CR0_R |= (254 << SSI_CR0_SCR_S);		// Only for test !!!!!!!!!!!!
+	SSI0_CPSR_R = 255;
 
-	// data is captured on the secon01111111d clock edge transition
-	SSI0_CR0_R |= SSI_CR0_SPH;
+	// data is captured on the second clock edge transition
+	SSI0_CR0_R |= SSI_CR0_SPH;	// SPH = 1
 
 	// SSI0_CLK steady state high
-	SSI0_CR0_R |= SSI_CR0_SPO;
+	SSI0_CR0_R |= SSI_CR0_SPO;	// SPO = 1
 
 	//Select Freescale SPI Format
 	SSI0_CR0_R &= ~SSI_CR0_FRF_MOTO;
@@ -215,8 +217,8 @@ void setup_ssi0()
 	SSI0_CR0_R &= ~SSI_CR0_DSS_M;
 	SSI0_CR0_R |= SSI_CR0_DSS_16;
 
-	// Connect MISO to MOSI			-- Only for test !!!!!!!!!!!!
-	//SSI0_CR1_R |= SSI_CR1_LBM;
+	// Connect MISO to MOSI
+	//SSI0_CR1_R |= SSI_CR1_LBM;			// Only for test !!!!!!!!!!!!
 
 
 	//Enable SSI

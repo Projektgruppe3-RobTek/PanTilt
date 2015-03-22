@@ -78,7 +78,7 @@ int main(void)
 			uart0_out_char((INT8U)((temp >> 8) & 0xFF));
 			uart0_out_char((INT8U)(temp & 0xFF));
 		}
-		}
+	}
 	return (0);
 }
 

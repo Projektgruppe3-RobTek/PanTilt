@@ -6,10 +6,12 @@ use ieee.std_logic_1164.all;
 
 entity main is
 	port(
-		CLK: in std_logic;			-- FPGA Clock
+		CLK: in  std_logic;			-- FPGA Clock
 		
-		SW: in std_logic_vector(7 downto 0);	-- Test Input
-		LD: out std_logic_vector(7 downto 0);	-- Test Output
+		BTN: in  std_logic_vector(1 downto 0);
+		
+		SW: in   std_logic_vector(7 downto 0);	-- Test Input
+		LD: out  std_logic_vector(7 downto 0);	-- Test Output
 		
 		-- SPI0
 		JC1: in std_logic;  -- SPI0CLK
@@ -57,24 +59,24 @@ begin
 		RST => '0',
 		CLK => CLK,
 		
-		Input => JC1,
+		Input => JC2,
 		Output => sSIPOLatch
 	);
 	
 	SIPO0: SIPO
 	generic map(
-		BitWidth => 7
+		BitWidth => 8
 	)
 	port map(
-		RST => '0',
+		RST => BTN(0),
 		
 		CLK => JC1,
 		Latch => sSIPOLatch,
 		SI => JC3,
 		
-		ReadWrite => LD(0),
+		--ReadWrite => LD(0),
 		
-		PO => LD(7 downto 1)
+		PO => LD
 	);
 	
 end logic;

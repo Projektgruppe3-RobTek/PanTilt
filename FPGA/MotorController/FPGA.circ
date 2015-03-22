@@ -64,14 +64,6 @@ This file is intended to be loaded by Logisim (http://www.cburch.com/logisim/).
       <a name="tristate" val="false"/>
       <a name="label" val="Input"/>
     </comp>
-    <comp lib="0" loc="(200,190)" name="Pin">
-      <a name="tristate" val="false"/>
-      <a name="label" val="Clock"/>
-    </comp>
-    <comp lib="0" loc="(200,150)" name="Pin">
-      <a name="tristate" val="false"/>
-      <a name="label" val="Reset"/>
-    </comp>
   </circuit>
   <circuit name="Prescaler">
     <a name="circuit" val="Prescaler"/>
@@ -807,7 +799,6 @@ This file is intended to be loaded by Logisim (http://www.cburch.com/logisim/).
     <wire from="(320,150)" to="(390,150)"/>
     <wire from="(80,250)" to="(200,250)"/>
     <wire from="(310,310)" to="(350,310)"/>
-    <wire from="(100,210)" to="(190,210)"/>
     <wire from="(350,300)" to="(350,310)"/>
     <wire from="(370,70)" to="(370,90)"/>
     <wire from="(80,290)" to="(330,290)"/>
@@ -815,9 +806,11 @@ This file is intended to be loaded by Logisim (http://www.cburch.com/logisim/).
     <wire from="(200,130)" to="(330,130)"/>
     <wire from="(360,300)" to="(360,310)"/>
     <wire from="(390,100)" to="(390,150)"/>
+    <wire from="(150,210)" to="(190,210)"/>
     <wire from="(250,280)" to="(330,280)"/>
     <wire from="(310,310)" to="(310,320)"/>
     <wire from="(170,110)" to="(170,130)"/>
+    <wire from="(100,210)" to="(120,210)"/>
     <wire from="(240,120)" to="(240,180)"/>
     <wire from="(80,210)" to="(100,210)"/>
     <wire from="(180,100)" to="(330,100)"/>
@@ -850,6 +843,7 @@ This file is intended to be loaded by Logisim (http://www.cburch.com/logisim/).
       <a name="size" val="30"/>
       <a name="inputs" val="2"/>
     </comp>
+    <comp loc="(150,210)" name="Pulser"/>
     <comp lib="0" loc="(80,290)" name="Pin">
       <a name="output" val="true"/>
       <a name="tristate" val="false"/>
