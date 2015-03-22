@@ -26,9 +26,9 @@ architecture logic of main is
 	
 	component ENCController is
 		generic(
-			constant CLKScale	:	positive := 25; -- 50MHz / (Scale * 2) = 1MHz
+			constant ENCCLKScale		:	positive := 25; -- 50MHz / (Scale * 2) = 1MHz
 			constant TimeBitWidth	:	positive := 8;
-			constant ENCBitWidth	:	positive := 8
+			constant ENCBitWidth		:	positive := 8
 		);
 		port(
 			--
@@ -37,8 +37,6 @@ architecture logic of main is
 		
 			-- Input
 			ENCInput	:	in  std_logic_vector(1 downto 0);
-			
-			TestOutput	:	out std_logic;
 			
 			-- Output
 			ENCCount	:	out std_logic_vector(ENCBitWidth-1 downto 0);
@@ -53,9 +51,9 @@ architecture logic of main is
 	
 	ENCController0: ENCController
 	generic map(
-		CLKScale => 25000000,
+		ENCCLKScale => 25000000,
 		TimeBitWidth => 4,
-		ENCBitWidth => 3
+		ENCBitWidth => 4
 	)
 	port map(
 		RST => BTN(1),
@@ -63,9 +61,7 @@ architecture logic of main is
 		
 		ENCInput => Temp,
 		
-		TestOutput => LD(4),
-		
-		ENCCount => LD(7 downto 5),
+		ENCCount => LD(7 downto 4),
 		ENCTime => LD(3 downto 0)
 	);
 	

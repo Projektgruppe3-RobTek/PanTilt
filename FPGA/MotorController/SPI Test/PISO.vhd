@@ -45,9 +45,10 @@ begin
 		elsif LATCH = '1' then
 			Data(ENCBitWidth+TimeBitWidth-1 downto TimeBitWidth) <= PIENC;
 			Data(TimeBitWidth-1 downto 0) <= PITime;
+			SO <= Data(ENCBitWidth+TimeBitWidth-1);
 			
 		-- Clock data out of shift register
-		elsif rising_edge(CLK) then
+		elsif falling_edge(CLK) then
 			Data(ENCBitWidth+TimeBitWidth-1 downto 1) <= Data(ENCBitWidth+TimeBitWidth-2 downto 0);
 			Data(0) <= '0';
 			SO <= Data(ENCBitWidth+TimeBitWidth-1);

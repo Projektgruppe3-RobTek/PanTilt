@@ -79,31 +79,44 @@ architecture logic of SPIController is
 			Output		:	out std_logic
 		);
 	end component;
-
+	
 ----------   Signals   ----------
-
+	
 	signal sCLK		:	std_logic;
+	
+	signal sPISOPulseInput	:	std_logic;
+	
 	signal sSIPOLatch	:	std_logic;
 	signal sPISOLatch	:	std_logic;
+	
 	signal sReadWrite	:	std_logic;
 	
 begin
 	
-	-- Test
+	-- Test output
 	ReadWrite <= sReadWrite;
 	
-	-- When ss is high the clock is disabled
-	sCLK <= CLK and not SPISS;
+	-- Input to PISOLatch pulser
+	sPISOPulseInput <= not sReadWrite and not SPISS;
 	
-	-- Ensures data cant be latched into the PISO aslong as ss is high and ReadWrite = 0
-	sPISOLatch <= sSIPOLatch nand not sReadWrite;
+	-- When ss is high the clock is disabled
+	sCLK <= SPICLK and not SPISS;
+	
+	Pulser0: Pulser
+	port map(
+		RST => '0',
+		CLK => CLK,
+		
+		Input => SPISS,
+		Output => sSIPOLatch
+	);
 	
 	SIPO0: SIPO
 	generic map(
 		BitWidth => PWMBitWidth
 	)
 	port map(
-		RST => RST,
+		RST => '0',
 		
 		Latch => sSIPOLatch,
 		CLK => sCLK,
@@ -113,6 +126,15 @@ begin
 		ReadWrite => sReadWrite,
 		
 		PO => PWMCompareMatch
+	);
+	
+	Pulser1: Pulser
+	port map(
+		RST => RST,
+		CLK => CLK,
+		
+		Input => sPISOPulseInput,
+		Output => sPISOLatch
 	);
 	
 	PISO0: PISO
@@ -130,14 +152,5 @@ begin
 		PITime => ENCTime,
 		
 		SO => SPIMISO
-	);
-	
-	Pulser0: Pulser
-	port map(
-		RST => RST,
-		CLK => CLK,
-		
-		Input => SPISS,
-		Output => sSIPOLatch
 	);	
 end logic;

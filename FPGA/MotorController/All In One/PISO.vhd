@@ -1,32 +1,57 @@
-----------
--- PISO --
-----------
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.std_logic_arith.all;
-use ieee.std_logic_unsigned.all;
+-------------------------
+--                     --
+--        PISO         --
+--                     --
+-------------------------
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity PISO is
 	generic(
-		constant PISOBitWidth: positive := 8
+		constant ENCBitWidth	:	positive := 8;	-- Size of the input vector
+		constant TimeBitWidth	:	positive := 8	-- Size of the input vector
 	);
 	port(
-		Reset: in std_logic;
-		Clock: in std_logic;
+		RST	:	in  std_logic;
 		
-		Latch: in std_logic;
+		Latch	:	in  std_logic;
+		CLK	:	in  std_logic;
 		
-		SerialInput: in std_logic;
-		SerialOutput: out std_logic;
+		PIENC	:	in  std_logic_vector(ENCBitWidth-1 downto 0);
+		PITime	:	in  std_logic_vector(TimeBitWidth-1 downto 0);
 		
-		ParallelInput: in std_logic_vector((PISOBitWidth - 1) downto 0)
+		SO	:	out std_logic
 	);
 end PISO;
 
-architecture behav of PISO is
-
-	begin
+architecture logic of PISO is
 	
-	SerialOutput <= '0';
+----------   Signals   ----------
 	
-end behav;
+	-- Data in shift register
+	signal Data: std_logic_vector(ENCBitWidth+TimeBitWidth-1 downto 0);
+	
+begin
+	
+	process(CLK, Latch, RST) begin
+		
+		-- Reset shift register
+		if RST = '1' then
+			Data <= (others => '0');
+			
+		-- Latch data into shift register
+		elsif LATCH = '1' then
+			Data(ENCBitWidth+TimeBitWidth-1 downto TimeBitWidth) <= PIENC;
+			Data(TimeBitWidth-1 downto 0) <= PITime;
+			SO <= Data(ENCBitWidth+TimeBitWidth-1);
+			
+		-- Clock data out of shift register
+		elsif falling_edge(CLK) then
+			Data(ENCBitWidth+TimeBitWidth-1 downto 1) <= Data(ENCBitWidth+TimeBitWidth-2 downto 0);
+			Data(0) <= '0';
+			SO <= Data(ENCBitWidth+TimeBitWidth-1);
+		end if;
+	end process;
+end logic;

@@ -1,196 +1,187 @@
------------------------
---  MotorController  --
------------------------
+---------------------------
+--                       --
+--   MotorController     --
+--                       --
+---------------------------
 library ieee;
 use ieee.std_logic_1164.all;
 
 entity MotorController is
 	generic(
 		-- PWM constants
-		constant ControllerPWMBitWidth: positive := 8;		-- 8-bit signed PWM
-		constant ControllerPWMPrescaler: positive := 5;		-- 50MHz / (PWMPrescaler * 2) | (5MHz)
+		constant PWMBitWidth	:	positive := 8;	-- 8-bit signed PWM
+		constant PWMCLKScale	:	positive := 5;	-- 50MHz / (PWMPrescaler * 2) | (5MHz)
 									-- 50MHz / (PWMPrescaler * 2 * 252) | (20KHz)
 		-- ENC constants
-		constant ControllerENCTimeBitWidth: positive := 8;	-- 8-bit timer
-		constant ControllerENCTimePrescaler: positive := 25;	-- 50MHz / (ENCTimePrescaler * 2) | (1000KHz)
-		constant ControllerENCValBitWidth: positive := 8	-- 8-bit Encoder value
+		constant TimeBitWidth	:	positive := 8;	-- 8-bit timer
+		constant ENCCLKScale	:	positive := 25;	-- 50MHz / (ENCTimePrescaler * 2) | (1000KHz)
+		constant ENCBitWidth	:	positive := 8	-- 8-bit Encoder value
 	);
 	port(
 		-- 
-		Reset: in std_logic;	-- Reset
-		Clock: in std_logic;	-- Clock
+		RST		:	in  std_logic;	-- Reset
+		CLK		:	in  std_logic;	-- Clock
 		
 		-- SPI signals
-		SPICLK: in std_logic;	-- SPI Clock
-		SPISS: in std_logic;	-- SPI Slave Select
-		SPIMOSI: in std_logic;	-- SPI MOSI
-		SPIMISO: out std_logic;	-- SPI MISO
+		SPICLK		:	in  std_logic;	-- SPI Clock
+		SPISS		:	in  std_logic;	-- SPI Slave Select
+		SPIMOSI		:	in  std_logic;	-- SPI MOSI
+		SPIMISO		:	out std_logic;	-- SPI MISO
 
 		-- PWM signals
-		PWMOutput: out std_logic_vector(1 downto 0);	-- PWM Motor Output
-		PWMEN: out std_logic;				-- H-Bridge Enable
+		PWMOutput	:	out std_logic_vector(1 downto 0);	-- PWM Motor Output
 
 		-- ENC signals
-		ENCInput: in std_logic_vector(1 downto 0)	-- Encoder Input
+		ENCInput	:	in  std_logic_vector(1 downto 0)	-- Encoder Input
 	);
 end MotorController;
 
-architecture behav of MotorController is
+architecture logic of MotorController is
+	
+----------   Components   ----------
 	
 	component SPIController is
 		generic(
-			constant PWMBitWidth: positive := 8;			-- Bit width of signed compareMatch
-			constant ENCTimeBitWidth: positive := 8;		-- Bit width of encoder timer
-			constant ENCValBitWidth: positive := 8			-- Bit width of signed encoder value
+			constant PWMBitWidth		:	positive := 8;	-- Size of the output vector
+			constant ENCBitWidth		:	positive := 8;	-- Size of the input vector
+			constant TimeBitWidth	:	positive := 8	-- Size of the input vector
 		);
 		port(
-			-- 
-			Reset: in std_logic;
-			Clock: in std_logic;
+			RST		:	in  std_logic;
+			CLK		:	in  std_logic;
 			
 			-- SPI signals
-			SPICLK: in std_logic;
-			SPISS: in std_logic;
-			SPIMOSI: in std_logic;
-			SPIMISO: out std_logic;
+			SPICLK		:	in  std_logic;
+			SPISS		:	in  std_logic;
+			SPIMOSI		:	in  std_logic;
+			SPIMISO		:	out std_logic;
 			
-			-- PWM signals
-			PWMCompareMatch: out std_logic_vector((PWMBitWidth - 1) downto 0);
+			-- Test
+			PISOLatch	:	out std_logic;
 			
 			-- ENC signals
-			ENCTime: in std_logic_vector((ENCTimeBitWidth - 1) downto 0);
-			ENCVal: in std_logic_vector((ENCValBitWidth - 1) downto 0)
+			ENCVal		: 	in  std_logic_vector(ENCBitWidth-1 downto 0);
+			ENCTime		:	in  std_logic_vector(TimeBitWidth-1 downto 0);
+			
+			-- PWM signals
+			PWMCompareMatch	:	out std_logic_vector(PWMBitWidth-1 downto 0)
 		);
 	end component;
 	
 	component PWMController is
 		generic(
-			constant PWMBitWidth: positive := 8;		-- Bit width of signed compareMatch
-			constant PWMClockPrescaler: positive := 25	-- 50MHz / (PWMClockPrescaler * 2) | 1000KHz
+			-- PWM Prescaler value
+			constant PWMCLKScale	:	positive := 5;	-- Prescaled Clock = 50MHz / (PWMClockPrescaler * 2)
+									-- PWMClockPrescaler -> 50MHz / (5 * 2) = 5MHz;
+			-- PWM compare match bit width
+			constant PWMBitWidth	:	positive := 8	-- PWM Frequency = 50MHz / (PWMClockPrescaler * 2 * (2 ** PWMBitWidth) - 4)
+									-- PWM Frequency -> 50MHz / (5 * 2 * (2 ** 8) - 4) = 20KHz
 		);
 		port(
-			-- 
-			Reset: in std_logic;
-			Clock: in std_logic;
+			RST		:	in  std_logic;
+			CLK		:	in  std_logic;
+		
+			PWMCompareMatch	:	in  std_logic_vector((PWMBitWidth - 1) downto 0);
 			
-			-- Input
-			PWMCompareMatch: in std_logic_vector((PWMBitWidth - 1) downto 0);
-			
-			-- Output
-			PWMOutput: out std_logic_vector(1 downto 0)
+			PWMOutput	:	out std_logic_vector(1 downto 0)
 		);
 	end component;
 	
 	component ENCController is
 		generic(
-			constant ENCTimeBitWidth: positive := 8;	-- Bit width of encoder timer
-			constant PWMClockPrescaler: positive := 25;	-- 50MHz / (scale * 2) | 1000KHz
-			constant ENCValBitWidth: positive := 8		-- Bit width of signed encoder value
+			constant ENCCLKScale	:	positive := 25; -- 50MHz / (Scale * 2) = 1MHz
+			constant TimeBitWidth	:	positive := 8;	-- Bit width of timer counter
+			constant ENCBitWidth	:	positive := 8	-- Encoder counter bit width
 		);
 		port(
 			--
-			Reset: in std_logic;
-			Clock: in std_logic;
+			RST		:	in  std_logic;
+			CLK		:	in  std_logic;
+		
+			-- Input
+			ENCInput	:	in  std_logic_vector(1 downto 0);
 			
 			-- Output
-			ENCTime: out std_logic_vector((ENCTimeBitWidth - 1) downto 0);
-			ENCVal: out std_logic_vector((ENCValBitWidth - 1) downto 0);
-			
-			-- Input
-			ENCInput: in std_logic_vector(1 downto 0)
+			ENCCount	:	out std_logic_vector(ENCBitWidth-1 downto 0);
+			ENCTime		:	out std_logic_vector(TimeBitWidth-1 downto 0)
 		);
 	end component;
 	
-	-- 
-	signal sReset: std_logic;
-	signal sClock: std_logic;
+----------   Signals   ----------
 	
-	-- SPI signals
-	signal sSPICLK: std_logic;
-	signal sSPISS: std_logic;
-	signal sSPIMOSI: std_logic;
-	signal sSPIMISO: std_logic;
+	-- PWM compare match signal
+	signal sPWMCM		:	std_logic_vector((PWMBitWidth - 1) downto 0);
 	
-	-- PWM signals
-	signal sPWMOutput: std_logic_vector(1 downto 0);
-	signal sPWMCompareMatch: std_logic_vector((ControllerPWMBitWidth - 1) downto 0);
+	-- ENC value signal
+	signal sENCCount		:	std_logic_vector((ENCBitWidth - 1) downto 0);
 	
-	-- ENC signals
-	signal sENCInput: std_logic_vector(1 downto 0);
-	signal sENCTime: std_logic_vector((ControllerENCTimeBitWidth - 1) downto 0);
-	signal sENCVal: std_logic_vector((ControllerENCValBitWidth - 1) downto 0);
+	-- ENC time signal
+	signal sENCTime		:	std_logic_vector((TimeBitWidth - 1) downto 0);
+	
+	-- ENC reset signal
+	signal sENCRST		:	std_logic;
+	
+	-- SPI PISOLatch signal
+	signal sPISOLatch	:	std_logic;
 	
 	begin
 	
+	sENCRST <= RST or sPISOLatch;
+	
 	SPI: SPIController
 	generic map(
-		PWMBitWidth => ControllerPWMBitWidth,
-		ENCTimeBitWidth => ControllerENCTimeBitWidth,
-		ENCValBitWidth => ControllerENCValBitWidth
+		PWMBitWidth => PWMBitWidth,
+		TimeBitWidth => TimeBitWidth,
+		ENCBitWidth => ENCBitWidth
 	)
 	port map(
 		
-		Reset => sReset,
-		Clock => sClock,
+		RST => RST,
+		CLK => CLK,
 		
-		SPICLK => sSPICLK,
-		SPISS => sSPISS,
-		SPIMOSI => sSPIMOSI,
-		SPIMISO => sSPIMISO,
+		SPICLK => SPICLK,
+		SPISS => SPISS,
+		SPIMOSI => SPIMOSI,
+		SPIMISO => SPIMISO,
 		
-		PWMCompareMatch => sPWMCompareMatch,
+		PISOLatch => sPISOLatch,
 		
 		ENCTime => sENCTime,
-		ENCVal => sENCVal
+		ENCVal => sENCCount,
+		
+		PWMCompareMatch => sPWMCM
 	);
 	
 	PWM: PWMController
 	generic map(
-		PWMBitWidth => ControllerPWMBitWidth,
-		PWMClockPrescaler => ControllerPWMPrescaler
+		PWMBitWidth => PWMBitWidth,
+		PWMCLKScale => PWMCLKScale
 	)
 	port map(
 		
-		Reset => sReset,
-		Clock => sClock,
+		RST => RST,
+		CLK => CLK,
 		
-		PWMCompareMatch => sPWMCompareMatch,
+		PWMCompareMatch => sPWMCM,
 		
-		PWMOutput => sPWMOutput
+		PWMOutput => PWMOutput
 	);
 	
-	Enc: EncController
+	ENC: EncController
 	generic map(
-		ENCTimeBitWidth => ControllerENCTimeBitWidth,
-		PWMClockPrescaler => ControllerPWMPrescaler,
-		ENCValBitWidth => ControllerENCValBitWidth
+		ENCCLKScale => ENCCLKScale,
+		TimeBitWidth => TimeBitWidth,
+		ENCBitWidth => ENCBitWidth
 	)
 	port map(
 		
-		Reset => sReset,
-		Clock => sClock,
+		RST => sENCRST,
+		CLK => CLK,
 		
 		ENCTime => sENCTime,
-		ENCVal => sENCVal,
+		ENCCount => sENCCount,
 		
-		ENCInput => sENCInput
+		ENCInput => ENCInput
 	);
 	
-	-- 
-	sReset <= Reset;
-	sClock <= Clock;
-	
-	-- SPI signals
-	sSPICLK <= SPICLK;
-	sSPISS <= SPISS;
-	sSPIMOSI <= SPIMOSI;
-	SPIMISO <= sSPIMISO;
-	
-	-- PWM signals
-	PWMOutput <= sPWMOutput;
-	PWMEN <= '1';
-	
-	-- ENC signals
-	sENCInput <= ENCInput;
-	
-end behav;
+end logic;
