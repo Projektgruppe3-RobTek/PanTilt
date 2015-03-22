@@ -1,0 +1,4 @@
+Collect 32 bit timestamps over serial, and prints them.
+prints a timestamp on each line.
+
+First argument is tty path, second is baud rate.
