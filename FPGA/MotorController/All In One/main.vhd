@@ -8,10 +8,10 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity main is
 	port(
-		BTN	:	in  std_logic_vector(0 downto 0);	-- Reset
+		BTN	:	in  std_logic_vector(1 downto 0);	-- Reset
 		CLK	:	in  std_logic;				-- FPGA Clock
 		
-		SW	:	in  std_logic_vector(2 downto 0);	-- Disable motor output
+		SW	:	in  std_logic_vector(4 downto 0);	-- Disable motor output
 		LD	:	out std_logic_vector(1 downto 0);	-- Index sensor output
 		
 		-- SPI0
@@ -57,13 +57,13 @@ architecture logic of main is
 	component MotorController is
 		generic(
 			-- PWM constants
-			constant PWMBitWidth: positive := 8;		-- 8-bit signed PWM
-			constant PWMPrescaler: positive := 5;		-- 50MHz / (PWMPrescaler * 2) | (5MHz)
+			constant PWMBitWidth		:	positive := 8;	-- 8-bit signed PWM
+			constant PWMCLKScale		:	positive := 5;	-- 50MHz / (PWMPrescaler * 2) | (5MHz)
 										-- 50MHz / (PWMPrescaler * 2 * 252) | (20KHz)
 			-- ENC constants
-			constant ENCTimeBitWidth: positive := 8;	-- 8-bit timer
-			constant ENCTimePrescaler: positive := 25;	-- 50MHz / (ENCTimePrescaler * 2) | (1000KHz)
-			constant ENCValBitWidth: positive := 8	-- 8-bit Encoder value
+			constant ENCCLKScale		:	positive := 25;	-- 50MHz / (ENCTimePrescaler * 2) | (1000KHz)
+			constant ENCTimeBitWidth	:	positive := 8;	-- 8-bit timer
+			constant ENCCountBitWidth	:	positive := 8	-- 8-bit Encoder value
 		);
 		port(
 			-- 
@@ -95,16 +95,17 @@ begin
 	
 	MotorController0: MotorController
 	generic map(
+		
 		-- PWM constants
 		PWMBitWidth => 8,	-- PWM Frequency = 50MHz / (PWMClockPrescaler * 2 * (2 ** PWMBitWidth) - 4)
 					-- PWM Frequency -> 50MHz / (5 * 2 * (2 ** 8) - 4) = 20KHz
-		PWMPrescaler => 5,	-- Prescaled Clock = 50MHz / (PWMClockPrescaler * 2)
+		PWMCLKScale => 5,	-- Prescaled Clock = 50MHz / (PWMClockPrescaler * 2)
 					-- PWMClockPrescaler -> 50MHz / (5 * 2) = 5MHz;
 		
 		-- ENC constants
+		ENCCLKScale => 2500000,	-- 50MHz / (ENCTimePrescaler * 2) | (1000KHz)
 		ENCTimeBitWidth => 8,	-- 8-bit timer
-		ENCTimePrescaler => 25,	-- 50MHz / (ENCTimePrescaler * 2) | (1000KHz)
-		ENCValBitWidth => 8	-- 8-bit Encoder value
+		ENCCountBitWidth => 8	-- 8-bit Encoder value
 	)
 	port map(
 		RST => BTN(0),
@@ -130,13 +131,13 @@ begin
 		-- PWM constants
 		PWMBitWidth => 8,	-- PWM Frequency = 50MHz / (PWMClockPrescaler * 2 * (2 ** PWMBitWidth) - 4)
 					-- PWM Frequency -> 50MHz / (5 * 2 * (2 ** 8) - 4) = 20KHz
-		PWMPrescaler => 5,	-- Prescaled Clock = 50MHz / (PWMClockPrescaler * 2)
+		PWMCLKScale => 5,	-- Prescaled Clock = 50MHz / (PWMClockPrescaler * 2)
 					-- PWMClockPrescaler -> 50MHz / (5 * 2) = 5MHz;
 		
 		-- ENC constants
+		ENCCLKScale => 25,	-- 50MHz / (ENCTimePrescaler * 2) | (1000KHz)
 		ENCTimeBitWidth => 8,	-- 8-bit timer
-		ENCTimePrescaler => 25,	-- 50MHz / (ENCTimePrescaler * 2) | (1000KHz)
-		ENCValBitWidth => 8	-- 8-bit Encoder value
+		ENCCountBitWidth => 8	-- 8-bit Encoder value
 	)
 	port map(
 		RST => BTN(0),
@@ -156,5 +157,4 @@ begin
 		ENCInput(0) => JA4,	-- Encoder Input 0
 		ENCInput(1) => JA10	-- Encoder Input 1
 	);
-	
 end logic;

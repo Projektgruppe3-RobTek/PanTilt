@@ -9,13 +9,13 @@ use ieee.std_logic_1164.all;
 entity MotorController is
 	generic(
 		-- PWM constants
-		constant PWMBitWidth	:	positive := 8;	-- 8-bit signed PWM
-		constant PWMCLKScale	:	positive := 5;	-- 50MHz / (PWMPrescaler * 2) | (5MHz)
+		constant PWMBitWidth		:	positive := 8;	-- 8-bit signed PWM
+		constant PWMCLKScale		:	positive := 5;	-- 50MHz / (PWMPrescaler * 2) | (5MHz)
 									-- 50MHz / (PWMPrescaler * 2 * 252) | (20KHz)
 		-- ENC constants
-		constant TimeBitWidth	:	positive := 8;	-- 8-bit timer
-		constant ENCCLKScale	:	positive := 25;	-- 50MHz / (ENCTimePrescaler * 2) | (1000KHz)
-		constant ENCBitWidth	:	positive := 8	-- 8-bit Encoder value
+		constant ENCCLKScale		:	positive := 25;	-- 50MHz / (ENCTimePrescaler * 2) | (1000KHz)
+		constant ENCTimeBitWidth	:	positive := 8;	-- 8-bit timer
+		constant ENCCountBitWidth	:	positive := 8	-- 8-bit Encoder value
 	);
 	port(
 		-- 
@@ -42,56 +42,54 @@ architecture logic of MotorController is
 	
 	component SPIController is
 		generic(
-			constant PWMBitWidth		:	positive := 8;	-- Size of the output vector
-			constant ENCBitWidth		:	positive := 8;	-- Size of the input vector
-			constant TimeBitWidth	:	positive := 8	-- Size of the input vector
+			constant PISOBitWidth	:	positive := 8;	-- Size of the parallel input vector
+			constant SIPOBitWidth	:	positive := 8	-- Size of the parallel output vector
 		);
 		port(
 			RST		:	in  std_logic;
 			CLK		:	in  std_logic;
-			
+		
 			-- SPI signals
 			SPICLK		:	in  std_logic;
 			SPISS		:	in  std_logic;
 			SPIMOSI		:	in  std_logic;
 			SPIMISO		:	out std_logic;
 			
-			-- Test
-			PISOLatch	:	out std_logic;
+			-- Read/Write signal
+			RW		:	out std_logic;
+		
+			-- Parallel input
+			PI		: 	in  std_logic_vector(PISOBitWidth-1 downto 0);
 			
-			-- ENC signals
-			ENCVal		: 	in  std_logic_vector(ENCBitWidth-1 downto 0);
-			ENCTime		:	in  std_logic_vector(TimeBitWidth-1 downto 0);
-			
-			-- PWM signals
-			PWMCompareMatch	:	out std_logic_vector(PWMBitWidth-1 downto 0)
+			-- Parallel output
+			PO		:	out std_logic_vector(SIPOBitWidth-1 downto 0)
 		);
 	end component;
 	
 	component PWMController is
 		generic(
 			-- PWM Prescaler value
-			constant PWMCLKScale	:	positive := 5;	-- Prescaled Clock = 50MHz / (PWMClockPrescaler * 2)
+			constant CLKScale	:	positive := 5;	-- Prescaled Clock = 50MHz / (PWMClockPrescaler * 2)
 									-- PWMClockPrescaler -> 50MHz / (5 * 2) = 5MHz;
 			-- PWM compare match bit width
-			constant PWMBitWidth	:	positive := 8	-- PWM Frequency = 50MHz / (PWMClockPrescaler * 2 * (2 ** PWMBitWidth) - 4)
+			constant BitWidth	:	positive := 8	-- PWM Frequency = 50MHz / (PWMClockPrescaler * 2 * (2 ** PWMBitWidth) - 4)
 									-- PWM Frequency -> 50MHz / (5 * 2 * (2 ** 8) - 4) = 20KHz
 		);
 		port(
 			RST		:	in  std_logic;
 			CLK		:	in  std_logic;
 		
-			PWMCompareMatch	:	in  std_logic_vector((PWMBitWidth - 1) downto 0);
-			
+			PWMCM		:	in  std_logic_vector((BitWidth - 1) downto 0);
+		
 			PWMOutput	:	out std_logic_vector(1 downto 0)
 		);
 	end component;
 	
 	component ENCController is
 		generic(
-			constant ENCCLKScale	:	positive := 25; -- 50MHz / (Scale * 2) = 1MHz
+			constant CLKScale	:	positive := 25; -- 50MHz / (Scale * 2) = 1MHz
 			constant TimeBitWidth	:	positive := 8;	-- Bit width of timer counter
-			constant ENCBitWidth	:	positive := 8	-- Encoder counter bit width
+			constant CountBitWidth	:	positive := 8	-- Encoder counter bit width
 		);
 		port(
 			--
@@ -100,9 +98,9 @@ architecture logic of MotorController is
 		
 			-- Input
 			ENCInput	:	in  std_logic_vector(1 downto 0);
-			
+		
 			-- Output
-			ENCCount	:	out std_logic_vector(ENCBitWidth-1 downto 0);
+			ENCCount	:	out std_logic_vector(CountBitWidth-1 downto 0);
 			ENCTime		:	out std_logic_vector(TimeBitWidth-1 downto 0)
 		);
 	end component;
@@ -110,13 +108,16 @@ architecture logic of MotorController is
 ----------   Signals   ----------
 	
 	-- PWM compare match signal
-	signal sPWMCM		:	std_logic_vector((PWMBitWidth - 1) downto 0);
+	signal sPWMCM		:	std_logic_vector(PWMBitWidth-1 downto 0);
 	
 	-- ENC value signal
-	signal sENCCount		:	std_logic_vector((ENCBitWidth - 1) downto 0);
+	signal sENCCount	:	std_logic_vector(ENCCountBitWidth-1 downto 0);
 	
 	-- ENC time signal
-	signal sENCTime		:	std_logic_vector((TimeBitWidth - 1) downto 0);
+	signal sENCTime		:	std_logic_vector(ENCTimeBitWidth-1 downto 0);
+	
+	-- Combined ENC time and ENC count
+	signal sENCOutput	:	std_logic_vector(ENCCountBitWidth+ENCTimeBitWidth-1 downto 0);
 	
 	-- ENC reset signal
 	signal sENCRST		:	std_logic;
@@ -128,11 +129,13 @@ architecture logic of MotorController is
 	
 	sENCRST <= RST or sPISOLatch;
 	
+	sENCOutput(ENCCountBitWidth+ENCTimeBitWidth-1 downto ENCTimeBitWidth) <= sENCCount;
+	sENCOutput(ENCTimeBitWidth-1 downto 0) <= sENCTime;
+	
 	SPI: SPIController
 	generic map(
-		PWMBitWidth => PWMBitWidth,
-		TimeBitWidth => TimeBitWidth,
-		ENCBitWidth => ENCBitWidth
+		SIPOBitWidth => PWMBitWidth,
+		PISOBitWidth => ENCCountBitWidth+ENCTimeBitWidth
 	)
 	port map(
 		
@@ -144,44 +147,42 @@ architecture logic of MotorController is
 		SPIMOSI => SPIMOSI,
 		SPIMISO => SPIMISO,
 		
-		PISOLatch => sPISOLatch,
+		RW => sPISOLatch,
 		
-		ENCTime => sENCTime,
-		ENCVal => sENCCount,
-		
-		PWMCompareMatch => sPWMCM
+		PI => sENCOutput,
+		PO => sPWMCM
 	);
 	
 	PWM: PWMController
 	generic map(
-		PWMBitWidth => PWMBitWidth,
-		PWMCLKScale => PWMCLKScale
+		BitWidth => PWMBitWidth,
+		CLKScale => PWMCLKScale
 	)
 	port map(
 		
 		RST => RST,
 		CLK => CLK,
 		
-		PWMCompareMatch => sPWMCM,
+		PWMCM => sPWMCM,
 		
 		PWMOutput => PWMOutput
 	);
 	
 	ENC: EncController
 	generic map(
-		ENCCLKScale => ENCCLKScale,
-		TimeBitWidth => TimeBitWidth,
-		ENCBitWidth => ENCBitWidth
+		CLKScale => ENCCLKScale,
+		TimeBitWidth => ENCTimeBitWidth,
+		CountBitWidth => ENCCountBitWidth
 	)
 	port map(
 		
 		RST => sENCRST,
 		CLK => CLK,
 		
-		ENCTime => sENCTime,
-		ENCCount => sENCCount,
+		ENCInput => ENCInput,
 		
-		ENCInput => ENCInput
+		ENCCount => sENCCount,
+		ENCTime => sENCTime
 	);
 	
 end logic;

@@ -6,20 +6,19 @@ use ieee.std_logic_1164.all;
 
 entity main is
 	port(
-		CLK: in std_logic;			-- FPGA Clock
+		CLK	:	in  std_logic;				-- FPGA Clock
 		
-		SW: in std_logic_vector(7 downto 0);	-- Test Input
-		LD: out std_logic_vector(7 downto 0);	-- Test Output
-		
-		
+		BTN	:	in  std_logic_vector(0 downto 0);	-- Reset
+		SW	:	in  std_logic_vector(7 downto 0);	-- Test Input
+		LD	:	out std_logic_vector(7 downto 0);	-- Test Output
 		
 		-- SPI0
-		JC1: in std_logic;  -- SPI0CLK
-		JC2: in std_logic;  -- SPI0SS
-		JC3: in std_logic;  -- SPI0MOSI
-		JC4: out std_logic;  -- SPI0MISO
+		JC1	:	in  std_logic;	-- SPI0CLK
+		JC2	:	in  std_logic;	-- SPI0SS
+		JC3	:	in  std_logic;	-- SPI0MOSI
+		JC4	:	out std_logic;	-- SPI0MISO
 		
-		JC7: out std_logic	-- Test
+		JD1	:	out std_logic	-- RW
 	);
 end main;
 
@@ -27,9 +26,8 @@ architecture logic of main is
 	
 	component SPIController is
 		generic(
-			constant PWMBitWidth	:	positive := 8;	-- Size of the output vector
-			constant ENCBitWidth	:	positive := 8;	-- Size of the input vector
-			constant TimeBitWidth	:	positive := 8	-- Size of the input vector
+			constant PISOBitWidth	:	positive := 8;	-- Size of the parallel input vector
+			constant SIPOBitWidth	:	positive := 8	-- Size of the parallel output vector
 		);
 		port(
 			RST		:	in  std_logic;
@@ -41,15 +39,14 @@ architecture logic of main is
 			SPIMOSI		:	in  std_logic;
 			SPIMISO		:	out std_logic;
 			
-			-- Test
-			ReadWrite	:	out std_logic;
+			-- Read/Write signal
+			RW		:	out std_logic;
 			
-			-- ENC signals
-			ENCVal		: 	in  std_logic_vector(ENCBitWidth-1 downto 0);
-			ENCTime		:	in  std_logic_vector(TimeBitWidth-1 downto 0);
+			-- Parallel input
+			PI		: 	in  std_logic_vector(SIPOBitWidth-1 downto 0);
 			
-			-- PWM signals
-			PWMCompareMatch	:	out std_logic_vector(PWMBitWidth-1 downto 0)
+			-- Parallel output
+			PO		:	out std_logic_vector(SIPOBitWidth-1 downto 0)
 		);
 	end component;
 	
@@ -57,12 +54,11 @@ begin
 	
 	SPIController0: SPIController
 	generic map(
-		PWMBitWidth => 8,
-		ENCBitWidth => 4,
-		TimeBitWidth => 4
+		SIPOBitWidth => 8,
+		PISOBitWidth => 8
 	)
 	port map(
-		RST => '0',
+		RST => BTN(0),
 		CLK => CLK,
 		
 		SPICLK => JC1,
@@ -70,12 +66,10 @@ begin
 		SPIMOSI => JC3,
 		SPIMISO => JC4,
 		
-		ENCVal => SW(7 downto 4),
-		ENCTime => SW(3 downto 0),
+		RW => JD1,
 		
-		ReadWrite => JC7,
-		
-		PWMCompareMatch => LD
+		PI => SW,
+		PO => LD
 	);
 	
 end logic;

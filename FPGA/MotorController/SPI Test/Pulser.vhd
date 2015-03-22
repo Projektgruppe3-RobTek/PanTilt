@@ -23,7 +23,7 @@ architecture logic of Pulser is
 ----------   Signals   ----------
 	
 	-- Data in shift register
-	signal InputDelay	:	std_logic;
+	signal InputBuffer	:	std_logic;
 	
 begin
 	
@@ -32,14 +32,14 @@ begin
 		
 			-- Reset
 			if RST = '1' then
-				InputDelay <= '0';			
+				InputBuffer <= '0';			
 				Output <= '0';
 			
 			else
-				InputDelay <= Input;
+				InputBuffer <= Input;
 				
 				-- If there is a rising edge pulse output
-				if InputDelay = '0' and Input = '1' then
+				if InputBuffer = '0' and Input = '1' then
 					Output <= '1';
 				else
 					Output <= '0';

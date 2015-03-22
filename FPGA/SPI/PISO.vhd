@@ -12,9 +12,8 @@ entity PISO is
 		CLK: in std_logic;
 		RST: in std_logic;
 		LATCH: in std_logic;
-		Input: in std_logic_vector((8 - 1) downto 0);
-		Debug: out std_logic_vector((8 - 1) downto 0);
-		Output: out std_logic
+		PI: in std_logic_vector((8 - 1) downto 0);
+		SO: out std_logic
 	);
 end PISO;
 

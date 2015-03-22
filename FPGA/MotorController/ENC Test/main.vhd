@@ -12,10 +12,10 @@ entity main is
 	port(
 		-- 
 		CLK	:	in  std_logic;				-- FPGA Clock
-		BTN	:	in  std_logic_vector(1 downto 0);	-- Reset button
+		BTN	:	in  std_logic_vector(1 downto 0);	-- Reset button and latch button
 		
 		SW	:	in  std_logic_vector(1 downto 0);	-- Sensor Input
-		LD	:	out std_logic_vector(7 downto 0)	-- Sensor Output
+		LD	:	out std_logic_vector(7 downto 0)	-- Encoder Output
 		
 	);
 end main;
@@ -26,9 +26,9 @@ architecture logic of main is
 	
 	component ENCController is
 		generic(
-			constant ENCCLKScale		:	positive := 25; -- 50MHz / (Scale * 2) = 1MHz
+			constant CLKScale	:	positive := 25; -- 50MHz / (Scale * 2) = 1MHz
 			constant TimeBitWidth	:	positive := 8;
-			constant ENCBitWidth		:	positive := 8
+			constant CountBitWidth	:	positive := 8
 		);
 		port(
 			--
@@ -39,36 +39,38 @@ architecture logic of main is
 			ENCInput	:	in  std_logic_vector(1 downto 0);
 			
 			-- Output
-			ENCCount	:	out std_logic_vector(ENCBitWidth-1 downto 0);
+			ENCCount	:	out std_logic_vector(CountBitWidth-1 downto 0);
 			ENCTime		:	out std_logic_vector(TimeBitWidth-1 downto 0)
 		);
 	end component;
 	
 ----------   Signals   ----------
-	signal Temp	:	std_logic_vector(1 downto 0);
+	
+	-- SW test inputs
+	signal sTest	:	std_logic_vector(1 downto 0);
 	
 	begin
 	
 	ENCController0: ENCController
 	generic map(
-		ENCCLKScale => 25000000,
+		CLKScale => 25000000,
 		TimeBitWidth => 4,
-		ENCBitWidth => 4
+		CountBitWidth => 4
 	)
 	port map(
 		RST => BTN(1),
 		CLK => CLK,
 		
-		ENCInput => Temp,
+		ENCInput => sTest,
 		
 		ENCCount => LD(7 downto 4),
 		ENCTime => LD(3 downto 0)
 	);
 	
 	-- Latched input
-	Process(BTN(0), BTN(1)) begin
+	Process(BTN(0)) begin
 		if rising_edge(BTN(0)) then
-			Temp <= SW;	
+			sTest <= SW;	
 		end if;
 	end process;
 end logic;
