@@ -5,7 +5,7 @@
 #include <iso646.h>
 
 #define FCPU                 			16000000 	// Hz.
-#define TIMEOUT_SYSTICK      			500        	 // ms.
+#define TIMEOUT_SYSTICK      			5        	 // ms.
 
 #define LED_RED 	0x02
 #define LED_BLUE 	0x04
