@@ -1,12 +1,12 @@
-net "BTN<0>" loc = B18; net "BTN<0>" clock_dedicated_route = false;
-net "BTN<1>" loc = D18; net "BTN<1>" CLOCK_dedicated_route = false;
-net "BTN<2>" loc = E18; net "BTN<2>" CLOCK_dedicated_route = false;
+//net "BTN<0>" loc = B18; net "BTN<0>" clock_dedicated_route = false;
+//net "BTN<1>" loc = D18; net "BTN<1>" CLOCK_dedicated_route = false;
+//net "BTN<2>" loc = E18; net "BTN<2>" CLOCK_dedicated_route = false;
 //net "BTN<3>" loc = H13; net "BTN<3>" CLOCK_dedicated_route = false;
 
-net "SW<0>" loc = G18;	net "SW<1>" loc = H18;
-net "SW<2>" loc = K18;	net "SW<3>" loc = K17;
-net "SW<4>" loc = L14;	net "SW<5>" loc = L13;
-net "SW<6>" loc = N17;	net "SW<7>" loc = R17;
+//net "SW<0>" loc = G18;	net "SW<1>" loc = H18;
+//net "SW<2>" loc = K18;	net "SW<3>" loc = K17;
+//net "SW<4>" loc = L14;	net "SW<5>" loc = L13;
+//net "SW<6>" loc = N17;	net "SW<7>" loc = R17;
 
 net "LD<0>" loc = J14;	net "LD<1>" loc = J15;
 net "LD<2>" loc = K15;	net "LD<3>" loc = K14;
@@ -36,10 +36,11 @@ net "CLK" loc = B8;
 //net "JB9" loc = T18;	// IN2A
 //net "JB10" loc = U18;	// 
 
-//net "JC1" loc = G15;	// SPI0CLK
-//net "JC2" loc = J16;	// SPI0SS
-//net "JC3" loc = G13;	// SPI0MOSI
-//net "JC4" loc = H16;	// SPI0MISO
+net "JC1" loc = G15;	// SPI0CLK
+net "JC1" CLOCK_dedicated_route = false;
+net "JC2" loc = J16;	// SPI0SS
+net "JC3" loc = G13;	// SPI0MOSI
+net "JC4" loc = H16;	// SPI0MISO
 //net "JC7" loc = H15;	// SPI1CLK
 //net "JC8" loc = F14;	// SPI1SS
 //net "JC9" loc = G16;	// SPI1MOSI

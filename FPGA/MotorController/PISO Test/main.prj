@@ -1,7 +1,3 @@
-vhdl work "PISO.vhd"
-vhdl work "SIPO.vhd"
-vhdl work "SPIController.vhd"
-vhdl work "Prescaler.vhd"
 vhdl work "Pulser.vhd"
-vhdl work "Debounce.vhd"
+vhdl work "PISO.vhd"
 vhdl work "main.vhd"

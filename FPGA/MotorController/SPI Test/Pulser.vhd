@@ -9,13 +9,13 @@ use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity Pulser is
-		port(
-			RST		:	in  std_logic;
-			CLK		: 	in  std_logic;
-			
-			Input		:	in  std_logic;
-			Output		:	out std_logic
-		);
+	port(
+		RST		:	in  std_logic;
+		CLK		: 	in  std_logic;
+		
+		Input		:	in  std_logic;
+		Output		:	out std_logic
+	);
 end Pulser;
 
 architecture logic of Pulser is
