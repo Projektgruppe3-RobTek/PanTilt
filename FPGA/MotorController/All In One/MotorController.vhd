@@ -18,8 +18,8 @@ entity MotorController is
 		constant ENCCountBitWidth	:	positive := 8	-- 8-bit Encoder value
 	);
 	port(
-		RST			:	in  std_logic;	-- Reset
-		CLK			:	in  std_logic;	-- Clock
+		RST		:	in  std_logic;	-- Reset
+		CLK		:	in  std_logic;	-- Clock
 		
 		-- SPI signals
 		SPICLK		:	in  std_logic;	-- SPI Clock
@@ -28,13 +28,13 @@ entity MotorController is
 		SPIMISO		:	out std_logic;	-- SPI MISO
 		
 		-- Read/Write test output
-		RW			:	out std_logic;	-- Read/Write
+		RW		:	out std_logic;	-- Read/Write
 		
 		-- ENC signals
-		ENCInput	:	in  std_logic_vector(1 downto 0)	-- Encoder Input
+		ENCInput	:	in  std_logic_vector(1 downto 0);	-- Encoder Input
 		
 		-- PWM signals
-		PWMOutput	:	out std_logic_vector(1 downto 0);	-- PWM Motor Output
+		PWMOutput	:	out std_logic_vector(1 downto 0)	-- PWM Motor Output
 
 	);
 end MotorController;
@@ -49,23 +49,23 @@ architecture logic of MotorController is
 			constant SIPOBitWidth	:	positive := 8	-- Size of the parallel output vector
 		);
 		port(
-			RST			:	in  std_logic;
-			CLK			:	in  std_logic;
+			RST	:	in  std_logic;
+			CLK	:	in  std_logic;
 		
 			-- SPI signals
-			SPICLK		:	in  std_logic;
-			SPISS		:	in  std_logic;
-			SPIMOSI		:	in  std_logic;
-			SPIMISO		:	out std_logic;
+			SPICLK	:	in  std_logic;
+			SPISS	:	in  std_logic;
+			SPIMOSI	:	in  std_logic;
+			SPIMISO	:	out std_logic;
 			
 			-- Read/Write signal
-			RW			:	out std_logic;
+			RW	:	out std_logic;
 		
 			-- Parallel input
-			PI			: 	in  std_logic_vector(PISOBitWidth-1 downto 0);
+			PI	: 	in  std_logic_vector(PISOBitWidth-1 downto 0);
 			
 			-- Parallel output
-			PO			:	out std_logic_vector(SIPOBitWidth-1 downto 0)
+			PO	:	out std_logic_vector(SIPOBitWidth-1 downto 0)
 		);
 	end component;
 	
@@ -79,8 +79,8 @@ architecture logic of MotorController is
 													-- PWM Frequency -> 50MHz / (5 * 2 * (2 ** 8) - 4) = 20KHz
 		);
 		port(
-			RST			:	in  std_logic;
-			CLK			:	in  std_logic;
+			RST		:	in  std_logic;
+			CLK		:	in  std_logic;
 		
 			PWMCM		:	in  std_logic_vector(BitWidth-1 downto 0);
 		
@@ -90,13 +90,13 @@ architecture logic of MotorController is
 	
 	component ENCController is
 		generic(
-			constant CLKScale		:	positive := 25; -- 50MHz / (Scale * 2) = 1MHz
+			constant CLKScale	:	positive := 25; -- 50MHz / (Scale * 2) = 1MHz
 			constant TimeBitWidth	:	positive := 8;	-- Bit width of timer counter
 			constant CountBitWidth	:	positive := 8	-- Encoder counter bit width
 		);
 		port(
-			RST			:	in  std_logic;
-			CLK			:	in  std_logic;
+			RST		:	in  std_logic;
+			CLK		:	in  std_logic;
 		
 			-- Input
 			ENCInput	:	in  std_logic_vector(1 downto 0);

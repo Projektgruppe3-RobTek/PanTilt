@@ -8,7 +8,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity main is
 	port(
-		CLK	:	in  std_logic;						-- FPGA Clock
+		CLK	:	in  std_logic;				-- FPGA Clock
 		BTN	:	in  std_logic_vector(1 downto 0);	-- Reset
 		
 		SW	:	in  std_logic_vector(4 downto 0);	-- Disable motor output
@@ -24,7 +24,7 @@ entity main is
 		JC7	:	in  std_logic;		-- SPI1CLK
 		JC8	:	in  std_logic;		-- SPI1SS
 		JC9	:	in  std_logic;		-- SPI1MOSI
-		JC10	:	out std_logic;	-- SPI1MISO
+		JC10	:	out std_logic;		-- SPI1MISO
 		
 		-- Motor 0
 		JB8	:	out std_logic;		-- ENA		Enable Motor 0
@@ -42,7 +42,7 @@ entity main is
 		
 		-- Motor Sensor 1
 		JA4		:	in  std_logic;	-- HS2A		Motor 1 sensor 0
-		JA10	:	in  std_logic;	-- HS2B		Motor 1 sensor 1
+		JA10	:	in  std_logic;		-- HS2B		Motor 1 sensor 1
 		
 		-- Index sensor
 		JA2		:	in  std_logic;	-- Index 0
@@ -76,17 +76,22 @@ architecture logic of main is
 			SPIMISO		:	out std_logic;	-- SPI MISO
 			
 			-- ENC signals
-			ENCInput	: 	in  std_logic_vector(1 downto 0)	-- Encoder Input
-			
-			-- Read/Write test output
-			RW			:	out std_logic;	-- Read/Write
+			ENCInput	: 	in  std_logic_vector(1 downto 0);	-- Encoder Input
 			
 			-- PWM signals
 			PWMOutput	:	out std_logic_vector(1 downto 0);	-- PWM Motor Output
 			
+			-- Read/Write test output
+			RW		:	out std_logic	-- Read/Write
+			
 
 		);
 	end component;
+	
+----------   Signals   ----------	
+	
+	signal RST0: std_logic;	-- Reset for motorcontroller0
+	signal RST1: std_logic;	-- Reset for motorcontroller1
 	
 begin
 	
@@ -97,22 +102,26 @@ begin
 	LD(0) <= JA2;	-- Index 0
 	LD(1) <= JA8;	-- Index 1
 	
+	-- Reset signal
+	RST0 <= BTN(0) or SW(0) or SW(1);
+	RST1 <= BTN(0) or SW(0) or SW(2);
+	
 	MotorController0: MotorController
 	generic map(
 		
 		-- PWM constants
 		PWMBitWidth => 8,	-- PWM Frequency = 50MHz / (PWMClockPrescaler * 2 * (2 ** PWMBitWidth) - 4)
-							-- PWM Frequency -> 50MHz / (5 * 2 * (2 ** 8) - 4) = 20KHz
+					-- PWM Frequency -> 50MHz / (5 * 2 * (2 ** 8) - 4) = 20KHz
 		PWMCLKScale => 5,	-- Prescaled Clock = 50MHz / (PWMClockPrescaler * 2)
-							-- PWMClockPrescaler -> 50MHz / (5 * 2) = 5MHz;
+					-- PWMClockPrescaler -> 50MHz / (5 * 2) = 5MHz;
 		
 		-- ENC constants
-		ENCCLKScale => 25,		-- 50MHz / (ENCTimePrescaler * 2) | (1000KHz)
+		ENCCLKScale => 25,	-- 50MHz / (ENCTimePrescaler * 2) | (1000KHz)
 		ENCTimeBitWidth => 24,	-- 24-bit timer
 		ENCCountBitWidth => 8	-- 8-bit Encoder value
 	)
 	port map(
-		RST => BTN(0) and (SW(0) or SW(1)),
+		RST => RST0,
 		CLK => CLK,
 		
 		-- SPI signals
@@ -137,17 +146,17 @@ begin
 	generic map(
 		-- PWM constants
 		PWMBitWidth => 8,	-- PWM Frequency = 50MHz / (PWMClockPrescaler * 2 * (2 ** PWMBitWidth) - 4)
-							-- PWM Frequency -> 50MHz / (5 * 2 * (2 ** 8) - 4) = 20KHz
+					-- PWM Frequency -> 50MHz / (5 * 2 * (2 ** 8) - 4) = 20KHz
 		PWMCLKScale => 5,	-- Prescaled Clock = 50MHz / (PWMClockPrescaler * 2)
-							-- PWMClockPrescaler -> 50MHz / (5 * 2) = 5MHz;
+					-- PWMClockPrescaler -> 50MHz / (5 * 2) = 5MHz;
 		
 		-- ENC constants
-		ENCCLKScale => 25,		-- 50MHz / (ENCTimePrescaler * 2) | (1000KHz)
+		ENCCLKScale => 25,	-- 50MHz / (ENCTimePrescaler * 2) | (1000KHz)
 		ENCTimeBitWidth => 24,	-- 24-bit timer
 		ENCCountBitWidth => 8	-- 8-bit Encoder value
 	)
 	port map(
-		RST => BTN(0) and (SW(0) or SW(2)),
+		RST => RST1,
 		CLK => CLK,
 		
 		-- SPI signals
