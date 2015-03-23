@@ -16,8 +16,8 @@ net "SW<4>" loc = L14;
 
 net "LD<0>" loc = J14;
 net "LD<1>" loc = J15;
-//net "LD<2>" loc = K15;
-//net "LD<3>" loc = K14;
+net "LD<2>" loc = K15;
+net "LD<3>" loc = K14;
 //net "LD<4>" loc = E17;
 //net "LD<5>" loc = P15;
 //net "LD<6>" loc = F4;

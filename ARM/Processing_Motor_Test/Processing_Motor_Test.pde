@@ -4,53 +4,90 @@ Serial port;
 
 final int border = 50;
 
+final int CountBytes = 1;
+final int TimeBytes = 3;
+
 void setup(){
-  port = new Serial(this, "/dev/ttyACM0", 115200);
-  size(200, 500);
+  //port = new Serial(this, "/dev/ttyACM0", 115200);
+  size(400, 500);
   
 }
 
-int speed = 127;
+Slider slider1 = new Slider(50, 50, -127, 128, 0, 100, 400, 20);
+Slider slider2 = new Slider(250, 50, -127, 128, 0, 100, 400, 20);
 
 void draw(){
   background(0);
   
-  drawSlider();
+  if (mousePressed){
+    slider1.update();
+    slider2.update();
+    print("Slider 1: ");
+    print(slider1.getValue());
+    print("\tSlider 2: ");
+    println(slider2.getValue());
+  }
   
-  println(127 - speed);
-  
-  port.write(00);
-  port.write(127 - speed);
-}
-
-void drawSlider(){
-  fill(255);
-  rect(width / 2 - width / 20, border, width / 10, height - 2 * border);
-  
-  rect(border, border, width - 2 * border, width / 10);
-  rect(border / 2, height / 2 - width / 20, width - 2 * border + border, width / 10);
-  rect(border, height - border - width / 10, width - 2 * border, width / 10);
-  
-  rect(border, speed * (height - border * 2 - width / 10 * 2 - (width - 2 * border) / 2) / 256 + border + width / 10, width - 2 * border, (width - 2 * border) / 2);
+  slider1.draw();
+  slider2.draw();
+  //port.write(0x00);
+  //port.write(127 - speed);
 }
 
 void mouseMoved(){
-  speed = (mouseY - border - width / 10 - (width - 2 * border) / 2 / 2) * 256 / (height - border * 2 - width / 10 * 2 - (width - 2 * border) / 2);
-  if (speed > 255) speed = 255;
-  else if (speed < 0) speed = 0;
 }
 
-void keyPressed(){
-  if (key == CODED){
-    if (keyCode == UP){
-    println("Key");
-      speed -= 8;
-    }
-    else if (keyCode == DOWN){
-      if (speed == 0) speed = 7;
-      else speed += 8;
-    }
-    if (speed > 255) speed = 255;
-    else if (speed < 0) speed = 0;
+class Slider{
+  int xPos;
+  int yPos;
+  
+  int min;
+  int max;
+  
+  int val;
+  
+  int width;
+  int height;
+  
+  int barWidth;
+  
+  Slider(int _xPos, int _yPos, int _min, int _max, int _val, int _width, int _height, int _barWidth){
+    xPos = _xPos;
+    yPos = _yPos;
+    
+    min = _min;
+    max = _max;
+    
+    val = _val;
+    
+    width = _width;
+    height = _height;
+    
+    barWidth = _barWidth;
   }
-}
+  
+  void draw(){
+    fill(150);
+    rect(xPos + width / 2 - barWidth / 2, yPos + barWidth, barWidth, height - 2 * barWidth);
+    fill(255,0,0);
+    rect(xPos, yPos, width, barWidth);
+    fill(0,255,0);
+    rect(xPos + width / 4, yPos + height / 2 - barWidth / 2, width / 2, barWidth);
+    fill(0,0,255);
+    rect(xPos, yPos + height - barWidth, width, barWidth);
+    fill(255);
+    rect(xPos, yPos + height / 2 - barWidth - val * (height / 2 - barWidth * 4 / 2) / 128, width, barWidth * 2);
+  }
+  
+  void update(){
+    if (mouseX > xPos && mouseX < xPos + width && mouseY > yPos && mouseY < yPos + height){
+      val = - (mouseY - yPos - height / 2) * 128 / (height / 2 - barWidth * 4 / 2);
+      if (val > 127) val = 127;
+      else if (val < -128) val = -128;
+    }
+  }
+  
+  int getValue(){
+    return val;
+  }
+};

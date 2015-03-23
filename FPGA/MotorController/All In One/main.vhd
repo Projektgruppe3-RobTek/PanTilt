@@ -12,7 +12,7 @@ entity main is
 		CLK	:	in  std_logic;				-- FPGA Clock
 		
 		SW	:	in  std_logic_vector(4 downto 0);	-- Disable motor output
-		LD	:	out std_logic_vector(1 downto 0);	-- Index sensor output
+		LD	:	out std_logic_vector(3 downto 0);	-- Index sensor output
 		
 		-- SPI0
 		JC1	:	in  std_logic;	-- SPI0CLK
@@ -75,7 +75,10 @@ architecture logic of main is
 			SPISS: in std_logic;	-- SPI Slave Select
 			SPIMOSI: in std_logic;	-- SPI MOSI
 			SPIMISO: out std_logic;	-- SPI MISO
-
+		
+			-- Read/Write test output
+			RW		:	out std_logic;	-- Read/Write
+			
 			-- PWM signals
 			PWMOutput: out std_logic_vector(1 downto 0);	-- PWM Motor Output
 			
@@ -121,6 +124,9 @@ begin
 		PWMOutput(0) => JB3,	-- PWM Motor Output 0
 		PWMOutput(1) => JB9,	-- PWM Motor Output 1
 		
+		-- Test signal
+		RW => LD(2),
+		
 		-- ENC signals
 		ENCInput(0) => JA9,	-- Encoder Input 0
 		ENCInput(1) => JA3	-- Encoder Input 1
@@ -148,6 +154,9 @@ begin
 		SPISS => JC8,		-- SPI Slave Select
 		SPIMOSI => JC9,		-- SPI MOSI
 		SPIMISO => JC10,	-- SPI MISO
+		
+		-- Test signal
+		RW => LD(3),
 		
 		-- PWM signals
 		PWMOutput(0) => JB2,	-- PWM Motor Output 0

@@ -27,7 +27,10 @@ entity MotorController is
 		SPISS		:	in  std_logic;	-- SPI Slave Select
 		SPIMOSI		:	in  std_logic;	-- SPI MOSI
 		SPIMISO		:	out std_logic;	-- SPI MISO
-
+		
+		-- Read/Write test output
+		RW		:	out std_logic;	-- Read/Write
+		
 		-- PWM signals
 		PWMOutput	:	out std_logic_vector(1 downto 0);	-- PWM Motor Output
 
@@ -126,6 +129,8 @@ architecture logic of MotorController is
 	signal sPISOLatch	:	std_logic;
 	
 	begin
+	
+	RW <= sPISOLatch;
 	
 	sENCRST <= RST or sPISOLatch;
 	
