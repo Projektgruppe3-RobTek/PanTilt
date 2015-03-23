@@ -111,7 +111,7 @@ begin
 		ENCCountBitWidth => 8	-- 8-bit Encoder value
 	)
 	port map(
-		RST => BTN(0),
+		RST => BTN(0) and (SW(0) or SW(1)),
 		CLK => CLK,
 		
 		-- SPI signals
@@ -146,7 +146,7 @@ begin
 		ENCCountBitWidth => 8	-- 8-bit Encoder value
 	)
 	port map(
-		RST => BTN(0),
+		RST => BTN(0) and (SW(0) or SW(2)),
 		CLK => CLK,
 		
 		-- SPI signals
