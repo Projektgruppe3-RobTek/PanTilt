@@ -103,8 +103,8 @@ begin
 					-- PWMClockPrescaler -> 50MHz / (5 * 2) = 5MHz;
 		
 		-- ENC constants
-		ENCCLKScale => 2500000,	-- 50MHz / (ENCTimePrescaler * 2) | (1000KHz)
-		ENCTimeBitWidth => 8,	-- 8-bit timer
+		ENCCLKScale => 25,	-- 50MHz / (ENCTimePrescaler * 2) | (1000KHz)
+		ENCTimeBitWidth => 24,	-- 24-bit timer
 		ENCCountBitWidth => 8	-- 8-bit Encoder value
 	)
 	port map(
@@ -136,7 +136,7 @@ begin
 		
 		-- ENC constants
 		ENCCLKScale => 25,	-- 50MHz / (ENCTimePrescaler * 2) | (1000KHz)
-		ENCTimeBitWidth => 8,	-- 8-bit timer
+		ENCTimeBitWidth => 24,	-- 24-bit timer
 		ENCCountBitWidth => 8	-- 8-bit Encoder value
 	)
 	port map(
