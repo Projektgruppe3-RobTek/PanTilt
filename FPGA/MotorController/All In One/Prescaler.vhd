@@ -20,7 +20,6 @@ entity Prescaler is
 	);
 end Prescaler;
 
-
 architecture logic of Prescaler is
 	
 ----------   Signals   ----------

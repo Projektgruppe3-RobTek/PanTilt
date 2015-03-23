@@ -3,22 +3,21 @@
 --   MotorController     --
 --                       --
 ---------------------------
-library ieee;
-use ieee.std_logic_1164.all;
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
 
 entity MotorController is
 	generic(
 		-- PWM constants
 		constant PWMBitWidth		:	positive := 8;	-- 8-bit signed PWM
 		constant PWMCLKScale		:	positive := 5;	-- 50MHz / (PWMPrescaler * 2) | (5MHz)
-									-- 50MHz / (PWMPrescaler * 2 * 252) | (20KHz)
+														-- 50MHz / (PWMPrescaler * 2 * 252) | (20KHz)
 		-- ENC constants
 		constant ENCCLKScale		:	positive := 25;	-- 50MHz / (ENCTimePrescaler * 2) | (1000KHz)
 		constant ENCTimeBitWidth	:	positive := 8;	-- 8-bit timer
 		constant ENCCountBitWidth	:	positive := 8	-- 8-bit Encoder value
 	);
 	port(
-		-- 
 		RST		:	in  std_logic;	-- Reset
 		CLK		:	in  std_logic;	-- Clock
 		
@@ -31,11 +30,12 @@ entity MotorController is
 		-- Read/Write test output
 		RW		:	out std_logic;	-- Read/Write
 		
-		-- PWM signals
-		PWMOutput	:	out std_logic_vector(1 downto 0);	-- PWM Motor Output
-
 		-- ENC signals
-		ENCInput	:	in  std_logic_vector(1 downto 0)	-- Encoder Input
+		ENCInput	:	in  std_logic_vector(1 downto 0);	-- Encoder Input
+		
+		-- PWM signals
+		PWMOutput	:	out std_logic_vector(1 downto 0)	-- PWM Motor Output
+
 	);
 end MotorController;
 
@@ -49,23 +49,23 @@ architecture logic of MotorController is
 			constant SIPOBitWidth	:	positive := 8	-- Size of the parallel output vector
 		);
 		port(
-			RST		:	in  std_logic;
-			CLK		:	in  std_logic;
+			RST	:	in  std_logic;
+			CLK	:	in  std_logic;
 		
 			-- SPI signals
-			SPICLK		:	in  std_logic;
-			SPISS		:	in  std_logic;
-			SPIMOSI		:	in  std_logic;
-			SPIMISO		:	out std_logic;
+			SPICLK	:	in  std_logic;
+			SPISS	:	in  std_logic;
+			SPIMOSI	:	in  std_logic;
+			SPIMISO	:	out std_logic;
 			
 			-- Read/Write signal
-			RW		:	out std_logic;
+			RW	:	out std_logic;
 		
 			-- Parallel input
-			PI		: 	in  std_logic_vector(PISOBitWidth-1 downto 0);
+			PI	: 	in  std_logic_vector(PISOBitWidth-1 downto 0);
 			
 			-- Parallel output
-			PO		:	out std_logic_vector(SIPOBitWidth-1 downto 0)
+			PO	:	out std_logic_vector(SIPOBitWidth-1 downto 0)
 		);
 	end component;
 	
@@ -73,16 +73,16 @@ architecture logic of MotorController is
 		generic(
 			-- PWM Prescaler value
 			constant CLKScale	:	positive := 5;	-- Prescaled Clock = 50MHz / (PWMClockPrescaler * 2)
-									-- PWMClockPrescaler -> 50MHz / (5 * 2) = 5MHz;
+													-- PWMClockPrescaler -> 50MHz / (5 * 2) = 5MHz;
 			-- PWM compare match bit width
 			constant BitWidth	:	positive := 8	-- PWM Frequency = 50MHz / (PWMClockPrescaler * 2 * (2 ** PWMBitWidth) - 4)
-									-- PWM Frequency -> 50MHz / (5 * 2 * (2 ** 8) - 4) = 20KHz
+													-- PWM Frequency -> 50MHz / (5 * 2 * (2 ** 8) - 4) = 20KHz
 		);
 		port(
 			RST		:	in  std_logic;
 			CLK		:	in  std_logic;
 		
-			PWMCM		:	in  std_logic_vector((BitWidth - 1) downto 0);
+			PWMCM		:	in  std_logic_vector(BitWidth-1 downto 0);
 		
 			PWMOutput	:	out std_logic_vector(1 downto 0)
 		);
@@ -95,7 +95,6 @@ architecture logic of MotorController is
 			constant CountBitWidth	:	positive := 8	-- Encoder counter bit width
 		);
 		port(
-			--
 			RST		:	in  std_logic;
 			CLK		:	in  std_logic;
 		
@@ -110,6 +109,12 @@ architecture logic of MotorController is
 	
 ----------   Signals   ----------
 	
+	-- ENC reset signal
+	signal sENCRST		:	std_logic;
+	
+	-- SPI PISOLatch signal
+	signal sPISOLatch	:	std_logic;
+	
 	-- PWM compare match signal
 	signal sPWMCM		:	std_logic_vector(PWMBitWidth-1 downto 0);
 	
@@ -122,13 +127,7 @@ architecture logic of MotorController is
 	-- Combined ENC time and ENC count
 	signal sENCOutput	:	std_logic_vector(ENCCountBitWidth+ENCTimeBitWidth-1 downto 0);
 	
-	-- ENC reset signal
-	signal sENCRST		:	std_logic;
-	
-	-- SPI PISOLatch signal
-	signal sPISOLatch	:	std_logic;
-	
-	begin
+begin
 	
 	RW <= sPISOLatch;
 	
@@ -143,7 +142,6 @@ architecture logic of MotorController is
 		PISOBitWidth => ENCCountBitWidth+ENCTimeBitWidth
 	)
 	port map(
-		
 		RST => RST,
 		CLK => CLK,
 		
@@ -163,8 +161,7 @@ architecture logic of MotorController is
 		BitWidth => PWMBitWidth,
 		CLKScale => PWMCLKScale
 	)
-	port map(
-		
+	port map(	
 		RST => RST,
 		CLK => CLK,
 		
@@ -180,7 +177,6 @@ architecture logic of MotorController is
 		CountBitWidth => ENCCountBitWidth
 	)
 	port map(
-		
 		RST => sENCRST,
 		CLK => CLK,
 		
@@ -189,5 +185,4 @@ architecture logic of MotorController is
 		ENCCount => sENCCount,
 		ENCTime => sENCTime
 	);
-	
 end logic;

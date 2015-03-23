@@ -14,6 +14,9 @@ entity main is
 		CLK	:	in  std_logic;				-- FPGA Clock
 		BTN	:	in  std_logic_vector(1 downto 0);	-- Reset button and latch button
 		
+		JD1	:	in  std_logic;				-- Enc input 0
+		JD2	:	in  std_logic;				-- Enc input 1
+		
 		SW	:	in  std_logic_vector(1 downto 0);	-- Sensor Input
 		LD	:	out std_logic_vector(7 downto 0)	-- Encoder Output
 		
@@ -54,8 +57,8 @@ architecture logic of main is
 	ENCController0: ENCController
 	generic map(
 		CLKScale => 25000000,
-		TimeBitWidth => 4,
-		CountBitWidth => 4
+		TimeBitWidth => 1,
+		CountBitWidth => 7
 	)
 	port map(
 		RST => BTN(1),
@@ -63,14 +66,17 @@ architecture logic of main is
 		
 		ENCInput => sTest,
 		
-		ENCCount => LD(7 downto 4),
-		ENCTime => LD(3 downto 0)
+		ENCCount => LD(7 downto 1),
+		ENCTime => LD(0 downto 0)
 	);
 	
-	-- Latched input
-	Process(BTN(0)) begin
-		if rising_edge(BTN(0)) then
-			sTest <= SW;	
-		end if;
-	end process;
+	sTEST(0) <= JD1;
+	sTEST(1) <= JD2;
+	
+--	-- Latched input
+--	Process(BTN(0)) begin
+--		if rising_edge(BTN(0)) then
+--			sTest <= SW;	
+--		end if;
+--	end process;
 end logic;

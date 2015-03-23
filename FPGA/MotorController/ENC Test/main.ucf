@@ -44,8 +44,8 @@ net "CLK" loc = B8;
 //net "JC9" loc = G16;	// SPI1MOSI
 //net "JC10" loc = J12;	// SPI1MISO
 
-//net "JD1" loc = J13;	// 
-//net "JD2" loc = M18;	// 
+net "JD1" loc = J13;	// 
+net "JD2" loc = M18;	// 
 //net "JD3" loc = N18;	// 
 //net "JD4" loc = P18;	// 
 //net "JD7" loc = K14;	// 
