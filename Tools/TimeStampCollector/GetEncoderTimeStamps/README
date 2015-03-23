@@ -1,0 +1,5 @@
+Send clock info for rising eges of encoder.
+SPI0 on ARM --> JC7-10 on FPGA
+SPI3 on ARM --> JC1-4 on FPGA
+Encoder on ....X.... (Set to button1 atm).
+Sends clock to ARM over SPI, ARM sends it to uart0 in 4 bytes.
