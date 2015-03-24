@@ -1,0 +1,7 @@
+vhdl work "Pulser.vhd"
+vhdl work "SIPO.vhd"
+vhdl work "PISO.vhd"
+vhdl work "SPIController.vhd"
+vhdl work "main.vhd"
+vhdl work "Counter.vhd"
+vhdl work "Memory.vhd"
