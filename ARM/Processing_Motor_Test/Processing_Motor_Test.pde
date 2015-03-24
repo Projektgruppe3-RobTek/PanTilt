@@ -9,45 +9,52 @@ final int TimeBytes = 3;
 
 void setup(){
   port = new Serial(this, Serial.list()[0], 115200);
-  size(400, 500);
+  size(1000, 500);
   
 }
 
-Slider slider1 = new Slider(50, 50, -127, 128, 0, 100, 400, 20);
-Slider slider2 = new Slider(250, 50, -127, 128, 0, 100, 400, 20);
+Slider slider1 = new Slider(350, 50, -127, 128, 0, 100, 400, 20);
+Slider slider2 = new Slider(550, 50, -127, 128, 0, 100, 400, 20);
+
+Motor motor1 = new Motor(150, 250, 100);
+Motor motor2 = new Motor(850, 250, 100);
+
+int pos1 = 0;
+int pos2 = 0;
 
 void draw(){
   background(0);
   
-  if (mousePressed){
-    if (slider1.update()){
-      port.write(0x00);
-      port.write(slider1.getValue());
-      port.write(0x01);
-      port.write(0x00);
-      port.write(0x01);
-      port.write(0x00);
+  if (slider1.update()){
+    port.write(0x00);
+    port.write(slider1.getValue());
+    port.write(0x01);
+    port.write(0x00);
+    while (port.available() >= 2){
+      motor1.addPos(byte(port.read()));
+      print(motor1.getPos());
+      print("\t");
+      println(hex(port.read(), 2));
     }
-    if (slider2.update()){
-      port.write(0x10);
-      port.write(slider2.getValue());
-      port.write(0x11);
-      port.write(0x00);
-      port.write(0x11);
-      port.write(0x00);
+  }
+  if (slider2.update()){
+    port.write(0x10);
+    port.write(slider2.getValue());
+    port.write(0x11);
+    port.write(0x00);
+    while (port.available() >= 2){
+      motor2.addPos(byte(port.read()));
+      print(motor2.getPos());
+      print("\t");
+      println(hex(port.read(), 2));
     }
   }
   
   slider1.draw();
   slider2.draw();
   
-  //print("Slider 1: ");
-  //print(slider1.getValue());
-  //print("\tSlider 2: ");
-  //println(slider2.getValue());
-}
-
-void mouseMoved(){
+  motor1.draw();
+  motor2.draw();
 }
 
 class Slider{
@@ -104,5 +111,45 @@ class Slider{
   
   int getValue(){
     return val;
+  }
+};
+
+class Motor{
+  int xPos;
+  int yPos;
+  
+  int r;
+  
+  int pos;
+  
+  Motor(int _xPos, int _yPos, int _r){
+    xPos = _xPos;
+    yPos = _yPos;
+    
+    r = _r;
+    
+    pos = 0;
+  }
+  
+  void setPos(int _pos){
+    pos = _pos;
+  }
+  
+  int getPos(){
+    return pos;
+  }
+  
+  void addPos(int _pos){
+    pos += _pos;
+  }
+  
+  void draw(){
+    stroke(255);
+    fill(0);
+    ellipse(xPos, yPos, r * 2, r * 2);
+    fill(255);
+    ellipse(xPos + r * sin(pos * (TWO_PI / 90.)), yPos + r * cos(pos * (TWO_PI / 90.)), r / 5, r / 5);
+    line(xPos, yPos, xPos, yPos);
+    stroke(0);
   }
 };
