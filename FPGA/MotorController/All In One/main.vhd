@@ -41,12 +41,12 @@ entity main is
 		JA3	:	in  std_logic;		-- HS1B		Motor 0 sensor 1
 		
 		-- Motor Sensor 1
-		JA4		:	in  std_logic;	-- HS2A		Motor 1 sensor 0
+		JA4	:	in  std_logic;	-- HS2A		Motor 1 sensor 0
 		JA10	:	in  std_logic;		-- HS2B		Motor 1 sensor 1
 		
 		-- Index sensor
-		JA2		:	in  std_logic;	-- Index 0
-		JA8		:	in  std_logic	-- Index 1
+		JA2	:	in  std_logic;	-- Index 0
+		JA8	:	in  std_logic	-- Index 1
 	);
 end main;
 

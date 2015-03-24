@@ -8,7 +8,7 @@ final int CountBytes = 1;
 final int TimeBytes = 3;
 
 void setup(){
-  //port = new Serial(this, "/dev/ttyACM0", 115200);
+  port = new Serial(this, Serial.list()[0], 115200);
   size(400, 500);
   
 }
@@ -20,18 +20,31 @@ void draw(){
   background(0);
   
   if (mousePressed){
-    slider1.update();
-    slider2.update();
-    print("Slider 1: ");
-    print(slider1.getValue());
-    print("\tSlider 2: ");
-    println(slider2.getValue());
+    if (slider1.update()){
+      port.write(0x00);
+      port.write(slider1.getValue());
+      port.write(0x01);
+      port.write(0x00);
+      port.write(0x01);
+      port.write(0x00);
+    }
+    if (slider2.update()){
+      port.write(0x10);
+      port.write(slider2.getValue());
+      port.write(0x11);
+      port.write(0x00);
+      port.write(0x11);
+      port.write(0x00);
+    }
   }
   
   slider1.draw();
   slider2.draw();
-  //port.write(0x00);
-  //port.write(127 - speed);
+  
+  //print("Slider 1: ");
+  //print(slider1.getValue());
+  //print("\tSlider 2: ");
+  //println(slider2.getValue());
 }
 
 void mouseMoved(){
@@ -79,12 +92,14 @@ class Slider{
     rect(xPos, yPos + height / 2 - barWidth - val * (height / 2 - barWidth * 4 / 2) / 128, width, barWidth * 2);
   }
   
-  void update(){
+  boolean update(){
     if (mouseX > xPos && mouseX < xPos + width && mouseY > yPos && mouseY < yPos + height){
       val = - (mouseY - yPos - height / 2) * 128 / (height / 2 - barWidth * 4 / 2);
       if (val > 127) val = 127;
       else if (val < -128) val = -128;
+      return true;
     }
+    return false;
   }
   
   int getValue(){
