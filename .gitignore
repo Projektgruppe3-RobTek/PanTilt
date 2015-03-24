@@ -71,3 +71,8 @@ MASTER.c
 *.xwbt
 *.cmd_log
 *.ut
+
+# ignore latex build files
+*.pdf
+*.aux
+*.synctex.gz
