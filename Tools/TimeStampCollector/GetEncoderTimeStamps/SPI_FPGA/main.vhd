@@ -8,54 +8,61 @@ entity main is
 	port(
 		CLK	:	in  std_logic;				-- FPGA Clock
 		
-		BTN	:	in  std_logic_vector(1 downto 0);	-- Reset
-		--SW	:	in  std_logic_vector(7 downto 0);	-- Test Input
-		LD	:	out std_logic_vector(7 downto 0);	-- Test Output
+		BTN	:	in  std_logic_vector(0 downto 0);	-- Reset
+		
+		JD3 : in std_logic;
+		JD4 : in std_logic;
 		
 		-- SPI0
 		JC1	:	in  std_logic;	-- SPI0CLK
-		JC2	:	in  std_logic;	-- SPI0SS
-		JC3	:	in  std_logic;	-- SPI0MOSI
 		JC4	:	out std_logic;	-- SPI0MISO
 		
-		JD1	:	out std_logic;	-- RW0
-		
 		JC7	:	in  std_logic;	  -- SPI1CLK
-		JC8	:	in  std_logic;	  -- SPI1SS
-		JC9	:	in  std_logic;	  -- SPI1MOSI
-		JC10	:	out std_logic;	-- SPI1MISO
-		
-		JD2	:	out std_logic	-- RW1
+		JC10	:	out std_logic	-- SPI1MISO
 	);
 end main;
 
 architecture logic of main is
 	
-	component SPIController is
-		generic(
-			constant PISOBitWidth	:	positive := 8;	-- Size of the parallel input vector
-			constant SIPOBitWidth	:	positive := 8	-- Size of the parallel output vector
-		);
-		port(
-			RST		:	in  std_logic;
-			CLK		:	in  std_logic;
-			
-			-- SPI signals
-			SPICLK		:	in  std_logic;
-			SPISS		:	in  std_logic;
-			SPIMOSI		:	in  std_logic;
-			SPIMISO		:	out std_logic;
-			
-			-- Read/Write signal
-			RW		:	out std_logic;
-			
-			-- Parallel input
-			PI		: 	in  std_logic_vector(SIPOBitWidth-1 downto 0);
-			
-			-- Parallel output
-			PO		:	out std_logic_vector(SIPOBitWidth-1 downto 0)
-		);
-	end component;
+	component Pulser is
+	
+	port(
+		RST		:	in  std_logic;
+		CLK		: 	in  std_logic;
+		
+		Input		:	in  std_logic;
+		Output		:	out std_logic
+	);
+  end component;
+
+	component Encoder is
+	generic(
+		constant BitWidth	:	positive := 8 -- Size of the output vector
+	);	
+	port(
+		RST	:	in  std_logic;
+		CLK	:	in  std_logic;
+		
+		Input	:	in  std_logic_vector(1 downto 0);
+		Output	:	out std_logic_vector(BitWidth-1 downto 0)
+	);
+  end component;
+
+component PISO is
+	generic(
+		constant BitWidth	:	positive := 8	-- Size of the input vector
+	);
+	port(
+		RST	:	in  std_logic;
+		
+		LATCH	:	in  std_logic;
+		CLK	:	in  std_logic;
+		
+		SI	:	in  std_logic := '0';
+		PI	:	in  std_logic_vector(BitWidth-1 downto 0);
+		SO	:	out std_logic
+	);
+end component;
 	
 	component COUNTER_X_BIT is
 	  generic (
@@ -81,7 +88,7 @@ architecture logic of main is
       write    : in std_logic;
       clk: in std_logic
       );
-
+    
   end component;
 
 	signal spi0_out: std_logic_vector(15 downto 0);
@@ -90,12 +97,43 @@ architecture logic of main is
 	signal spi1_in: std_logic_vector(15 downto 0);
 	signal saved_clock: std_logic_vector(31 downto 0);
 	signal CLOCKS: std_logic_vector(31 downto 0);
+	signal encoder_in:std_logic_vector(1 downto 0);
+	signal encoder_counter: std_logic_vector(7 downto 0);
+	signal pulses: std_logic_vector(1 downto 0);
+	signal pulse: std_logic;
 begin
+  pulse <= pulses(0) or pulses(1);
 
+  encoder_in(0) <= JD3;
+  encoder_in(1) <= JD4;
+  
+  Pulser0 : Pulser
+  port map(
+      RST => BTN(0),
+      CLK => CLK,
+      Input => encoder_counter(0),
+      Output => pulses(0)
+  );
+   Pulser1 : Pulser
+  port map(
+      RST => BTN(0),
+      CLK => CLK,
+      Input => not encoder_counter(0),
+      Output => pulses(1)
+  );
+  
+  Encoder0 : Encoder
+  generic map(BitWidth => 8)
+  port map( RST => BTN(0),
+            CLK => CLK,
+            Input => encoder_in,
+            Output => encoder_counter
+            );
+  
 	COUNTER_32_BIT : COUNTER_X_BIT 
 	generic map(SIZE => 32)
   port map( D => CLK,
-            RST => '0',
+            RST => BTN(0),
             MAX => "11111111111111111111111111111111",
             Q => CLOCKS
             );
@@ -104,56 +142,42 @@ begin
   MEMORY_32_BIT : MEMORY_X_BIT 
   generic map(SIZE => 32)
   port map( in_val => CLOCKS,
-           reset => '0',
+           reset => BTN(0),
            out_val =>  saved_clock,
-           write => BTN(1),
+           write => encoder_counter(0),
            clk => CLK
            );
            
-	spi1_out <= saved_clock(31 downto 16);
+	spi1_out <= CLOCKS(31 downto 16);
 	
-	spi0_out <= saved_clock(15 downto 0);
+	spi0_out <= CLOCKS(15 downto 0);
 	
-	LD <= spi0_in(7 downto 0);
-	 
-	SPIController0: SPIController
+	
+	
+	PISO0: PISO
 	generic map(
-		SIPOBitWidth => 16,
-		PISOBitWidth => 16
+		BitWidth => 16
 	)
 	port map(
 		RST => BTN(0),
-		CLK => CLK,
-		
-		SPICLK => JC1,
-		SPISS => JC2,
-		SPIMOSI => JC3,
-		SPIMISO => JC4,
-		
-		RW => JD1,
+		CLK => JC1,
+		LATCH => pulse,
 		
 		PI => spi0_out,
-		PO => spi0_in
+		SO => JC4
 	);
 	
-		SPIController1: SPIController
+	PISO1: PISO
 	generic map(
-		SIPOBitWidth => 16,
-		PISOBitWidth => 16
+		BitWidth => 16
 	)
 	port map(
 		RST => BTN(0),
-		CLK => CLK,
-		
-		SPICLK => JC7,
-		SPISS => JC8,
-		SPIMOSI => JC9,
-		SPIMISO => JC10,
-		
-		RW => JD2,
+		CLK => JC7,
+		LATCH => pulse,
 		
 		PI => spi1_out,
-		PO => spi1_in
+		SO => JC10
 	);
 	
 end logic;
