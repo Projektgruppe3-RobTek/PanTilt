@@ -32,6 +32,8 @@
 
 \usepackage{algpseudocode}
 
+\usepackage{subfiles}
+
 \algrenewcommand\algorithmicprocedure{\textbf{function}}
 
 \usepackage[nottoc,numbib]{tocbibind}
@@ -45,46 +47,53 @@
 \titlespacing*{\subsubsection}{0pt}{0.1cm}{0cm}
 \titlespacing*{\paragraph}{0pt}{0cm}{0cm}
 
+\setcounter{secnumdepth}{4}
+
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
 \graphicspath{ {./Billeder/} }
 \DeclareGraphicsExtensions{.pdf,.png,.jpg}
 \begin{document}
 
-\input{titlepage}
+\subfile{titlepage}
 
-\input{forord}
+\subfile{forord}
 
-\input{indledning}
+\subfile{indledning}
 
-\input{projektafgraensning}
+\subfile{projektafgraensning}
 
-\input{problemanalyse}
+\subfile{problemanalyse}
 
-\input{problemformulering}
+\subfile{problemformulering}
 
-\input{loesningforslag}
+\subfile{loesningsforslag}
 
-\input{loesning}
+\subfile{loesning}
 
-\input{hardware}
+\subfile{hardware}
 
-\input{software}
+\subfile{software}
 
-\input{modelling}
+\subfile{modelling}
 
-\input{control}
+\subfile{control}
 
-\input{test}
+\subfile{test}
 
-\input{result}
+\subfile{results}
 
-\input{diskussion}
+\subfile{diskussion}
 
-\input{konklussion}
+\subfile{konklussion}
 
-\input{ordliste}
+\subfile{ordliste}
 
-\input{bibliography}
+\subfile{bibliography}
 
-\input{bilag}
+\subfile{bilag}
 
 \end{document}
