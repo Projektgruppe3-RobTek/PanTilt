@@ -16,7 +16,7 @@ Furthermore a reset button have been implemented as a safety precaution, so it i
 
 SW(0) and SW(1) have been connected to the H-Bridge enable, so by turning one of them off the signal to the engine will be disabled. This is useful for both testing and as another safety precaution.
 
-\paragraph{SPI Controller}\mbox{}\\
+\paragraph{SPI Controller}
 
 \textbf{PISO}\\
 The Parallel In Serial Out (PISO) component is used to send data from the FPGA to the ARM board. It functions like a shift register that takes parallel input from the encoder and shift it out serial.
@@ -31,7 +31,7 @@ The Parallel In Serial Out (PISO) component is used to send data from the FPGA t
 billede \ref{PISO_Format} har labelet abelars
 
 \textbf{SIPO}\\
-The Serial In Parallel Out (SIPO) component is used to receive data from the ARM board to the FPGA. It functions like a shift register that receives a serial input from MOSI and outputs it Parallel to the PWM. The SIPO is 9-bit wide, 8 of the bits is the PWM value and the MSB is 
+The Serial In Parallel Out (SIPO) component is used to receive data from the ARM board to the FPGA. It functions like a shift register that receives a serial input from MOSI and outputs it Parallel to the PWM. The SIPO is 9-bit wide, 8 of the bits is the PWM value and the MSB is a Read/Write bit used to tell the FPGA whether the ARM wants to read or wirte data. If RW bit is '0' then 
 
 \begin{figure}[h]
 	\centering
