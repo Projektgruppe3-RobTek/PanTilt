@@ -28,18 +28,21 @@ serialport.flushInput()
 
 count = 0
 last = 0
-Runningavg=[0,0,0,0]
+Runningavg=[]
 i=0
 print("Encoderpuls,Tid(ns),Forskel(ns),Running avg(ns)\n")
 NS_PER_CLOCK = 20
 First = 0
 while True:
   count += 1
-  this = GetTimeStamp(serialport)*20
+  this = GetTimeStamp(serialport)*NS_PER_CLOCK
   if(count == 1):
     First = this
   if not ((this-last) > 10000000 or (this-last) < 0):
-    Runningavg[i%4] = this - last
+    if len(Runningavg) < 4:
+      Runningavg.append(this - last)
+    else:
+      Runningavg[i%4] = this - last
     i+=1
     print(str(count) +"," + str(this-First) + "," + str(this-last) + "," + str(makeavg(Runningavg)))
   last = this 
