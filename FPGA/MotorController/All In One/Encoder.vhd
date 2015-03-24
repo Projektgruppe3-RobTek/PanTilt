@@ -40,23 +40,83 @@ begin
 			if RST = '1' then
 				Count <= (others => '0');
 					
-			elsif Input /= LastInput(1 downto 0) then
+			elsif Input /= LastInput then
 				
 				LastInput(3 downto 2) <= Input;
 				LastInput(1 downto 0) <= LastInput(3 downto 2);
 				
+				-------------
+				-- State 0 --
+				-------------
 				
-				if (LastInput(0) xor LastInput(3)) = '1' then
-					-- Prevent overflow -- Count up
+				-- Count up
+				if LastInput(3 downto 2) = "00" and LastInput(1 downto 0) = "01" then
+					-- Prevent overflow
 					if Count /= 2**(BitWidth-1)-1 then
 						Count <= Count + '1';
 					end if;
-					    
-				else
-					-- Prevent overflow -- Count down
+					
+				-- Count down
+				elsif LastInput(3 downto 2) = "00" and LastInput(1 downto 0) = "10" then
+					-- Prevent overflow
 					if Count /= 2**(BitWidth-1) then
 						Count <= Count - '1';
-					end if;		
+					end if;
+					
+				-------------
+				-- State 1 --
+				-------------
+				
+				-- Count up
+				elsif LastInput(3 downto 2) = "01" and LastInput(1 downto 0) = "11" then
+					-- Prevent overflow
+					if Count /= 2**(BitWidth-1)-1 then
+						Count <= Count + '1';
+					end if;
+					
+				-- Count down
+				elsif LastInput(3 downto 2) = "01" and LastInput(1 downto 0) = "00" then
+					-- Prevent overflow
+					if Count /= 2**(BitWidth-1) then
+						Count <= Count - '1';
+					end if;
+					
+				-------------
+				-- State 2 --
+				-------------
+				
+				-- Count up
+				elsif LastInput(3 downto 2) = "11" and LastInput(1 downto 0) = "10" then
+					-- Prevent overflow
+					if Count /= 2**(BitWidth-1)-1 then
+						Count <= Count + '1';
+					end if;
+					
+				-- Count down
+				elsif LastInput(3 downto 2) = "11" and LastInput(1 downto 0) = "01" then
+					-- Prevent overflow
+					if Count /= 2**(BitWidth-1) then
+						Count <= Count - '1';
+					end if;
+					
+				-------------
+				-- State 3 --
+				-------------
+				
+				-- Count up
+				elsif LastInput(3 downto 2) = "10" and LastInput(1 downto 0) = "00" then
+					-- Prevent overflow
+					if Count /= 2**(BitWidth-1)-1 then
+						Count <= Count + '1';
+					end if;
+					
+				-- Count down
+				elsif LastInput(3 downto 2) = "10" and LastInput(1 downto 0) = "11" then
+					-- Prevent overflow
+					if Count /= 2**(BitWidth-1) then
+						Count <= Count - '1';
+					end if;
+					
 				end if;
 			end if;
 		end if;
@@ -65,5 +125,4 @@ begin
 		
 	end process;
 end logic;
-
 
