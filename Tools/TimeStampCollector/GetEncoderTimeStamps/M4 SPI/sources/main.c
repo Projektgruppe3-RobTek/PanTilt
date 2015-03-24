@@ -41,7 +41,7 @@ int main(void)
 		{
 			INT16U temp1 = ssi0_in_16bit();
 			INT16U temp2 = ssi3_in_16bit();
-			if(temp1 != last_tmp1 || temp2 != last_tmp2)
+			if(temp1 != 0 || temp2 != 0)
 			{
 				uart0_out_char((INT8U) ((temp1 >> 8) & 0xFF) );
 				uart0_out_char((INT8U) (temp1 & 0xFF) );

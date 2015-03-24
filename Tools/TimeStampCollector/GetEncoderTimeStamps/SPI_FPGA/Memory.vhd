@@ -23,7 +23,7 @@ begin  -- process
 	if clk'event and clk='1' then
 		if (reset = '1') then
 		  out_val <= (others => '0');
-		elsif write = '1' and prevwrite = '0' then
+		elsif write /= prevwrite then
 		  out_val <= in_val;
 		end if;
 		prevwrite <= write;
