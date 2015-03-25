@@ -1,8 +1,8 @@
-\documentclass[a4paper,11pt,danish,oneside]{article}
+\ProvidesPackage{setup}
 
 \usepackage[utf8]{inputenc}
 
-\usepackage[danish]{babel}
+\usepackage[english]{babel}
 
 \usepackage{graphicx}
 
@@ -40,7 +40,7 @@
 
 \usepackage{setspace}
 
-\linespread{1.4}
+
 
 \titlespacing*{\section}{0pt}{0.5cm}{0cm}
 \titlespacing*{\subsection}{0pt}{0.3cm}{0cm}
@@ -53,47 +53,3 @@
 {\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
 \titlespacing*{\paragraph}
 {0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
-
-\graphicspath{ {./Billeder/} }
-\DeclareGraphicsExtensions{.pdf,.png,.jpg}
-\begin{document}
-
-\subfile{titlepage}
-
-\subfile{forord}
-
-\subfile{indledning}
-
-\subfile{projektafgraensning}
-
-\subfile{problemanalyse}
-
-\subfile{problemformulering}
-
-\subfile{loesningsforslag}
-
-\subfile{loesning}
-
-\subfile{hardware}
-
-\subfile{software}
-
-\subfile{modelling}
-
-\subfile{control}
-
-\subfile{test}
-
-\subfile{results}
-
-\subfile{diskussion}
-
-\subfile{konklussion}
-
-\subfile{ordliste}
-
-\subfile{bibliography}
-
-\subfile{bilag}
-
-\end{document}
