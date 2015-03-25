@@ -62,9 +62,9 @@ void ssi2_out_clear(void)
 
 INT16U ssi2_in_16bit(void)
 {
-	while(ssi2_data_avaliable() == 0 && !(SSI2_SR_R & SSI_SR_RNE)); //wait while both ringbuffer and FIFO is empty
+	while(ssi2_data_available() == 0 && !(SSI2_SR_R & SSI_SR_RNE)); //wait while both ringbuffer and FIFO is empty
 
-	//Fill ringbuffer from fifo if avaliable
+	//Fill ringbuffer from fifo if available
 	if ( SSI2_SR_R & SSI_SR_RNE)
 		ssi2_rx_isr();
 
@@ -105,9 +105,9 @@ RBUF_INDEX_TYPE ssi2_in_space_left(void)
 	return (sys_ringbuf_uchar_max(ssi2_buffer_in) - sys_ringbuf_uchar_size(ssi2_buffer_in)) / 2; //Divide by 2 as we use 2 places per 16 bit.
 }
 
-RBUF_INDEX_TYPE ssi2_data_avaliable(void)
+RBUF_INDEX_TYPE ssi2_data_available(void)
 {
-	//Fill ringbuffer from fifo if avaliable
+	//Fill ringbuffer from fifo if available
 	if ( SSI2_SR_R & SSI_SR_RNE) //Recieve Fifo not empty
 		ssi2_rx_isr();
 

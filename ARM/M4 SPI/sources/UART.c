@@ -40,9 +40,9 @@ void uart0_out_clear(void)
 }
 
 char uart0_in_char(void){
-  while(uart0_data_avaliable() == 0 && (UART0_FR_R & UART_FR_RXFE)); //wait while both ringbuffer and FIFO is empty
+  while(uart0_data_available() == 0 && (UART0_FR_R & UART_FR_RXFE)); //wait while both ringbuffer and FIFO is empty
 
-	//Fill ringbuffer from fifo if avaliable
+	//Fill ringbuffer from fifo if available
 	if ( !(UART0_FR_R & UART_FR_RXFE))
 		uart0_rx_isr();
 
@@ -75,9 +75,9 @@ RBUF_INDEX_TYPE uart0_out_space_left(void)
 	return sys_ringbuf_uchar_max(buffer_out) - sys_ringbuf_uchar_size(buffer_out);
 }
 
-RBUF_INDEX_TYPE uart0_data_avaliable(void)
+RBUF_INDEX_TYPE uart0_data_available(void)
 {
-	//Fill ringbuffer from fifo if avaliable
+	//Fill ringbuffer from fifo if available
 	if ( !(UART0_FR_R & UART_FR_RXFE))
 		uart0_rx_isr(); //
 

@@ -65,10 +65,10 @@ int main(void)
 		
 		set_leds(0);
 		
-		if (uart0_data_avaliable() >= 2){
+		if (uart0_data_available() >= 2){
 			ssi3_out_16bit((uart0_in_char() << 8) + uart0_in_char());
 		}
-		if (ssi3_data_avaliable() >= 2){
+		if (ssi3_data_available() >= 2){
 			INT16U temp = ssi3_in_16bit();
 			//uart0_out_char((INT8U)((temp >> 8) & 0xFF));
 			//uart0_out_char((INT8U)(temp & 0xFF));
@@ -77,7 +77,7 @@ int main(void)
 			uart0_out_char((INT8U)(temp & 0xFF));
 		}
 		/*
-		if (uart0_data_avaliable() >= 2)
+		if (uart0_data_available() >= 2)
 		{
 			uint8_t temp = uart0_in_char();
 			if (temp < 0x10){
@@ -90,7 +90,7 @@ int main(void)
 			}
 		}
 		
-		if (ssi0_data_avaliable())
+		if (ssi0_data_available())
 		{
 			set_leds(4);
 			
@@ -104,7 +104,7 @@ int main(void)
 			uart0_out_char((INT8U)(temp & 0xFF));
 		}
 		
-		if (ssi3_data_avaliable() >= 2)
+		if (ssi3_data_available() >= 2)
 		{
 			set_leds(4);
 			

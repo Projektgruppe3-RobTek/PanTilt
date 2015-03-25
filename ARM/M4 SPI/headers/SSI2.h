@@ -7,7 +7,7 @@
 
 INT16U ssi2_in_16bit(void);
 void ssi2_out_16bit(INT16U data);
-RBUF_INDEX_TYPE ssi2_data_avaliable(void);
+RBUF_INDEX_TYPE ssi2_data_available(void);
 RBUF_INDEX_TYPE ssi2_in_space_left(void);
 RBUF_INDEX_TYPE ssi2_out_space_left(void);
 void setup_ssi2(void);

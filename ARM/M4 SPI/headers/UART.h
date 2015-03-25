@@ -24,7 +24,7 @@
 void uart0_out_string(char *string);
 char uart0_in_char(void);
 void uart0_out_char(char data);
-RBUF_INDEX_TYPE uart0_data_avaliable(void);
+RBUF_INDEX_TYPE uart0_data_available(void);
 RBUF_INDEX_TYPE uart0_in_space_left(void);
 RBUF_INDEX_TYPE uart0_out_space_left(void);
 void setup_uart0(void);
