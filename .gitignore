@@ -72,6 +72,9 @@ MASTER.c
 *.cmd_log
 *.ut
 
+#ignore crappy Windows thumbnail file
+*.db 
+
 # ignore latex build files
 *.pdf
 *.aux
