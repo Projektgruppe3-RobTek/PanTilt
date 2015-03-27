@@ -6,9 +6,10 @@
 
 PROGRAM=main
 PART=xc3s500e-fg320-4
-
-
-TOOL_PATH_= $(shell locate ISE_DS/ISE/bin/lin64/xst)
+BUILDDIR=build
+LOGDIR=log
+INTSTYLE = silent
+TOOL_PATH_= $(shell locate Xilinx/14.7/ISE_DS/ISE/bin/lin64/xst)
 TOOL_PATH=$(TOOL_PATH_:%xst=%)
 
 XST = ${TOOL_PATH}xst
@@ -18,15 +19,15 @@ PAR = ${TOOL_PATH}par
 BITGEN = ${TOOL_PATH}bitgen
 
 define XST_FILE_OPTIONS
-set -tmpdir "xst/projnav.tmp"
-set -xsthdpdir "xst"
+set -tmpdir "${BUILDDIR}/xst/projnav.tmp"
+set -xsthdpdir "${BUILDDIR}/xst"
 run
--ifn $(PROGRAM).prj
+-ifn ${PROGRAM}.prj
 -ifmt mixed
--ofn $(PROGRAM)
+-ofn ${BUILDDIR}/${PROGRAM}
 -ofmt NGC
--p $(PART)
--top $(PROGRAM)
+-p ${PART}
+-top ${PROGRAM}
 -opt_mode Speed
 -opt_level 1
 -iuc NO
@@ -79,68 +80,73 @@ endef
 export XST_FILE_OPTIONS
 
 
-all: $(PROGRAM)_PROGRAM.bit
+all: ${PROGRAM}_PROGRAM.bit
+
+${BUILDDIR}/${PROGRAM}.xst:
+	@mkdir -p ${BUILDDIR}
+	@mkdir -p ${LOGDIR}
+	echo "$$XST_FILE_OPTIONS" > ${BUILDDIR}/${PROGRAM}.xst
+
+ ${BUILDDIR}/${PROGRAM}.ngc:  ${BUILDDIR}/${PROGRAM}.xst
+	@mkdir -p ${BUILDDIR}/xst
+	@mkdir -p ${BUILDDIR}/xst/projnav.tmp
+	${XST} -intstyle ${INTSTYLE} -ifn  ${BUILDDIR}/${PROGRAM}.xst -ofn  ${BUILDDIR}/${PROGRAM}.syr
+	@mv -f ${PROGRAM}.lso ${LOGDIR}/${PROGRAM}.lso 2>/dev/null; true
+
+ ${BUILDDIR}/${PROGRAM}.ngd:  ${BUILDDIR}/${PROGRAM}.ngc
+	${NGDBUILD} -p ${PART} -uc ${PROGRAM}.ucf  ${BUILDDIR}/${PROGRAM}.ngc ${BUILDDIR}/${PROGRAM}.ngd  -dd ${BUILDDIR}/ -intstyle ${INTSTYLE}
+	@rm ${BUILDDIR}/xlnx_auto_0_xdb/ -rf 2>/dev/null; true
+	@mv -f xlnx_auto_0_xdb/ ${BUILDDIR}/xlnx_auto_0_xdb/ 2>/dev/null; true
 
 
-$(PROGRAM).xst:
-	echo "$$XST_FILE_OPTIONS" > $(PROGRAM).xst
+ ${BUILDDIR}/${PROGRAM}.ncd:  ${BUILDDIR}/${PROGRAM}.ngd
+	${MAP} -pr b  ${BUILDDIR}/${PROGRAM}.ngd  -intstyle ${INTSTYLE}
+	@mv -f xilinx_device_details.xml ${BUILDDIR}/xilinx_device_details.xml 2>/dev/null; true
+	@mv -f main_map.xrpt ${BUILDDIR}/main_map.xrpt 2>/dev/null; true
 
-$(PROGRAM).ngc: $(PROGRAM).xst
-	mkdir -p xst
-	mkdir -p xst/projnav.tmp
-	$(XST) -intstyle ise -ifn $(PROGRAM).xst -ofn $(PROGRAM).syr
+${BUILDDIR}/parout.ncd:  ${BUILDDIR}/${PROGRAM}.ncd
+	${PAR} -w  ${BUILDDIR}/${PROGRAM}.ncd ${BUILDDIR}/parout.ncd ${BUILDDIR}/${PROGRAM}.pcf -intstyle ${INTSTYLE}
+	@mv -f main_par.xrpt ${BUILDDIR}/main_par.xrpt 2>/dev/null; true
 
-$(PROGRAM).ngd: $(PROGRAM).ngc
-	$(NGDBUILD) -p $(PART) -uc $(PROGRAM).ucf $(PROGRAM).ngc
+${PROGRAM}_FLASH.bit: ${BUILDDIR}/parout.ncd
+	${BITGEN} -w -g StartUpClk:CCLK -g CRC:Enable ${BUILDDIR}/parout.ncd ${PROGRAM}_FLASH.bit ${BUILDDIR}/${PROGRAM}.pcf -intstyle ${INTSTYLE}
+	@mv -f ${PROGRAM}_FLASH.bgn ${BUILDDIR}/${PROGRAM}_FLASH.bgn 2>/dev/null; true
+	@mv -f ${PROGRAM}_FLASH.drc ${BUILDDIR}/${PROGRAM}_FLASH.drc 2>/dev/null; true
+	@mv -f ${PROGRAM}_FLASH_bitgen.xwbt  ${BUILDDIR}/${PROGRAM}_PROGRAM_FLASH.xwbt 2>/dev/null; true
+	@mv -f xilinx_device_details.xml ${LOGDIR}/xilinx_device_details.xml 2>/dev/null; true
+	@mv -f webtalk.log ${LOGDIR}/webtalk.log 2>/dev/null; true
+	@mv -f usage_statistics_webtalk.html ${LOGDIR}/usage_statistics_webtalk.html 2>/dev/null; true
 
-$(PROGRAM).ncd: $(PROGRAM).ngd
-	$(MAP) -detail -pr b $(PROGRAM).ngd
 
-parout.ncd: $(PROGRAM).ncd
-	$(PAR) -w $(PROGRAM).ncd parout.ncd $(PROGRAM).pcf
+${PROGRAM}_PROGRAM.bit: ${BUILDDIR}/parout.ncd
+	${BITGEN} -w -g StartUpClk:JTAGCLK -g CRC:Enable ${BUILDDIR}/parout.ncd ${PROGRAM}_PROGRAM.bit ${BUILDDIR}/${PROGRAM}.pcf -intstyle ${INTSTYLE}
+	@mv -f ${PROGRAM}_PROGRAM.bgn ${BUILDDIR}/${PROGRAM}_PROGRAM.bgn 2>/dev/null; true
+	@mv -f ${PROGRAM}_PROGRAM.drc ${BUILDDIR}/${PROGRAM}_PROGRAM.drc 2>/dev/null; true
+	@mv -f ${PROGRAM}_PROGRAM_bitgen.xwbt  ${BUILDDIR}/${PROGRAM}_PROGRAM_bitgen.xwbt 2>/dev/null; true
+	@mv -f xilinx_device_details.xml ${LOGDIR}/xilinx_device_details.xml 2>/dev/null; true
+	@mv -f webtalk.log ${LOGDIR}/webtalk.log 2>/dev/null; true
+	@mv -f usage_statistics_webtalk.html ${LOGDIR}/usage_statistics_webtalk.html 2>/dev/null; true
 
-$(PROGRAM)_FLASH.bit: parout.ncd
-	$(BITGEN) -w -g StartUpClk:CCLK -g CRC:Enable parout.ncd $(PROGRAM)_FLASH.bit $(PROGRAM).pcf
 
-$(PROGRAM)_PROGRAM.bit: parout.ncd
-	$(BITGEN) -w -g StartUpClk:JTAGCLK -g CRC:Enable parout.ncd $(PROGRAM)_PROGRAM.bit $(PROGRAM).pcf
-	
-program: $(PROGRAM)_PROGRAM.bit
-	sudo djtgcfg -d DOnbUsb prog -i 0 -f $(PROGRAM)_PROGRAM.bit
+program: ${PROGRAM}_PROGRAM.bit
+	sudo djtgcfg -d DOnbUsb prog -i 0 -f ${PROGRAM}_PROGRAM.bit
 
-flash: $(PROGRAM)_FLASH.bit
-	sudo djtgcfg -d DOnbUsb prog -i 1 -f $(PROGRAM)_FLASH.bit
+
+flash: ${PROGRAM}_FLASH.bit
+	sudo djtgcfg -d DOnbUsb prog -i 1 -f ${PROGRAM}_FLASH.bit
 
 clean:
-	rm -rf xst
-	rm -f *.ngc
-	rm -f *.srp
-	rm -f *.xrpt
-	rm -f *.bgn
-	rm -f *.bld
-	rm -f *.drc
-	rm -f *.par
-	rm -f *.pad
-	rm -f *.xpi
-	rm -f *.map
-	rm -f *.mrp
-	rm -f *.ncd
-	rm -f *.ngd
-	rm -f *.ngm
-	rm -f *.bit
-	rm -f *.pcf
-	rm -f *.twr
-	rm -f parout*
-	rm -f *.lst
-	rm -f *.unroutes
-	rm -f *.xml
+	rm -rf ${BUILDDIR}
+	rm -rf ${LOGDIR}
+	rm -rf _xmsgs
 	rm -rf xlnx_auto_0_xdb
-	rm -f $(PROGRAM).xst
-	rm -f $(PROGRAM).lso
-	rm -f *.xwbt
-	rm -f *.log
-	rm -f *.html
-	rm -f *.syr
-	rm -f *.ngr
-	rm -f _xmsgs -R
-
+	rm -rf ${PROGRAM}.lso
+	rm -rf xilinx_device_details.xml
+	rm -rf main_map.xrpt
+	rm -rf main_par.xrpt
+	rm -rf *.bgn
+	rm -rf *.drc
+	rm -rf *.xwbt
+	rm -rf *.bit
+	rm -rf usage_statistics_webtalk.html
+	rm -rf *.log
