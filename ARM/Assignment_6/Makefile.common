@@ -1,0 +1,94 @@
+#Define project name
+PROJECT=LCD_CLOCK_UART
+
+LDFILE := Linker.ld
+MAPFILE := MAP.txt
+
+LINKOBJECTS :=
+
+#Define BUILDDIR
+BUILDDIR := bin
+SOURCEDIR := sources
+ASSEMBLYDIR := sources
+
+#C source files
+C_SOURCES := $(shell find $(SOURCEDIR) -name '*.c') #Grab all .c files in source dir recuresively.
+#Assembly source files
+AS_SOURCES := $(shell find $(ASSEMBLYDIR) -name '*.S') #Grab all .S files in assemblydir dir recuresively.
+
+DIRS := ${sort ${dir ${wildcard ${SOURCEDIR}/*/  ${SOURCEDIR}/*/*/}}}
+BUILDDIRS := $(addprefix $(BUILDDIR)/, ${DIRS})
+
+#if SINGLEMODULE is defined, we make a C file which includes all others, and only compiles that
+ifdef SINGLEMODULE
+	SOURCES := ${SOURCEDIR}/MASTER.c
+	OBJECTS := ${BUILDDIR}/MASTER.o
+else
+
+SOURCES := ${C_SOURCES} ${AS_SOURCES}
+OBJECTS_AS :=  $(addprefix $(BUILDDIR)/,$(AS_SOURCES:%.S=%.o))
+OBJECTS_C :=  $(addprefix $(BUILDDIR)/,$(C_SOURCES:%.c=%.o))
+OBJECTS :=  ${OBJECTS_AS} ${OBJECTS_C}
+
+endif
+
+#define linkerfile and ENTRY
+SCATTERgcc_${PROJECT} := $(LDFILE)
+ENTRY_${PROJECT} := ResetISR
+
+#Define linker, archiver, etc. Compiler is defined in main makefile
+PREFIX := arm-none-eabi-
+AR := ${PREFIX}ar
+LD := ${PREFIX}ld
+AS := ${PREFIX}gcc
+OBJCOPY := ${PREFIX}objcopy
+
+#define CPU and FPU
+CPU := -mcpu=cortex-m4
+FPU := -mfpu=fpv4-sp-d16 -mfloat-abi=hard
+
+#
+# The flags passed to the compiler.
+#
+CFLAGS =-mthumb             	\
+       ${CPU}              	\
+       ${FPU}              	\
+       -nostdlib						\
+       -ffunction-sections 	\
+       -fdata-sections     	\
+       -fshort-enums				\
+       -std=c99            	\
+       -Wall               	\
+       -Wextra             	\
+       -Wmissing-prototypes \
+			 -Wshadow							\
+			 -Wpointer-arith			\
+			 -Wstrict-prototypes	\
+			 -Wcast-qual					\
+			 -Wno-keyword-macro		\
+       -Werror							\
+       -pedantic           	\
+       -DNDEBUG
+
+
+#
+# Add optimisation arguments
+#
+CFLAGS+=${OPTS}
+
+
+#
+# The flags passed to the assembler.
+#
+
+AFLAGS=-mthumb \
+       ${CPU}  \
+       ${FPU}  \
+       -MD
+
+LDFLAGS=--gc-sections 								\
+ 				-Map=${MAPFILE} 							\
+ 				-T ${LDFILE} 									\
+ 				--entry=${ENTRY_${PROJECT}}		\
+
+include Makefile.rules
