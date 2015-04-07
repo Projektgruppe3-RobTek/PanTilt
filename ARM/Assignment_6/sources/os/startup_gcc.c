@@ -30,7 +30,7 @@
 // Forward declaration of the default fault handlers.
 //
 //*****************************************************************************
-void ResetISR(void);
+void Reset_Handler(void);
 static void NmiSR(void);
 static void FaultISR(void);
 static void IntDefaultHandler(void);
@@ -68,7 +68,7 @@ void (* const g_pfnVectors[])(void) =
 {
     (void (*)(void))((uint32_t)pui32Stack + sizeof(pui32Stack)),
                                             // The initial stack pointer
-    ResetISR,                               // The reset handler
+    Reset_Handler,                               // The reset handler
     NmiSR,                                  // The NMI handler
     FaultISR,                               // The hard fault handler
     IntDefaultHandler,                      // The MPU fault handler
@@ -248,7 +248,7 @@ extern uint32_t __bss_end__;
 //
 //*****************************************************************************
 void
-ResetISR(void)
+Reset_Handler(void)
 {
     uint32_t *pui32Src, *pui32Dest;
 

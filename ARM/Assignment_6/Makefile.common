@@ -34,7 +34,7 @@ endif
 
 #define linkerfile and ENTRY
 SCATTERgcc_${PROJECT} := $(LDFILE)
-ENTRY_${PROJECT} := ResetISR
+ENTRY_${PROJECT} := Reset_Handler
 
 #Define linker, archiver, etc. Compiler is defined in main makefile
 PREFIX := arm-none-eabi-
