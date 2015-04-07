@@ -2,21 +2,18 @@
 #include "../../headers/tm4c123gh6pm.h"
 
 
+
 void setup_index_sensors(void)
 {
-  	SYSCTL_RCGC2_R 		|= SYSCTL_RCGC2_GPIOF;
-  	GPIO_PORTF_DIR_R  &= ~(SW1_PIN | SW2_PIN); // Init SW1 and SW2 as input.
+  	SYSCTL_RCGC2_R 		|= SYSCTL_RCGC2_GPIOE;
+  	GPIO_PORTE_DIR_R  &= ~(INDEX_0 | INDEX_1); // Init as input.
 
-  	//Unlock PF0
-  	GPIO_PORTF_LOCK_R = GPIO_LOCK_KEY;
-  	GPIO_PORTF_CR_R  |= 0x01;
+  	GPIO_PORTE_DEN_R |= INDEX_0 | INDEX_1;
 
-  	GPIO_PORTF_DEN_R |= SW1_PIN | SW2_PIN;
+  	GPIO_PORTE_DIR_R   &= ~(INDEX_0 | INDEX_1);   							// Init as input.
+    GPIO_PORTE_AFSEL_R &= ~(INDEX_0 | INDEX_1);  								// Disable alt funct
+    GPIO_PORTE_PCTL_R  &= ~(GPIO_PCTL_PE1_M | GPIO_PCTL_PE2_M); // Configure as GPIO.
+    GPIO_PORTE_AMSEL_R &= ~(INDEX_0 | INDEX_1);  								// Disable analog functionality
+    GPIO_PORTE_PUR_R   |=  (INDEX_0 | INDEX_1);     						// Enable weak pull-up.
 
-  	GPIO_PORTF_DIR_R   &= ~(SW1_PIN | SW2_PIN);   							// Init SW1 as input.
-    GPIO_PORTF_AFSEL_R &= ~(SW1_PIN | SW2_PIN);  								// Disable alt funct
-    GPIO_PORTF_PCTL_R  &= ~(GPIO_PCTL_PF4_M | GPIO_PCTL_PF0_M); // Configure as GPIO.
-    GPIO_PORTF_AMSEL_R &= ~(SW1_PIN | SW2_PIN);  								// Disable analog functionality
-    GPIO_PORTF_PUR_R   |=  (SW1_PIN | SW2_PIN);     						// Enable weak pull-up.
-    
 }

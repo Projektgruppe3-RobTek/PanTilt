@@ -1,5 +1,5 @@
-#include "../headers/SSI2.h"
-#include "../headers/tm4c123gh6pm.h"
+#include "SSI2.h"
+#include "../../headers/tm4c123gh6pm.h"
 
 static void enable_ssi2_int(void);
 static void disable_ssi2_int(void);

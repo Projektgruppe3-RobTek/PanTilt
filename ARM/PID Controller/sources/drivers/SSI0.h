@@ -1,8 +1,8 @@
 #pragma once
 
 #include <stdint.h>
-#include "emp_type.h"
-#include "system_buffers.h"
+#include "../../headers/emp_type.h"
+#include "../os/system_buffers.h"
 #include "SSI.h"
 
 INT16U ssi0_in_16bit(void);
