@@ -94,7 +94,7 @@ architecture logic of SPIController is
 begin
 	
 	-- Read/Write output
-	RW <= sRW;
+	--RW <= sRW;
 	
 	-- Input to PISOLatch pulser
 	sPISOPulse <= not SPISS and not sRW;
@@ -109,6 +109,15 @@ begin
 		
 		Input => sPISOPulse,
 		Output => sPISOLATCH
+	);
+	
+	RWPulser0: Pulser
+	port map(
+		RST => RST,
+		CLK => CLK,
+		
+		Input => sRW,
+		Output => RW
 	);
 	
 	PISO0: PISO

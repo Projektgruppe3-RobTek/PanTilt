@@ -12,7 +12,7 @@ entity main is
 		BTN	:	in  std_logic_vector(1 downto 0);	-- Reset
 
 		SW	:	in  std_logic_vector(4 downto 0);	-- Disable motor output
-		LD	:	out std_logic_vector(3 downto 0);	-- Index sensor output
+		LD	:	out std_logic_vector(7 downto 0);	-- Index sensor output
 
 		-- SPI0
 		JC1	:	in  std_logic;		-- SPI0CLK
@@ -82,6 +82,8 @@ architecture logic of main is
 			-- ENC signals
 			ENCInput	: 	in  std_logic_vector(1 downto 0);	-- Encoder Input
 
+			ENCOut : out std_logic_vector(3 downto 0);
+
 			-- PWM signals
 			PWMOutput	:	out std_logic_vector(1 downto 0);	-- PWM Motor Output
 
@@ -110,8 +112,8 @@ begin
 	JB8 <= SW(0) nor SW(1);	-- Enable Motor 0
 	JB1 <= SW(0) nor SW(2);	-- Enable Motor 1
 
-	LD(0) <= not JA2;	-- Index 0
-	LD(1) <= not JA8;	-- Index 1
+	--LD(0) <= not JA2;	-- Index 0
+	--LD(1) <= not JA8;	-- Index 1
 
 	-- Reset signal
 	RST0 <= BTN(0) or SW(0) or SW(1);
@@ -127,7 +129,7 @@ begin
 					-- PWMClockPrescaler -> 50MHz / (5 * 2) = 5MHz;
 
 		-- ENC constants
-		ENCCLKScale => 25,	-- 50MHz / (ENCTimePrescaler * 2) | (1000KHz)
+		ENCCLKScale => 1,	-- 50MHz / (ENCTimePrescaler * 2) | (50000KHz)
 		ENCTimeBitWidth => 24,	-- 24-bit timer
 		ENCCountBitWidth => 8	-- 8-bit Encoder value
 	)
@@ -146,12 +148,12 @@ begin
 		PWMOutput(1) => JB9,	-- PWM Motor Output 1
 
 		-- Test signal
-		RW => LD(2),
+		--RW => LD(2),
 
 		-- ENC signals
 		ENCInput(0) => JA9,	-- Encoder Input 0
 		ENCInput(1) => JA3,	-- Encoder Input 1
-
+		ENCOut => LD(7 downto 4),
 		Index => not JA2,		-- Index 0
 		Reset_end => '0' 		-- EndStop
 	);
@@ -165,7 +167,7 @@ begin
 					-- PWMClockPrescaler -> 50MHz / (5 * 2) = 5MHz;
 
 		-- ENC constants
-		ENCCLKScale => 25,	-- 50MHz / (ENCTimePrescaler * 2) | (1000KHz)
+		ENCCLKScale => 1,	-- 50MHz / (ENCTimePrescaler * 2) | (50000KHz)
 		ENCTimeBitWidth => 24,	-- 24-bit timer
 		ENCCountBitWidth => 8	-- 8-bit Encoder value
 	)
@@ -180,7 +182,7 @@ begin
 		SPIMISO => JC10,	-- SPI MISO
 
 		-- Test signal
-		RW => LD(3),
+		--RW => LD(3),
 
 		-- PWM signals
 		PWMOutput(0) => JB2,	-- PWM Motor Output 0
@@ -189,7 +191,7 @@ begin
 		-- ENC signals
 		ENCInput(0) => JA4,	-- Encoder Input 0
 		ENCInput(1) => JA10,	-- Encoder Input 1
-
+		ENCOut => LD(3 downto 0),
 		Index => not JA8,		-- index 1
 		Reset_end => '0'		-- SoftReset
 	);

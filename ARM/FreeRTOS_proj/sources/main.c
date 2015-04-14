@@ -72,7 +72,7 @@ void uart_task(void *pvParameters)
   while(1)
   {
     uart0_out_char('t');
-  	vTaskDelay(1000 / portTICK_RATE_MS); // wait 100 ms.
+  	vTaskDelay(100 / portTICK_RATE_MS); // wait 100 ms.
   }
 }
 
@@ -80,13 +80,20 @@ void spi_task(void *pvParameters)
 {
   while(1)
   {
-    ssi3_out_16bit(0b0000000010000000);
     ssi3_out_16bit(0b0000000000000000);
-    ssi3_out_16bit(0b0000000000000000);
-    while(ssi3_data_available() < 3);
+    ssi3_out_16bit(0b0000000100000000);
+    ssi3_out_16bit(0b0000000100000000);
 
-    uart0_out_string("Recieved\n");
-    vTaskDelay(1000 / portTICK_RATE_MS); // wait 100 ms.
+    ssi3_in_16bit();
+    INT32U in_data = ssi3_in_16bit() << 16;
+    in_data |= ssi3_in_16bit();
+    bool index_bit = in_data & 0x800000;
+    uart0_out_char((in_data >> 24) & 0xFF);
+    uart0_out_char((in_data >> 16) & 0xFF);
+    uart0_out_char((in_data >> 8) & 0xFF);
+    uart0_out_char((in_data     ) & 0xFF);
+
+    vTaskDelay(100 / portTICK_RATE_MS); // wait 100 ms.
   }
 }
 

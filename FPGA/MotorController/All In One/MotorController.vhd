@@ -32,7 +32,7 @@ entity MotorController is
 
 		-- ENC signals
 		ENCInput	:	in  std_logic_vector(1 downto 0);	-- Encoder Input
-
+		ENCOut : out std_logic_vector(3 downto 0);
 		-- PWM signals
 		PWMOutput	:	out std_logic_vector(1 downto 0);	-- PWM Motor Output
 
@@ -132,14 +132,14 @@ architecture logic of MotorController is
 	signal sENCOutput	:	std_logic_vector(ENCCountBitWidth+ENCTimeBitWidth-1 downto 0);
 
 begin
-
+	ENCOut <= sENCCOUNT;
 	RW <= sPISOLatch;
 
 	sENCRST <= RST or sPISOLatch;
 
 	sENCOutput(ENCCountBitWidth+ENCTimeBitWidth-1 downto ENCTimeBitWidth) <= sENCCount;
-	sENCOutput(22) <= Reset_end;
-	sENCOutput(23) <= Index;
+	sENCOutput(22) <= Index;
+	sENCOutput(23) <= Reset_end;
 	sENCOutput(ENCTimeBitWidth-3 downto 0) <= sENCTime(ENCTimeBitWidth-1 downto 2);
 
 	SPI: SPIController

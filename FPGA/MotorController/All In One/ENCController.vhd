@@ -18,10 +18,11 @@ entity ENCController is
 		--
 		RST		:	in  std_logic;
 		CLK		:	in  std_logic;
-		
+
 		-- Input
 		ENCInput	:	in  std_logic_vector(1 downto 0);
-		
+
+
 		-- Output
 		ENCCount	:	out std_logic_vector(CountBitWidth-1 downto 0);
 		ENCTime		:	out std_logic_vector(TimeBitWidth-1 downto 0)
@@ -29,22 +30,22 @@ entity ENCController is
 end ENCController;
 
 architecture logic of ENCController is
-	
+
 ----------   Components   ----------
-	
+
 	component Encoder is
 		generic(
 			constant BitWidth	:	positive := 8 -- Size of the output vector
-		);	
+		);
 		port(
 			RST	:	in  std_logic;
 			CLK	:	in  std_logic;
-		
+
 			Input	:	in  std_logic_vector(1 downto 0);
 			Output	:	out std_logic_vector(BitWidth-1 downto 0)
 		);
 	end component;
-	
+
 	component Prescaler is
 		generic(
 			constant Scale	:	positive := 25 -- 50MHz / (Scale * 2) = 1MHz
@@ -52,11 +53,11 @@ architecture logic of ENCController is
 		port(
 			RST		:	in  std_logic;
 			CLK		:	in  std_logic;
-		
+
 			ScaledCLK	:	out std_logic
 		);
 	end component;
-	
+
 	component Counter is
 		generic(
 			constant BitWidth	:	positive := 8 -- Bit width of counter
@@ -64,18 +65,18 @@ architecture logic of ENCController is
 		port(
 			RST	:	in std_logic;
 			CLK	:	in std_logic;
-		
+
 			Output	:	out std_logic_vector(BitWidth-1 downto 0)
 		);
 	end component;
-	
+
 ----------   Signals   ----------
-	
+
 	-- Scaled Clock
 	signal sCLK	:	std_logic;
-	
+
 begin
-	
+
 	Encoder0: Encoder
 	generic map(
 		BitWidth => CountBitWidth
@@ -83,11 +84,11 @@ begin
 	port map(
 		RST => RST,
 		CLK => CLK,
-		
+
 		Input => ENCInput,
 		Output => ENCCount
 	);
-	
+
 	Prescaler0: Prescaler
 	generic map(
 		Scale => CLKScale
@@ -95,19 +96,19 @@ begin
 	port map(
 		RST => RST,
 		CLK => CLK,
-		
+
 		ScaledCLK => sCLK
 	);
-	
+
 	Timer: Counter
 	generic map(
 		BitWidth => TimeBitWidth
 	)
 	port map(
 		RST => RST,
-		CLK => sCLK,
-		
+		CLK => CLK,
+
 		Output => ENCTime
 	);
-	
+
 end logic;
