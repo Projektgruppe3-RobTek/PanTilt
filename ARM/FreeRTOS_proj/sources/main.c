@@ -80,22 +80,56 @@ void spi_task(void *pvParameters)
 {
   while(1)
   {
-    ssi3_out_16bit(0b0000000000000000);
+    ssi0_out_16bit(0b0000000011011000);
+    ssi0_out_16bit(0b0000000100000000);
+    ssi0_out_16bit(0b0000000100000000);
+
+    ssi0_in_16bit();
+    INT32U in_data = ssi0_in_16bit() << 16;
+    in_data |= ssi0_in_16bit();
+    bool index_bit = in_data & 0x400000;
+    if(index_bit)
+    {
+      ssi0_out_16bit(0b0000000000000000);
+      while(1)
+        vTaskDelay(1000 / portTICK_RATE_MS); // wait 100 ms.
+    }
+    //uart0_out_char((in_data >> 24) & 0xFF);
+    //uart0_out_char((in_data >> 16) & 0xFF);
+    //uart0_out_char((in_data >> 8) & 0xFF);
+    //uart0_out_char((in_data     ) & 0xFF);
+
+    vTaskDelay(1 / portTICK_RATE_MS); // wait 100 ms.
+  }
+}
+
+void spi2_task(void *pvParameters)
+{
+  while(1)
+  {
+    ssi3_out_16bit(0b0000000001001000);
     ssi3_out_16bit(0b0000000100000000);
     ssi3_out_16bit(0b0000000100000000);
 
     ssi3_in_16bit();
     INT32U in_data = ssi3_in_16bit() << 16;
     in_data |= ssi3_in_16bit();
-    bool index_bit = in_data & 0x800000;
-    uart0_out_char((in_data >> 24) & 0xFF);
-    uart0_out_char((in_data >> 16) & 0xFF);
-    uart0_out_char((in_data >> 8) & 0xFF);
-    uart0_out_char((in_data     ) & 0xFF);
+    bool index_bit = in_data & 0x400000;
+    if(index_bit)
+    {
+      ssi3_out_16bit(0b0000000000000000);
+      while(1)
+        vTaskDelay(1000 / portTICK_RATE_MS); // wait 100 ms.
+    }
+    //uart0_out_char((in_data >> 24) & 0xFF);
+    //uart0_out_char((in_data >> 16) & 0xFF);
+    //uart0_out_char((in_data >> 8) & 0xFF);
+    //uart0_out_char((in_data     ) & 0xFF);
 
-    vTaskDelay(100 / portTICK_RATE_MS); // wait 100 ms.
+    vTaskDelay(1 / portTICK_RATE_MS); // wait 100 ms.
   }
 }
+
 
 int main(void)
 /*****************************************************************************
@@ -113,6 +147,7 @@ int main(void)
    */
   return_value &= xTaskCreate( status_led_task, ( signed portCHAR * ) "Status_led", USERTASK_STACK_SIZE, NULL, LOW_PRIO, NULL );
   return_value &= xTaskCreate( spi_task, (signed portCHAR *) "Uart", USERTASK_STACK_SIZE,NULL,LOW_PRIO,NULL);
+  return_value &= xTaskCreate( spi2_task, (signed portCHAR *) "Uart", USERTASK_STACK_SIZE,NULL,LOW_PRIO,NULL);
 
   if (return_value != pdTRUE)
   {
