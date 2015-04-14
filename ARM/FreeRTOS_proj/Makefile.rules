@@ -1,0 +1,82 @@
+all: ${BUILDDIRS}
+all: ${PROJECT}.bin
+
+
+.PHONY: clean
+clean:
+	rm -rf ${BUILDDIR}
+	rm -rf ${PROJECT}.bin
+	rm -rf ${MAPFILE}
+	rm -rf ${SOURCEDIR}/MASTER.c
+
+flash: all
+	echo "Flashing chip"
+	sudo lm4flash ${PROJECT}.bin
+
+# pull in dependency info for *existing* .o files
+-include $(OBJECTS:.o=.d)
+
+${BUILDDIR} ${BUILDDIRS}:
+	mkdir ${BUILDDIRS} -p
+
+
+${BUILDDIR}/%.o: %.c
+	@${CC} ${CFLAGS} -c $< -o $@
+	@echo "CC $@"
+#create dependency file to detect changes in header
+#http://scottmcpeak.com/autodepend/autodepend.html is used as reference
+
+	@${CC} -MM $(CFLAGS) $< > ${@:.o=.d}
+	@mv -f ${@:.o=.d} ${@:.o=.d.tmp}
+	@sed -e 's|.*:|$@:|' < ${@:.o=.d.tmp} > ${@:.o=.d}
+	@sed -e 's/.*://' -e 's/\\$$//' < ${@:.o=.d.tmp} | fmt -1 | \
+	  sed -e 's/^ *//' -e 's/$$/:/' >> ${@:.o=.d}
+	@rm -f ${@:.o=.d.tmp}
+
+${BUILDDIR}/%.o: %.S
+	@${AS} ${AFLAGS} -c $< -o $@
+	@echo "CC $@"
+
+${BUILDDIR}/%.a:
+	@${AR} -cr ${@} ${^}
+	@echo "CC ${@}"
+
+${BUILDDIR}/${PROJECT}.axf: ${OBJECTS} ${LIBRARIES} ${LDFILE}
+	@${LD}  ${LDFLAGS} -o ${@} $(filter %.o %.a, ${^}) ${LINKOBJECTS}
+	@echo "LD ${@}"
+
+${PROJECT}.bin: ${BUILDDIR}/${PROJECT}.axf
+	@${OBJCOPY} -O binary ${<} ${@}
+	@echo "OBJCOPY ${@}"
+
+#This creates a file which include all others.
+${SOURCEDIR}/MASTER.c: ${SOURCES_}
+	@$(foreach file,${C_SOURCES},echo "#include \"../$(file)\"" >> ${SOURCEDIR}/MASTER.c;)
+
+
+projectname:
+	@echo "$(PROJECT)"
+
+debug-assert: clean
+debug-assert: CFLAGS+=-g -D DEBUG
+debug-assert: CFLAGS:=$(filter-out -DNDEBUG,$(CFLAGS))
+debug-assert: all
+debug-assert:
+	@echo ${CFLAGS}
+	@echo "Starting debugger. This may take a while"
+	sudo ./debug_nemiver.sh
+
+
+
+
+debug: clean
+debug: CFLAGS+=-g -D DEBUG
+debug: all
+debug:
+
+	@echo ${CFLAGS}
+	@echo "Starting debugger. This may take a while"
+	sudo ./debug_nemiver.sh
+
+optflags:
+	@${CC} -Q --help=optimizers ${CFLAGS}

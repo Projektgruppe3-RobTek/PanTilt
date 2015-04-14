@@ -14,6 +14,4 @@ void setup_index_sensors(void)
     GPIO_PORTE_AFSEL_R &= ~(INDEX_0 | INDEX_1);  								// Disable alt funct
     GPIO_PORTE_PCTL_R  &= ~(GPIO_PCTL_PE1_M | GPIO_PCTL_PE2_M); // Configure as GPIO.
     GPIO_PORTE_AMSEL_R &= ~(INDEX_0 | INDEX_1);  								// Disable analog functionality
-    GPIO_PORTE_PUR_R   |=  (INDEX_0 | INDEX_1);     						// Enable weak pull-up.
-
 }
