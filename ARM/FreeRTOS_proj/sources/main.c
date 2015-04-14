@@ -76,6 +76,19 @@ void uart_task(void *pvParameters)
   }
 }
 
+void spi_task(void *pvParameters)
+{
+  while(1)
+  {
+    ssi3_out_16bit(0b0000000010000000);
+    ssi3_out_16bit(0b0000000000000000);
+    ssi3_out_16bit(0b0000000000000000);
+    while(ssi3_data_available() < 3);
+
+    uart0_out_string("Recieved\n");
+    vTaskDelay(1000 / portTICK_RATE_MS); // wait 100 ms.
+  }
+}
 
 int main(void)
 /*****************************************************************************
@@ -92,7 +105,7 @@ int main(void)
    Start the tasks defined within this file/specific to this demo.
    */
   return_value &= xTaskCreate( status_led_task, ( signed portCHAR * ) "Status_led", USERTASK_STACK_SIZE, NULL, LOW_PRIO, NULL );
-  return_value &= xTaskCreate( uart_task, (signed portCHAR *) "Uart", USERTASK_STACK_SIZE,NULL,LOW_PRIO,NULL);
+  return_value &= xTaskCreate( spi_task, (signed portCHAR *) "Uart", USERTASK_STACK_SIZE,NULL,LOW_PRIO,NULL);
 
   if (return_value != pdTRUE)
   {

@@ -86,7 +86,11 @@ architecture logic of main is
 			PWMOutput	:	out std_logic_vector(1 downto 0);	-- PWM Motor Output
 
 			-- Read/Write test output
-			RW		:	out std_logic	-- Read/Write
+			RW		:	out std_logic;	-- Read/Write
+
+			-- Index/Reset/end
+			Index : in std_logic;
+			Reset_end : in std_logic
 
 
 		);
@@ -146,7 +150,10 @@ begin
 
 		-- ENC signals
 		ENCInput(0) => JA9,	-- Encoder Input 0
-		ENCInput(1) => JA3	-- Encoder Input 1
+		ENCInput(1) => JA3,	-- Encoder Input 1
+
+		Index => not JA2,		-- Index 0
+		Reset_end => '0' 		-- EndStop
 	);
 
 	MotorController1: MotorController
@@ -181,6 +188,9 @@ begin
 
 		-- ENC signals
 		ENCInput(0) => JA4,	-- Encoder Input 0
-		ENCInput(1) => JA10	-- Encoder Input 1
+		ENCInput(1) => JA10,	-- Encoder Input 1
+
+		Index => not JA8,		-- index 1
+		Reset_end => '0'		-- SoftReset
 	);
 end logic;
