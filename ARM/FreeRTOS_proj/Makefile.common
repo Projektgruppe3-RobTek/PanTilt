@@ -57,15 +57,16 @@ CFLAGS =-mthumb             	\
        -ffunction-sections 	\
        -fdata-sections     	\
        -fshort-enums				\
-       -std=c99            	\
+       -std=c11            	\
        -Wall               	\
        -Wextra             	\
+       -Wmissing-prototypes \
 			 -Wshadow							\
 			 -Wpointer-arith			\
 			 -Wstrict-prototypes	\
-       -pedantic           	\
+       -Werror							\
        -DNDEBUG							\
-			 -I	sources/FreeRTOS/ \
+			 -I	sources/FreeRTOS/
 
 
 #

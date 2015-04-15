@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include "tm4c123gh6pm.h"
 #include "emp_type.h"
-
+#include "systick.h"
 
 
 #define SYSTICK_RELOAD_VALUE 80000 // 5 mS
@@ -13,6 +13,8 @@
 #define SYSTICK_PRIORITY    0x7E
 
 volatile INT16S ticks = 0;
+void SysTick_Handler(void);
+
 
 void SysTick_Handler(void)
 /*****************************************************************************
@@ -23,12 +25,17 @@ void SysTick_Handler(void)
   ticks++;
 }
 
+void enable_global_int(void);
+
 
 void enable_global_int()
 {
   // enable interrupts.
   __asm("cpsie i");
 }
+
+void disable_global_int(void);
+
 
 void disable_global_int()
 {
@@ -54,10 +61,6 @@ void init_systick()
   // Clear pending systick interrupt request
   NVIC_INT_CTRL_R |= NVIC_INT_CTRL_UNPEND_SYST;
 
-  // Set systick priority to 0x10, first clear then set.
-  NVIC_SYS_PRI3_R &= ~(NVIC_SYS_PRI3_TICK_M);
-  NVIC_SYS_PRI3_R |= (NVIC_SYS_PRI3_TICK_M & (SYSTICK_PRIORITY<<NVIC_SYS_PRI3_TICK_S));
-
   // Select systick clock source, Use core clock
   NVIC_ST_CTRL_R |= NVIC_ST_CTRL_CLK_SRC;
 
@@ -67,4 +70,3 @@ void init_systick()
   // Enable and start timer
   NVIC_ST_CTRL_R |= NVIC_ST_CTRL_ENABLE;
 }
-

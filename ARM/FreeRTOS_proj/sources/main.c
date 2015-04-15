@@ -48,6 +48,11 @@
 
 /*****************************   Functions   *******************************/
 
+void uart_task(void *pvParameters);
+void spi_task(void *pvParameters);
+void spi2_task(void *pvParameters);
+
+static void setupHardware(void);
 
 static void setupHardware(void)
 /*****************************************************************************
@@ -67,7 +72,8 @@ static void setupHardware(void)
   status_led_init();
 
 }
-void uart_task(void *pvParameters)
+
+void uart_task(void __attribute__((unused)) *pvParameters)
 {
   while(1)
   {
@@ -76,7 +82,8 @@ void uart_task(void *pvParameters)
   }
 }
 
-void spi_task(void *pvParameters)
+
+void spi_task(void __attribute__((unused)) *pvParameters)
 {
   while(1)
   {
@@ -103,7 +110,7 @@ void spi_task(void *pvParameters)
   }
 }
 
-void spi2_task(void *pvParameters)
+void spi2_task(void __attribute__((unused)) *pvParameters)
 {
   while(1)
   {

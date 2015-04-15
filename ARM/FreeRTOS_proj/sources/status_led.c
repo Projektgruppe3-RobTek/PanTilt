@@ -56,7 +56,7 @@ void status_led_init(void)
 }
 
 
-void status_led_task(void *pvParameters)
+void status_led_task(void __attribute__((unused)) *pvParameters)
 {
 
 	while(1)

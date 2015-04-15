@@ -17,4 +17,4 @@
 * 150308  MoH   Module created.
 *
 *****************************************************************************/
-void init_systick();
+void init_systick(void);

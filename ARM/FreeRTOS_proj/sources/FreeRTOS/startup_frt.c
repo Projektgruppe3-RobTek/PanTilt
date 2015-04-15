@@ -18,6 +18,8 @@
 
 
 /*----------Stack Configuration-----------------------------------------------*/
+
+#include <stdint.h>
 #define STACK_SIZE       0x00000100      /*!< Stack size (in Words)           */
 __attribute__ ((section(".co_stack")))
 unsigned long pulStack[STACK_SIZE];
@@ -75,7 +77,7 @@ __attribute__ ((used,section(".isr_vector")))
 void (* const g_pfnVectors[])(void) =
 {
   /*----------Core Exceptions------------------------------------------------ */
-  (void *)&pulStack[STACK_SIZE-1],     /*!< The initial stack pointer         */
+  (void (*)(void))  ((uint32_t)&pulStack[STACK_SIZE-1]),     /*!< The initial stack pointer         */
   ResetISR,             /*!< Reset Handler                               */
   NMI_Handler,               /*!< NMI Handler                                 */
   HardFault_Handler,         /*!< Hard Fault Handler                          */
@@ -293,7 +295,7 @@ void Default_ResetISR(void)
   * @param  None
   * @retval None
   */
-static void Default_Handler(void)
+static void __attribute__((unused)) Default_Handler(void)
 {
 	/* Go into an infinite loop. */
 	while (1)

@@ -26,7 +26,6 @@
 #include <iso646.h>
 
 /*******************************   Defines    *******************************/
-#define NULL 0
 #define FALSE 0
 #define TRUE 1
 
