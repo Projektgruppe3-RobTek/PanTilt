@@ -79,66 +79,6 @@ static void setupHardware(void)
   status_led_init();
 }
 
-void uart_task(void __attribute__((unused)) *pvParameters)
-{
-  while(1)
-  {
-    uart0_out_char('t');
-  	vTaskDelay(100000 / portTICK_RATE_NS); // wait 100 ms.
-  }
-}
-
-
-void spi_task(void __attribute__((unused)) *pvParameters)
-{
-  while(1)
-  {
-    ssi0_out_16bit(0b0000000011011000);
-    ssi0_out_16bit(0b0000000100000000);
-    ssi0_out_16bit(0b0000000100000000);
-
-    ssi0_in_16bit();
-    INT32U in_data = ssi0_in_16bit() << 16;
-    in_data |= ssi0_in_16bit();
-    bool index_bit = in_data & 0x400000;
-    if(index_bit)
-    {
-      ssi0_out_16bit(0b0000000000000000);
-      while(1)
-        vTaskDelay(1000000 / portTICK_RATE_NS); // wait 100 ms.
-    }
-
-    vTaskDelay(1000 / portTICK_RATE_NS); // wait 100 ms.
-  }
-}
-
-void spi2_task(void __attribute__((unused)) *pvParameters)
-{
-  while(1)
-  {
-    ssi3_out_16bit(0b0000000001001000);
-    ssi3_out_16bit(0b0000000100000000);
-    ssi3_out_16bit(0b0000000100000000);
-
-    ssi3_in_16bit();
-    INT32U in_data = ssi3_in_16bit() << 16;
-    in_data |= ssi3_in_16bit();
-    bool index_bit = in_data & 0x400000;
-    if(index_bit)
-    {
-      ssi3_out_16bit(0b0000000000000000);
-      while(1)
-        vTaskDelay(1000000 / portTICK_RATE_NS); // wait 100 ms.
-    }
-    //uart0_out_char((in_data >> 24) & 0xFF);
-    //uart0_out_char((in_data >> 16) & 0xFF);
-    //uart0_out_char((in_data >> 8) & 0xFF);
-    //uart0_out_char((in_data     ) & 0xFF);
-
-    vTaskDelay(1000 / portTICK_RATE_NS); // wait 100 ms.
-  }
-}
-
 
 int main(void)
 /*****************************************************************************
