@@ -49,7 +49,7 @@ void sampler1_task(void __attribute__((unused)) *pvParameters)
   xLastWakeTime = xTaskGetTickCount();
   while(1)
   {
-    INT16U outdata = pwm_motor1 | 0 << 8 | reset << 9;
+    INT16U outdata = (INT8U)pwm_motor1 | 0 << 8 | reset << 9;
     ssi0_out_16bit(outdata);
     ssi0_out_16bit(1 << 8);
     ssi0_out_16bit(1 << 8);
