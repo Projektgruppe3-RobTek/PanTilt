@@ -1,9 +1,11 @@
 net "BTN<0>" loc = B18;	// Reset
 net "BTN<0>" clock_dedicated_route = false;
-//net "BTN<1>" loc = D18;
-//net "BTN<1>" clock_dedicated_route = false;
-//net "BTN<2>" loc = E18;
+net "BTN<1>" loc = D18;
+net "BTN<1>" clock_dedicated_route = false;
+net "BTN<2>" loc = E18;
+net "BTN<2>" clock_dedicated_route = false;
 //net "BTN<3>" loc = H13;
+//net "BTN<3>" clock_dedicated_route = false;
 
 net "SW<0>" loc = G18;
 net "SW<1>" loc = H18;

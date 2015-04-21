@@ -9,7 +9,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity main is
 	port(
 		CLK	:	in  std_logic;				-- FPGA Clock
-		BTN	:	in  std_logic_vector(1 downto 0);	-- Reset
+		BTN	:	in  std_logic_vector(2 downto 0);	-- Reset
 
 		SW	:	in  std_logic_vector(4 downto 0);	-- Disable motor output
 		LD	:	out std_logic_vector(7 downto 0);	-- Index sensor output
@@ -116,8 +116,8 @@ begin
 	--LD(1) <= not JA8;	-- Index 1
 
 	-- Reset signal
-	RST0 <= BTN(0) or SW(0) or SW(1);
-	RST1 <= BTN(0) or SW(0) or SW(2);
+	RST0 <= BTN(1) or SW(0) or SW(1);
+	RST1 <= BTN(2) or SW(0) or SW(2);
 
 	MotorController0: MotorController
 	generic map(
@@ -193,6 +193,6 @@ begin
 		ENCInput(1) => JA10,	-- Encoder Input 1
 		ENCOut => LD(3 downto 0),
 		Index => not JA8,		-- index 1
-		Reset_end => '0'		-- SoftReset
+		Reset_end => BTN(0)		-- SoftReset
 	);
 end logic;
