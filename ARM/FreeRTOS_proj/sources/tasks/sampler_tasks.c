@@ -160,14 +160,16 @@ void sampler2_task(void __attribute__((unused)) *pvParameters)
     in_data |= ssi3_in_16bit();
     INT32U timer_val =  in_data & 0x3fffff;
     bool index =        in_data & 0x400000;
-    //bool reset_but =          in_data & 0x800000;
+    bool reset_but =          in_data & 0x800000;
     INT8S encoder_val = (in_data & 0xff000000) >> 24;
+	if(reset_but)
+		vprintf_(uart0_out_string, 200, "t");
 
     if(index)
       last_pos = 0;
     else
       last_pos = calc_position(last_pos, encoder_val);
-    //if(reset_but) emergency_stop();
+    
     sample_element position_element;
     position_element.type = position;
     position_element.value = last_pos;
