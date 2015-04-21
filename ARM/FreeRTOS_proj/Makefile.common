@@ -64,7 +64,6 @@ CFLAGS =-mthumb             	\
 			 -Wshadow							\
 			 -Wpointer-arith			\
 			 -Wstrict-prototypes	\
-       -Werror							\
        -DNDEBUG							\
 			 -I	sources/FreeRTOS/
 

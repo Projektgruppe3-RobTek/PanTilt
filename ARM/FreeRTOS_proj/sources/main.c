@@ -36,6 +36,7 @@
 #include "drivers/fpu.h"
 #include "tasks/sampler_tasks.h"
 #include "tasks/debug_task.h"
+#include "libs/print.h"
 
 
 /*****************************    Defines    *******************************/
@@ -70,7 +71,7 @@ static void setupHardware(void)
   //set_sysclk(FCPU / 1000);
   enable_fpu();
   init_sampler1();
-  //init_sampler2();
+  init_sampler2();
   sys_ringbuf_uchar_init();
   setup_uart0();
   setup_ssi0();
@@ -106,10 +107,6 @@ void spi_task(void __attribute__((unused)) *pvParameters)
       while(1)
         vTaskDelay(1000000 / portTICK_RATE_NS); // wait 100 ms.
     }
-    //uart0_out_char((in_data >> 24) & 0xFF);
-    //uart0_out_char((in_data >> 16) & 0xFF);
-    //uart0_out_char((in_data >> 8) & 0xFF);
-    //uart0_out_char((in_data     ) & 0xFF);
 
     vTaskDelay(1000 / portTICK_RATE_NS); // wait 100 ms.
   }
@@ -157,15 +154,16 @@ int main(void)
   /*
    Start the tasks defined within this file/specific to this demo.
    */
-  return_value &= xTaskCreate( status_led_task, ( signed portCHAR * ) "Status_led", USERTASK_STACK_SIZE, NULL, LOW_PRIO, NULL );
-  return_value &= xTaskCreate( sampler1_task, (signed portCHAR *) "Sampler1", 200,NULL,HIGH_PRIO,NULL);
-  //return_value &= xTaskCreate( sampler2_task, (signed portCHAR *) "Sampler1", 200,NULL,HIGH_PRIO,NULL);
-  return_value &= xTaskCreate( debug_task, (signed portCHAR *) "debug", 200,NULL,HIGH_PRIO,NULL);
+  return_value &= xTaskCreate( sampler1_task, (signed portCHAR *) "Sampler1", 100, NULL,LOW_PRIO,NULL);
+  return_value &= xTaskCreate( sampler2_task, (signed portCHAR *) "Sampler2", 100, NULL,LOW_PRIO,NULL);
+  //return_value &= xTaskCreate( debug_task, (signed portCHAR *) "debug", 100,NULL,LOW_PRIO,NULL);
+  return_value &= xTaskCreate( status_led_task, ( signed portCHAR * ) "Status_led", 50, NULL, LOW_PRIO, NULL );
+
 
 
   if (return_value != pdTRUE)
   {
-    GPIO_PORTD_DATA_R &= 0xBF;  // Turn on status LED.
+    vprintf_(uart0_out_string, 200, "CRASH IN SETUP");
     while(1);  // cold not create one or more tasks.
   }
 

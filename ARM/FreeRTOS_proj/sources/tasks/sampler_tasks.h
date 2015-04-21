@@ -7,7 +7,10 @@
 #include "../../headers/GLOBAL_DEFINITIONS.h"
 #include <stdbool.h>
 #define TIME_RES 80//resulution of time in ns
-#define SAMPLE_FREQ 10 // HZ
+#define SAMPLE_FREQ 1000 // HZ
+#define SAMPLER2_CALIB_PWM 65
+#define SAMPLER1_CALIB_PWM 25
+
 typedef enum
 {
   speed,
@@ -35,3 +38,5 @@ void sampler1_task(void __attribute__((unused)) *pvParameters);
 void sampler2_task(void __attribute__((unused)) *pvParameters);
 void init_sampler1(void);
 void init_sampler2(void);
+void calibrate_sampler2(void);
+void calibrate_sampler1(void);

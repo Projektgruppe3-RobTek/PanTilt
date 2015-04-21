@@ -1,6 +1,6 @@
 #include "print.h"
 #include "FreeRTOS.h"
-static char stringalloced[500];
+static char stringalloced[100];
 int vprintf_(void (*destfunc)(char *), size_t __attribute__((unused)) max_size, char *string, ...)
 {	//subset of vprintf. Only implents integers. Not threadsafe
 
