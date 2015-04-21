@@ -37,6 +37,7 @@
 #include "tasks/sampler_tasks.h"
 #include "tasks/debug_task.h"
 #include "libs/print.h"
+#include "../headers/GLOBAL_DEFINITIONS.h"
 
 
 /*****************************    Defines    *******************************/
@@ -68,7 +69,6 @@ static void setupHardware(void)
   // TODO: Put hardware configuration and initialisation in here
 
   // Warning: If you do not initialize the hardware clock, the timings will be inaccurate
-  //set_sysclk(FCPU / 1000);
   enable_fpu();
   init_sampler1();
   init_sampler2();
@@ -77,6 +77,7 @@ static void setupHardware(void)
   setup_ssi0();
   setup_ssi3();
   status_led_init();
+  //set_sysclk(FCPU / 1000);
 }
 
 
