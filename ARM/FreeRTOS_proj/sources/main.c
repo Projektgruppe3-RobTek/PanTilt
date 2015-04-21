@@ -23,17 +23,17 @@
 #include <stdint.h>
 #include "tm4c123gh6pm.h"
 #include "emp_type.h"
-#include "glob_def.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
 #include "semphr.h"
-#include "systick.h"
 #include "status_led.h"
 #include "os/system_buffers.h"
 #include "drivers/UART.h"
 #include "drivers/SSI0.h"
 #include "drivers/SSI3.h"
+#include "drivers/sysclk.h"
+#include "drivers/fpu.h"
 
 /*****************************    Defines    *******************************/
 #define USERTASK_STACK_SIZE configMINIMAL_STACK_SIZE
@@ -64,13 +64,13 @@ static void setupHardware(void)
   // TODO: Put hardware configuration and initialisation in here
 
   // Warning: If you do not initialize the hardware clock, the timings will be inaccurate
-  init_systick();
+  set_sysclk(FCPU / 1000);
+  enable_fpu();
   sys_ringbuf_uchar_init();
   setup_uart0();
   setup_ssi0();
   setup_ssi3();
   status_led_init();
-
 }
 
 void uart_task(void __attribute__((unused)) *pvParameters)
