@@ -31,6 +31,6 @@ void debug_task(void __attribute__((unused)) *pvParameters)
     xSemaphoreGive(sampler1_queue_sem);
     if(gotsamples)
       vprintf_(uart0_out_string, 200, "POSITION: %d, SPEED %d\n", (int)deb_pos, (int)deb_speed);
-    vTaskDelay(100 / portTICK_RATE_NS);
+    vTaskDelay(100000 / portTICK_RATE_NS);
   }
 }
