@@ -44,6 +44,9 @@ entity main is
 		JA4	:	in  std_logic;	-- HS2A		Motor 1 sensor 0
 		JA10	:	in  std_logic;		-- HS2B		Motor 1 sensor 1
 
+		-- End sencor
+		JA1	:	in	std_logic; 	-- End
+		
 		-- Index sensor
 		JA2	:	in  std_logic;	-- Index 0
 		JA8	:	in  std_logic;	-- Index 1
@@ -155,7 +158,7 @@ begin
 		ENCInput(1) => JA3,	-- Encoder Input 1
 		ENCOut => LD(7 downto 4),
 		Index => not JA2,		-- Index 0
-		Reset_end => '0' 		-- EndStop
+		Reset_end => JA1 		-- EndStop
 	);
 
 	MotorController1: MotorController

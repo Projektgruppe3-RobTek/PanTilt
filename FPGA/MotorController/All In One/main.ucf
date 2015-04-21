@@ -29,7 +29,7 @@ net "LD<7>" loc = R4;
 
 net "CLK" loc = B8;
 
-//net "JA1" loc = L15;	//
+net "JA1" loc = L15;	// End Switch
 net "JA2" loc = K12;	// Index0
 net "JA3" loc = L17;	// HS1B
 net "JA4" loc = M15;	// HS2A
