@@ -15,7 +15,8 @@
 #define DEL  0x7F
 
 #define BRD 115200
-#define BRD_BASE (FCPU * 64 / (16 * BRD)) //BRD integer part
+#define UARTCLK 16000000
+#define BRD_BASE (UARTCLK * 64 / (16 * BRD)) //BRD integer part
 #define IBRD (BRD_BASE / 64)
 #define FBRD BRD_BASE - IBRD * 64
 

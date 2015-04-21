@@ -25,7 +25,6 @@
 #include "queue.h"
 #include "semphr.h"
 #include "emp_type.h"
-#include "glob_def.h"
 #include "binary.h"
 #include "status_led.h"
 
@@ -63,7 +62,7 @@ void status_led_task(void __attribute__((unused)) *pvParameters)
 	{
 		// Toggle status led
     GPIO_PORTF_DATA_R ^= 0x02;
-		vTaskDelay(500 / portTICK_RATE_MS); // wait 100 ms.
+		vTaskDelay(500000 / portTICK_RATE_NS); // wait 100 ms.
 	}
 }
 

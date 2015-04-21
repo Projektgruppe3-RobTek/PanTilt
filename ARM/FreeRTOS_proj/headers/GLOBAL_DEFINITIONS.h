@@ -25,7 +25,7 @@
 #include <iso646.h>
 
 /*******************************   Defines    *******************************/
-#define FCPU              80000000 // Hz.
-#define TICK_RATE         2000 // Hz
+#define FCPU              16000000 // Hz.
+#define TICK_RATE            20000 // Hz
 
 /****************************** End of module *******************************/

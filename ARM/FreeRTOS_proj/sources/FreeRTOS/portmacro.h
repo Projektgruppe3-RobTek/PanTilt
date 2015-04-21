@@ -110,7 +110,7 @@ extern "C" {
 
 /* Architecture specifics. */
 #define portSTACK_GROWTH			( -1 )
-#define portTICK_RATE_MS			( ( portTickType ) 1000 / configTICK_RATE_HZ )
+#define portTICK_RATE_NS			( ( portTickType ) 1000000 / configTICK_RATE_HZ )
 #define portBYTE_ALIGNMENT			8
 /*-----------------------------------------------------------*/
 
@@ -192,4 +192,3 @@ not necessary for to use this port.  They are defined so the common demo files
 #endif
 
 #endif /* PORTMACRO_H */
-

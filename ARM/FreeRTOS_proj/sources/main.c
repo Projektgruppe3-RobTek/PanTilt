@@ -34,6 +34,9 @@
 #include "drivers/SSI3.h"
 #include "drivers/sysclk.h"
 #include "drivers/fpu.h"
+#include "tasks/sampler_tasks.h"
+#include "tasks/debug_task.h"
+
 
 /*****************************    Defines    *******************************/
 #define USERTASK_STACK_SIZE configMINIMAL_STACK_SIZE
@@ -64,8 +67,10 @@ static void setupHardware(void)
   // TODO: Put hardware configuration and initialisation in here
 
   // Warning: If you do not initialize the hardware clock, the timings will be inaccurate
-  set_sysclk(FCPU / 1000);
+  //set_sysclk(FCPU / 1000);
   enable_fpu();
+  init_sampler1();
+  //init_sampler2();
   sys_ringbuf_uchar_init();
   setup_uart0();
   setup_ssi0();
@@ -78,7 +83,7 @@ void uart_task(void __attribute__((unused)) *pvParameters)
   while(1)
   {
     uart0_out_char('t');
-  	vTaskDelay(100 / portTICK_RATE_MS); // wait 100 ms.
+  	vTaskDelay(100000 / portTICK_RATE_NS); // wait 100 ms.
   }
 }
 
@@ -99,14 +104,14 @@ void spi_task(void __attribute__((unused)) *pvParameters)
     {
       ssi0_out_16bit(0b0000000000000000);
       while(1)
-        vTaskDelay(1000 / portTICK_RATE_MS); // wait 100 ms.
+        vTaskDelay(1000000 / portTICK_RATE_NS); // wait 100 ms.
     }
     //uart0_out_char((in_data >> 24) & 0xFF);
     //uart0_out_char((in_data >> 16) & 0xFF);
     //uart0_out_char((in_data >> 8) & 0xFF);
     //uart0_out_char((in_data     ) & 0xFF);
 
-    vTaskDelay(1 / portTICK_RATE_MS); // wait 100 ms.
+    vTaskDelay(1000 / portTICK_RATE_NS); // wait 100 ms.
   }
 }
 
@@ -126,14 +131,14 @@ void spi2_task(void __attribute__((unused)) *pvParameters)
     {
       ssi3_out_16bit(0b0000000000000000);
       while(1)
-        vTaskDelay(1000 / portTICK_RATE_MS); // wait 100 ms.
+        vTaskDelay(1000000 / portTICK_RATE_NS); // wait 100 ms.
     }
     //uart0_out_char((in_data >> 24) & 0xFF);
     //uart0_out_char((in_data >> 16) & 0xFF);
     //uart0_out_char((in_data >> 8) & 0xFF);
     //uart0_out_char((in_data     ) & 0xFF);
 
-    vTaskDelay(1 / portTICK_RATE_MS); // wait 100 ms.
+    vTaskDelay(1000 / portTICK_RATE_NS); // wait 100 ms.
   }
 }
 
@@ -153,8 +158,9 @@ int main(void)
    Start the tasks defined within this file/specific to this demo.
    */
   return_value &= xTaskCreate( status_led_task, ( signed portCHAR * ) "Status_led", USERTASK_STACK_SIZE, NULL, LOW_PRIO, NULL );
-  return_value &= xTaskCreate( spi_task, (signed portCHAR *) "Uart", USERTASK_STACK_SIZE,NULL,LOW_PRIO,NULL);
-  return_value &= xTaskCreate( spi2_task, (signed portCHAR *) "Uart", USERTASK_STACK_SIZE,NULL,LOW_PRIO,NULL);
+  return_value &= xTaskCreate( sampler1_task, (signed portCHAR *) "Sampler1", 200,NULL,HIGH_PRIO,NULL);
+  //return_value &= xTaskCreate( sampler2_task, (signed portCHAR *) "Sampler1", 200,NULL,HIGH_PRIO,NULL);
+  return_value &= xTaskCreate( debug_task, (signed portCHAR *) "debug", 200,NULL,HIGH_PRIO,NULL);
 
   if (return_value != pdTRUE)
   {

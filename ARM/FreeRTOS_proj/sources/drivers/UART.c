@@ -94,6 +94,11 @@ void setup_uart0(void){
   __asm__("NOP");
   __asm__("NOP");
   UART0_CTL_R &= ~UART_CTL_UARTEN;      // disable UART
+  //Use PIOSC (16Mhz)
+  UART0_CC_R &= ~UART_CC_CS_M;
+  UART0_CC_R |= UART_CC_CS_PIOSC;
+
+
   UART0_IBRD_R = IBRD;
   UART0_FBRD_R = FBRD;
                                         // 8 bit word length (no parity bits, one stop bit, FIFOs)
