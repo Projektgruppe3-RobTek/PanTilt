@@ -50,26 +50,29 @@ architecture logic of MotorController is
 	component SPIController is
 		generic(
 			constant PISOBitWidth	:	positive := 8;	-- Size of the parallel input vector
-			constant SIPOBitWidth	:	positive := 8	-- Size of the parallel output vector
+			constant SIPOBitWidth	:	positive := 10	-- Size of the parallel output vector
 		);
 		port(
-			RST	:	in  std_logic;
-			CLK	:	in  std_logic;
+			RST		:	in  std_logic;
+			CLK		:	in  std_logic;
 
 			-- SPI signals
 			SPICLK	:	in  std_logic;
 			SPISS	:	in  std_logic;
 			SPIMOSI	:	in  std_logic;
 			SPIMISO	:	out std_logic;
-
+			
+			-- SPI reset
+			SPIRST	:	out std_logic;
+		
 			-- Read/Write signal
-			RW	:	out std_logic;
+			RW		:	out std_logic;
 
 			-- Parallel input
-			PI	: 	in  std_logic_vector(PISOBitWidth-1 downto 0);
+			PI		: 	in  std_logic_vector(PISOBitWidth-1 downto 0);
 
 			-- Parallel output
-			PO	:	out std_logic_vector(SIPOBitWidth-1 downto 0)
+			PO		:	out std_logic_vector(SIPOBitWidth-3 downto 0)
 		);
 	end component;
 
@@ -113,6 +116,10 @@ architecture logic of MotorController is
 
 ----------   Signals   ----------
 
+	-- Reset signal
+	signal sRST			:	std_logic;
+	signal sSPIRST		:	std_logic;
+	
 	-- ENC reset signal
 	signal sENCRST		:	std_logic;
 
@@ -134,8 +141,9 @@ architecture logic of MotorController is
 begin
 	ENCOut <= sENCCOUNT;
 	RW <= sPISOLatch;
+	sRST <= RST or sSPIRST;
 
-	sENCRST <= RST or sPISOLatch;
+	sENCRST <= sRST or sPISOLatch;
 
 	sENCOutput(ENCCountBitWidth+ENCTimeBitWidth-1 downto ENCTimeBitWidth) <= sENCCount;
 	sENCOutput(22) <= Index;
@@ -144,11 +152,11 @@ begin
 
 	SPI: SPIController
 	generic map(
-		SIPOBitWidth => PWMBitWidth,
+		SIPOBitWidth => PWMBitWidth + 2, -- 8 PWM bit and 2 service bits (RST and RW)
 		PISOBitWidth => ENCCountBitWidth+ENCTimeBitWidth
 	)
 	port map(
-		RST => RST,
+		RST => sRST,
 		CLK => CLK,
 
 		SPICLK => SPICLK,
@@ -157,6 +165,7 @@ begin
 		SPIMISO => SPIMISO,
 
 		RW => sPISOLatch,
+		SPIRST => sSPIRST,
 
 		PI => sENCOutput,
 		PO => sPWMCM
@@ -168,7 +177,7 @@ begin
 		CLKScale => PWMCLKScale
 	)
 	port map(
-		RST => RST,
+		RST => sRST,
 		CLK => CLK,
 
 		PWMCM => sPWMCM,

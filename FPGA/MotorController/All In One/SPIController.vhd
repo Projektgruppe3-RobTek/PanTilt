@@ -9,17 +9,20 @@ use ieee.std_logic_1164.all;
 entity SPIController is
 	generic(
 		constant PISOBitWidth	:	positive := 8;	-- Size of the parallel input vector
-		constant SIPOBitWidth	:	positive := 8	-- Size of the parallel output vector
+		constant SIPOBitWidth	:	positive := 10	-- Size of the parallel output vector
 	);
 	port(
 		RST		:	in  std_logic;
 		CLK		:	in  std_logic;
 		
 		-- SPI signals
-		SPICLK		:	in  std_logic;
-		SPISS		:	in  std_logic;
-		SPIMOSI		:	in  std_logic;
-		SPIMISO		:	out std_logic;
+		SPICLK	:	in  std_logic;
+		SPISS	:	in  std_logic;
+		SPIMOSI	:	in  std_logic;
+		SPIMISO	:	out std_logic;
+		
+		-- SPI reset
+		SPIRST	:	out std_logic;
 		
 		-- Read/Write signal
 		RW		:	out std_logic;
@@ -28,7 +31,7 @@ entity SPIController is
 		PI		: 	in  std_logic_vector(PISOBitWidth-1 downto 0);
 		
 		-- Parallel output
-		PO		:	out std_logic_vector(SIPOBitWidth-1 downto 0)
+		PO		:	out std_logic_vector(SIPOBitWidth-3 downto 0)
 	);
 end SPIController;
 
@@ -41,20 +44,20 @@ architecture logic of SPIController is
 			constant BitWidth	:	positive := 8	-- Size of the input vector
 		);
 		port(
-			RST	:	in  std_logic;
+			RST		:	in  std_logic;
 			
 			LATCH	:	in  std_logic;
-			CLK	:	in  std_logic;
+			CLK		:	in  std_logic;
 			
-			SI	:	in  std_logic := '0';
-			PI	:	in  std_logic_vector(BitWidth-1 downto 0);
-			SO	:	out std_logic
+			SI		:	in  std_logic := '0';
+			PI		:	in  std_logic_vector(BitWidth-1 downto 0);
+			SO		:	out std_logic
 		);
 	end component;
 
 	component SIPO is
 		generic(
-			constant BitWidth	:	positive := 8	-- Size of the output vector
+			constant BitWidth	:	positive := 10	-- Size of the output vector
 		);
 		port(
 			RST		:	in  std_logic;
@@ -63,10 +66,11 @@ architecture logic of SPIController is
 			CLK		: 	in  std_logic;
 			
 			RW		: 	out std_logic;
+			SPIRST	:	out std_logic;
 			
-			SO		: 	out std_logic;
 			SI		: 	in  std_logic;
-			PO		:	out std_logic_vector(BitWidth-1 downto 0)
+			SO		:	out std_logic;
+			PO		:	out std_logic_vector(BitWidth-3 downto 0)
 		);
 	end component;
 	
@@ -154,6 +158,7 @@ begin
 		CLK => sCLK,
 		
 		RW => sRW,
+		SPIRST => SPIRST,
 		
 		SI => SPIMOSI,
 		PO => PO
