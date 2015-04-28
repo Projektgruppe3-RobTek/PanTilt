@@ -28,8 +28,8 @@ entity main is
 
 		-- Motor 0
 		JB8	:	out std_logic;		-- ENA		Enable Motor 0
-		JB3	:	out std_logic;		-- IN1A		Motor 0 pin 0
-		JB9	:	out std_logic;		-- IN2A		Motor 0 pin 1
+		JB3	:	out std_logic;		-- IN2A		Motor 0 pin 1
+		JB9	:	out std_logic;		-- IN1A		Motor 0 pin 0
 
 		-- Motor 1
 		JB1	:	out std_logic;		-- ENA		Enable Motor 1
@@ -148,8 +148,8 @@ begin
 		SPIMISO => JC4,		-- SPI MISO
 
 		-- PWM signals
-		PWMOutput(0) => JB3,	-- PWM Motor Output 0
-		PWMOutput(1) => JB9,	-- PWM Motor Output 1
+		PWMOutput(0) => JB9,	-- PWM Motor Output 1
+		PWMOutput(1) => JB3,	-- PWM Motor Output 0
 
 		-- Test signal
 		--RW => LD(2),

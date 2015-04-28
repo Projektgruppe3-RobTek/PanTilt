@@ -1,0 +1,97 @@
+#include "controller_task.h"
+#include <stddef.h>
+#include "../../headers/tm4c123gh6pm.h"
+#include "sampler_tasks.h"
+#include "../libs/PID.h"
+#include "../libs/print.h"
+#include "../drivers/UART.h"
+
+xTaskHandle controller1_handle;
+xTaskHandle controller2_handle;
+INT16S goal1 = 0;
+INT16S goal2 = 0;
+
+void controller1_task(void __attribute__((unused)) *pvParameters)
+{
+  sample_element sample;
+
+  PID_s PID_inner = {0.1, 0, 0}; //fast
+  PID_s PID_outer = {0.4, 0, 0}; //slow
+
+  vTaskSuspend(NULL);
+
+  while(1)
+  { //run outer PID
+    //use peak, us we need to use the sample in the forloop
+    xSemaphoreTake(sampler1_queue_sem, portMAX_DELAY);
+    xQueuePeek(sampler1_queue, &sample, 0);
+
+    double position_error = goal1 - sample.position;
+    double PID_speed = PID(&PID_outer, position_error);
+
+    xSemaphoreGive(sampler1_queue_sem);
+    vprintf_(uart0_out_string, 200, "%d\n", (int)sample.position);
+
+    for(INT8U i = 0; i < 10; i++)
+    { //run inner PID
+      xSemaphoreTake(sampler1_queue_sem, portMAX_DELAY);
+      while(xQueueReceive(sampler1_queue, &sample, 0))
+      {
+        double speed_error = PID_speed - sample.speed;
+        double PID_output = PID(&PID_inner, speed_error);
+        //pwm output calculation.
+        INT8S wanted_pwm = PID_output * 50;
+        if(PID_output > 1) wanted_pwm = 50;
+        else if(PID_output < -1) wanted_pwm = -51;
+        //put out pwm value
+        pwm_motor1 = wanted_pwm;
+      }
+      xSemaphoreGive(sampler1_queue_sem);
+      vTaskSuspend(NULL); //the task is resumed from the sampler
+    }
+
+  }
+
+}
+
+
+void controller2_task(void __attribute__((unused)) *pvParameters)
+{
+  sample_element sample;
+
+  PID_s PID_inner = {0.1, 0, 0}; //fast
+  PID_s PID_outer = {0.4, 0, 0}; //slow
+
+  vTaskSuspend(NULL);
+
+  while(1)
+  { //run outer PID
+    //use peak, us we need to use the sample in the forloop
+    xSemaphoreTake(sampler2_queue_sem, portMAX_DELAY);
+    xQueuePeek(sampler2_queue, &sample, 0);
+
+    double position_error = goal2 - sample.position;
+    double PID_speed = PID(&PID_outer, position_error);
+
+    xSemaphoreGive(sampler2_queue_sem);
+
+    for(INT8U i = 0; i < 10; i++)
+    { //run inner PID
+      xSemaphoreTake(sampler2_queue_sem, portMAX_DELAY);
+      while(xQueueReceive(sampler2_queue, &sample, 0))
+      {
+        double speed_error = PID_speed - sample.speed;
+        double PID_output = PID(&PID_inner, speed_error);
+        //pwm output calculation.
+        INT8S wanted_pwm = PID_output * 127;
+        if(PID_output > 1) wanted_pwm = 127;
+        else if(PID_output < -1) wanted_pwm = -128;
+        //put out pwm value
+        pwm_motor2 = wanted_pwm;
+      }
+      xSemaphoreGive(sampler2_queue_sem);
+      vTaskSuspend(NULL); //the task is resumed from the sampler
+    }
+
+  }
+}

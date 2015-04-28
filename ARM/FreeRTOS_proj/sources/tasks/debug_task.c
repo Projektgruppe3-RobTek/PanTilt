@@ -12,22 +12,12 @@ void debug_task(void __attribute__((unused)) *pvParameters)
     bool gotsamples = false;
     sample_element sample;
     xSemaphoreTake(sampler2_queue_sem, portMAX_DELAY);
-    if(uxQueueMessagesWaiting(sampler2_queue) >= 2)
+    if(uxQueueMessagesWaiting(sampler2_queue) >= 1)
     {
       gotsamples = true;
-      for(INT8U i = 0; i < 2; i++)
-      {
-        xQueueReceive(sampler2_queue, &sample, 0);
-        if(sample.type == position)
-        {
-          deb_pos = sample.value;
-        }
-        else if(sample.type == speed)
-        {
-          deb_speed = sample.value;
-        }
-        else {}
-      }
+      xQueueReceive(sampler2_queue, &sample, 0);
+      deb_pos = sample.position;
+      deb_speed = sample.speed;
     }
     xSemaphoreGive(sampler2_queue_sem);
     if(gotsamples)

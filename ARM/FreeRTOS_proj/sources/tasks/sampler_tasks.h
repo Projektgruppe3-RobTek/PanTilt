@@ -7,14 +7,15 @@
 #include "../../headers/GLOBAL_DEFINITIONS.h"
 #include <stdbool.h>
 #define TIME_RES 80//resulution of time in ns
-#define SAMPLE_FREQ 2000 // HZ
+#define SAMPLE_FREQ 1000 // HZ
+#define SAMPLE_TIME (1000000 / SAMPLE_FREQ) //sample time in µs
 #define SAMPLER2_CALIB_PWM 65
 #define SAMPLER1_CALIB_PWM 25
 
 typedef struct
 {
   double speed;
-  double value;
+  double position;
   INT32U time_delta;
 } sample_element;
 

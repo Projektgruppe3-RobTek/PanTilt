@@ -38,6 +38,8 @@
 #include "tasks/debug_task.h"
 #include "libs/print.h"
 #include "../headers/GLOBAL_DEFINITIONS.h"
+#include "tasks/controller_task.h"
+#include "tasks/uart_stuff.h"
 
 
 /*****************************    Defines    *******************************/
@@ -95,11 +97,15 @@ int main(void)
   /*
    Start the tasks defined within this file/specific to this demo.
    */
-  return_value &= xTaskCreate( sampler1_task, (signed portCHAR *) "Sampler1", 200, NULL,LOW_PRIO,NULL);
-  //return_value &= xTaskCreate( sampler2_task, (signed portCHAR *) "Sampler2", 200, NULL,LOW_PRIO,NULL);
-  //return_value &= xTaskCreate( debug_task, (signed portCHAR *) "debug", 100,NULL,LOW_PRIO,NULL);
-  //return_value &= xTaskCreate( status_led_task, ( signed portCHAR * ) "Status_led", 200, NULL, LOW_PRIO, NULL );
 
+  //create the controller tasks
+  return_value &= xTaskCreate( controller1_task, (signed portCHAR *) "Controller 1", 200, NULL,HIGH_PRIO, &controller1_handle);
+  return_value &= xTaskCreate( controller2_task, (signed portCHAR *) "Controller 1", 200, NULL,HIGH_PRIO, &controller2_handle);
+  return_value &= xTaskCreate( sampler1_task, (signed portCHAR *) "Sampler1", 200, NULL, LOW_PRIO,NULL);
+  return_value &= xTaskCreate( sampler2_task, (signed portCHAR *) "Sampler2", 200, NULL, LOW_PRIO,NULL);
+  //return_value &= xTaskCreate( debug_task, (signed portCHAR *) "debug", 100,NULL,LOW_PRIO,NULL);
+  return_value &= xTaskCreate( status_led_task, ( signed portCHAR * ) "Status_led", 200, NULL, LOW_PRIO, NULL );
+  return_value &= xTaskCreate( uart_control, ( signed portCHAR * ) "Status_led", 200, NULL, LOW_PRIO, NULL );
 
 
   if (return_value != pdTRUE)
