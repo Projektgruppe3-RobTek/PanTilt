@@ -1,10 +1,10 @@
 #include "print.h"
 #include "FreeRTOS.h"
-static char stringalloced[100];
+//static char stringalloced[100];
 int vprintf_(void (*destfunc)(char *), size_t __attribute__((unused)) max_size, char *string, ...)
 {	//subset of vprintf. Only implents integers. Not threadsafe
 
-	char *outstring = stringalloced;
+	char *outstring = pvPortMalloc(max_size);
 	if(outstring == NULL)
 	{
 		destfunc("vprintf_ could not allocate memory");
@@ -32,10 +32,25 @@ int vprintf_(void (*destfunc)(char *), size_t __attribute__((unused)) max_size, 
 					outstring_index += itoa(va_arg(args, unsigned int), outstring+outstring_index, 10);
 					break;
 
-				/*case 'f': //double.
+				case 'f': //double.
 						instring_index++;
-						//FP64 number_float = va_arg(args, double);
-					break;*/ //Not done
+						FP64 number_float = va_arg(args, double);
+						//Crude hack to get this __allmost__ working.
+						//multiply by 10000, convert to int, print divided by 10000, print modulus 10000.
+						INT64S converted_to_int= (int)(number_float*100);
+						outstring_index += itoa(converted_to_int / 100, outstring+outstring_index,  10);
+						//find out how many zeros to append after the comma.
+						INT64S modulus = abs(converted_to_int % 100);
+						outstring[outstring_index++] = ',';
+						INT8S zeros = 0;
+						if(modulus < 10) zeros = 1;
+						if(modulus < 1) zeros = 2;
+						for(INT8U i = 0; i < zeros; i++)
+							outstring[outstring_index++] = '0';
+						if(modulus != 0)
+							outstring_index += itoa(modulus, outstring+outstring_index, 10);
+
+					break;
 
 				case 'x': // unsigned int, hexidecimal
 					instring_index++;
@@ -86,6 +101,7 @@ int vprintf_(void (*destfunc)(char *), size_t __attribute__((unused)) max_size, 
 
 	outstring[outstring_index] = 0;
 	destfunc(outstring);
+	vPortFree(outstring);
 	return 0;
 }
 

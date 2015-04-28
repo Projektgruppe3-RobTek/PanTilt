@@ -30,7 +30,7 @@ void controller1_task(void __attribute__((unused)) *pvParameters)
     double PID_speed = PID(&PID_outer, position_error);
 
     xSemaphoreGive(sampler1_queue_sem);
-    vprintf_(uart0_out_string, 200, "%d\n", (int)sample.position);
+    //vprintf_(uart0_out_string, 200, "%d\n", (int)sample.position);
 
     for(INT8U i = 0; i < 10; i++)
     { //run inner PID
