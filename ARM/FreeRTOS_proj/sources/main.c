@@ -77,7 +77,7 @@ static void setupHardware(void)
   setup_ssi0();
   setup_ssi3();
   status_led_init();
-  //set_sysclk(FCPU / 1000);
+  set_sysclk(FCPU / 1000);
 }
 
 
@@ -95,10 +95,10 @@ int main(void)
   /*
    Start the tasks defined within this file/specific to this demo.
    */
-  return_value &= xTaskCreate( sampler1_task, (signed portCHAR *) "Sampler1", 100, NULL,LOW_PRIO,NULL);
-  return_value &= xTaskCreate( sampler2_task, (signed portCHAR *) "Sampler2", 100, NULL,LOW_PRIO,NULL);
+  return_value &= xTaskCreate( sampler1_task, (signed portCHAR *) "Sampler1", 200, NULL,LOW_PRIO,NULL);
+  //return_value &= xTaskCreate( sampler2_task, (signed portCHAR *) "Sampler2", 200, NULL,LOW_PRIO,NULL);
   //return_value &= xTaskCreate( debug_task, (signed portCHAR *) "debug", 100,NULL,LOW_PRIO,NULL);
-  return_value &= xTaskCreate( status_led_task, ( signed portCHAR * ) "Status_led", 50, NULL, LOW_PRIO, NULL );
+  //return_value &= xTaskCreate( status_led_task, ( signed portCHAR * ) "Status_led", 200, NULL, LOW_PRIO, NULL );
 
 
 

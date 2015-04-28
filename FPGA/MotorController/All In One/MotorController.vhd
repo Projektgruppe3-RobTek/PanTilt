@@ -61,10 +61,10 @@ architecture logic of MotorController is
 			SPISS	:	in  std_logic;
 			SPIMOSI	:	in  std_logic;
 			SPIMISO	:	out std_logic;
-			
+
 			-- SPI reset
 			SPIRST	:	out std_logic;
-		
+
 			-- Read/Write signal
 			RW		:	out std_logic;
 
@@ -114,12 +114,23 @@ architecture logic of MotorController is
 		);
 	end component;
 
+	component Pulser is
+		port(
+			RST		:	in  std_logic;
+			CLK		: 	in  std_logic;
+
+			Input		:	in  std_logic;
+			Output		:	out std_logic
+		);
+	end component;
+
 ----------   Signals   ----------
 
 	-- Reset signal
 	signal sRST			:	std_logic;
+	signal sPRST			:	std_logic;
 	signal sSPIRST		:	std_logic;
-	
+
 	-- ENC reset signal
 	signal sENCRST		:	std_logic;
 
@@ -142,8 +153,15 @@ begin
 	ENCOut <= sENCCOUNT;
 	RW <= sPISOLatch;
 	sRST <= RST or sSPIRST;
+	Pulser0: Pulser
+	port map(
+			RST 		=> RST,
+			CLK			=> CLK,
+			Input		=> sRST,
+			Output 	=> sPRST
+	);
 
-	sENCRST <= sRST or sPISOLatch;
+	sENCRST <= sPRST or sPISOLatch;
 
 	sENCOutput(ENCCountBitWidth+ENCTimeBitWidth-1 downto ENCTimeBitWidth) <= sENCCount;
 	sENCOutput(22) <= Index;
@@ -156,7 +174,7 @@ begin
 		PISOBitWidth => ENCCountBitWidth+ENCTimeBitWidth
 	)
 	port map(
-		RST => sRST,
+		RST => sPRST,
 		CLK => CLK,
 
 		SPICLK => SPICLK,
@@ -177,7 +195,7 @@ begin
 		CLKScale => PWMCLKScale
 	)
 	port map(
-		RST => sRST,
+		RST => sPRST,
 		CLK => CLK,
 
 		PWMCM => sPWMCM,

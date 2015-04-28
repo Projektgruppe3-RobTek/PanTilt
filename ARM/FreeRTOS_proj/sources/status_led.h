@@ -20,6 +20,7 @@
 #ifndef _STATUS_LED_H
   #define _STATUS_LED_H
 
+#define STATUS_LED_PIN 0x02
 /***************************** Include files *******************************/
 
 /*****************************    Defines    *******************************/
@@ -36,4 +37,3 @@ void status_led_task(void *pvParameters);
 
 /****************************** End Of Module *******************************/
 #endif
-

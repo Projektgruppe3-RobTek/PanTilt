@@ -25,7 +25,6 @@
 #include "queue.h"
 #include "semphr.h"
 #include "emp_type.h"
-#include "binary.h"
 #include "status_led.h"
 
 

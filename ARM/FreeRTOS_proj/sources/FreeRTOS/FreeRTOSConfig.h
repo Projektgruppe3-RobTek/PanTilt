@@ -71,10 +71,10 @@
     engineered and independently SIL3 certified version for use in safety and
     mission critical applications that require provable dependability.
 */
-#include "../../headers/GLOBAL_DEFINITIONS.h"
+
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
-
+#include "../../headers/GLOBAL_DEFINITIONS.h"
 /*-----------------------------------------------------------
  * Application specific definitions.
  *
@@ -91,11 +91,11 @@
 #define configUSE_IDLE_HOOK			0
 #define configUSE_TICK_HOOK			0
 #define configCPU_CLOCK_HZ			( ( unsigned long ) FCPU )
-#define configTICK_RATE_HZ			( ( portTickType ) TICK_RATE )
+#define configTICK_RATE_HZ			( ( portTickType ) 1000 )
 #define configMAX_PRIORITIES		( ( unsigned portBASE_TYPE ) 10 )
 #define configMINIMAL_STACK_SIZE	( ( unsigned short ) 70 )
-#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 0x2000 ) )
-#define configMAX_TASK_NAME_LEN		( 10 )
+#define configTOTAL_HEAP_SIZE		( ( size_t ) ( 0x5000 ) )
+#define configMAX_TASK_NAME_LEN		( 40 )
 #define configUSE_TRACE_FACILITY	0
 #define configUSE_16_BIT_TICKS		0
 #define configIDLE_SHOULD_YIELD		1
@@ -107,7 +107,7 @@
 #define configUSE_MUTEXES				1
 #define configUSE_COUNTING_SEMAPHORES 	0
 #define configUSE_ALTERNATIVE_API 		0
-#define configCHECK_FOR_STACK_OVERFLOW	0
+#define configCHECK_FOR_STACK_OVERFLOW	1
 #define configUSE_RECURSIVE_MUTEXES		1
 #define configQUEUE_REGISTRY_SIZE		0
 #define configGENERATE_RUN_TIME_STATS	0

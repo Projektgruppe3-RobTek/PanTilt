@@ -46,7 +46,7 @@ entity main is
 
 		-- End sencor
 		JA1	:	in	std_logic; 	-- End
-		
+
 		-- Index sensor
 		JA2	:	in  std_logic;	-- Index 0
 		JA8	:	in  std_logic;	-- Index 1
@@ -115,8 +115,9 @@ begin
 	JB8 <= SW(0) nor SW(1);	-- Enable Motor 0
 	JB1 <= SW(0) nor SW(2);	-- Enable Motor 1
 
-	--LD(0) <= not JA2;	-- Index 0
-	--LD(1) <= not JA8;	-- Index 1
+	LD(0) <= not JA2;	-- Index 0
+	LD(1) <= not JA8;	-- Index 1
+	LD(3 downto 2) <= "00";
 
 	-- Reset signal
 	RST0 <= BTN(1) or SW(0) or SW(1);
@@ -194,7 +195,7 @@ begin
 		-- ENC signals
 		ENCInput(0) => JA4,	-- Encoder Input 0
 		ENCInput(1) => JA10,	-- Encoder Input 1
-		ENCOut => LD(3 downto 0),
+		ENCOut => open,
 		Index => not JA8,		-- index 1
 		Reset_end => BTN(0)		-- SoftReset
 	);
