@@ -2,6 +2,7 @@
 #include "../drivers/UART.h"
 #include "../libs/print.h"
 #include "controller_task.h"
+#include "../drivers/sysctl.h"
 void uart_control(void __attribute__((unused)) *pvParameters)
 {
 	portTickType xLastWakeTime;
@@ -18,7 +19,7 @@ void uart_control(void __attribute__((unused)) *pvParameters)
 			position /= 4;
 			if(reset)
 			{
-				//do nothing for now
+				do_reset();
 			}
 			if(motor_num == 0)
 			{
@@ -31,8 +32,8 @@ void uart_control(void __attribute__((unused)) *pvParameters)
 				goal2 = position;
 				//goal2 = 0;
 			}
-			//vprintf_(uart0_out_string, 200, "%d\n%d\n%d\n",
-			//	(int)reset, (int)motor_num, (int)position);
+			vprintf_(uart0_out_string, 200, "%d\n%d\n%d\n",
+				(int)reset, (int)motor_num, (int)position);
 		}
 		vTaskDelayUntil(&xLastWakeTime, UART_TASK_FREQ / portTICK_RATE_NS );
 	}

@@ -5,6 +5,7 @@
 #include "../libs/print.h"
 #include "../drivers/UART.h"
 #include "controller_task.h"
+#include "../drivers/sysctl.h"
 xQueueHandle sampler1_queue;
 xQueueHandle sampler2_queue;
 xSemaphoreHandle sampler1_queue_sem;
@@ -16,7 +17,7 @@ bool reset = 0;
 static INT32S calc_position(INT32S last_pos, INT8S change);
 static double calc_speed(INT32U time, INT8S encode_pulses);
 static void emergency_stop(void);
-//static void do_reset_stuff(void);
+static void do_reset_stuff(void);
 
 
 
@@ -28,10 +29,6 @@ INT32S calc_position(INT32S last_pos, INT8S change)
 
 double calc_speed(INT32U __attribute__((unused)) time, INT8S encode_pulses)
 {
-  /*double pulses_per_80ns = (double)encode_pulses/(double)time;
-  double pulses_per_ms =  pulses_per_80ns * 1000000 / 80;
-  double pulses_per_second =  pulses_per_ms * 1000;
-  return pulses_per_second; */
   return encode_pulses;
 }
 
@@ -44,13 +41,13 @@ void emergency_stop()
     ssi0_out_16bit(1 << 8);
     ssi0_out_16bit(1 << 8);
   }
-
 }
 
-/*void do_reset_stuff()
+void do_reset_stuff()
 {
-
-}*/
+  //just reset the arm board for now.
+  do_reset();
+}
 
 void calibrate_sampler1(void)
 {
@@ -78,7 +75,6 @@ void calibrate_sampler1(void)
     index_detected = index;
     vTaskDelayUntil(&xLastWakeTime, SAMPLE_TIME / portTICK_RATE_NS );
   }
-  //uart0_out_char('C');
   return;
 }
 
@@ -177,7 +173,10 @@ void sampler2_task(void __attribute__((unused)) *pvParameters)
     bool index =        in_data & 0x400000;
     bool reset_but =          in_data & 0x800000;
     INT8S encoder_val = (in_data & 0xff000000) >> 24;
-
+    if(reset_but)
+    {
+      do_reset_stuff();
+    }
     if(index)
       last_pos = 0;
     else

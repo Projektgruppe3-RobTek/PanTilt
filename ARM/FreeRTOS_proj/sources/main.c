@@ -32,7 +32,7 @@
 #include "drivers/UART.h"
 #include "drivers/SSI0.h"
 #include "drivers/SSI3.h"
-#include "drivers/sysclk.h"
+#include "drivers/sysctl.h"
 #include "drivers/fpu.h"
 #include "tasks/sampler_tasks.h"
 #include "tasks/debug_task.h"
@@ -110,9 +110,11 @@ int main(void)
 
   if (return_value != pdTRUE)
   {
-    vprintf_(uart0_out_string, 200, "CRASH IN SETUP");
+    vprintf_(uart0_out_string, 200, "CRASH IN SETUP\n");
     while(1);  // cold not create one or more tasks.
   }
+    vprintf_(uart0_out_string, 200, "Board is booted\n");
+
 
 
   /*
