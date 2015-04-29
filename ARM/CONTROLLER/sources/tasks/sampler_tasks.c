@@ -81,13 +81,20 @@ void calibrate_sampler1(void)
 
 void sampler1_task(void __attribute__((unused)) *pvParameters)
 {
+  //send a reset request
+  INT16U outdata = (INT8U)0 | 0 << 8 | 1 << 9;
+  ssi0_out_16bit(outdata);
+  while(!ssi0_data_available());
+  ssi0_in_16bit();
+
+
   calibrate_sampler1();
   INT32S last_pos = 0;
   portTickType xLastWakeTime;
   xLastWakeTime = xTaskGetTickCount();
   while(1)
   {
-    INT16U outdata = (INT8U)pwm_motor1 | 0 << 8 | reset << 9;
+    outdata = (INT8U)pwm_motor1 | 0 << 8 | reset << 9;
     ssi0_out_16bit(outdata);
     ssi0_out_16bit(1 << 8);
     ssi0_out_16bit(1 << 8);
@@ -153,13 +160,19 @@ void calibrate_sampler2(void)
 
 void sampler2_task(void __attribute__((unused)) *pvParameters)
 {
+  //send a reset request
+  INT16U outdata = (INT8U)0 | 0 << 8 | 1 << 9;
+  ssi3_out_16bit(outdata);
+  while(!ssi3_data_available());
+  ssi3_in_16bit();
+
   calibrate_sampler2();
   INT32S last_pos = 0;
   portTickType xLastWakeTime;
   xLastWakeTime = xTaskGetTickCount();
   while(1)
   {
-    INT16U outdata = (INT8U)pwm_motor2 | 0 << 8 | reset << 9;
+    outdata = (INT8U)pwm_motor2 | 0 << 8 | reset << 9;
     ssi3_out_16bit(outdata);
     ssi3_out_16bit(1 << 8);
     ssi3_out_16bit(1 << 8);
