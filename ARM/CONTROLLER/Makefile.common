@@ -1,5 +1,5 @@
 #Define project name
-PROJECT=LCD_CLOCK_UART
+PROJECT=CONTROLLER
 
 LDFILE := Linker.ld
 MAPFILE := MAP.txt
@@ -34,7 +34,7 @@ endif
 
 #define linkerfile and ENTRY
 SCATTERgcc_${PROJECT} := $(LDFILE)
-ENTRY_${PROJECT} := Reset_Handler
+ENTRY_${PROJECT} := ResetISR
 
 #Define linker, archiver, etc. Compiler is defined in main makefile
 PREFIX := arm-none-eabi-
@@ -57,18 +57,15 @@ CFLAGS =-mthumb             	\
        -ffunction-sections 	\
        -fdata-sections     	\
        -fshort-enums				\
-       -std=c99            	\
+       -std=c11            	\
        -Wall               	\
        -Wextra             	\
        -Wmissing-prototypes \
 			 -Wshadow							\
 			 -Wpointer-arith			\
 			 -Wstrict-prototypes	\
-			 -Wcast-qual					\
-			 -Wno-keyword-macro		\
-       -Werror							\
-       -pedantic           	\
-       -DNDEBUG
+       -DNDEBUG							\
+			 -I	sources/FreeRTOS/ \
 
 
 #
