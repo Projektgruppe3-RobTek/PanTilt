@@ -44,7 +44,7 @@ void controller1_task(void __attribute__((unused)) *pvParameters)
         if(PID_output > 1) wanted_pwm = 50;
         else if(PID_output < -1) wanted_pwm = -51;
         //put out pwm value
-        pwm_motor1 = wanted_pwm;
+        set_pwm1(wanted_pwm);
       }
       xSemaphoreGive(sampler1_queue_sem);
       vTaskSuspend(NULL); //the task is resumed from the sampler
@@ -87,7 +87,7 @@ void controller2_task(void __attribute__((unused)) *pvParameters)
         if(PID_output > 1) wanted_pwm = 127;
         else if(PID_output < -1) wanted_pwm = -128;
         //put out pwm value
-        pwm_motor2 = wanted_pwm;
+        set_pwm2(wanted_pwm);
       }
       xSemaphoreGive(sampler2_queue_sem);
       vTaskSuspend(NULL); //the task is resumed from the sampler

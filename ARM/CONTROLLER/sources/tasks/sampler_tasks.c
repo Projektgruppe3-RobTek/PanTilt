@@ -10,16 +10,37 @@ xQueueHandle sampler1_queue;
 xQueueHandle sampler2_queue;
 xSemaphoreHandle sampler1_queue_sem;
 xSemaphoreHandle sampler2_queue_sem;
-INT8S pwm_motor1 = 0;
-INT8S pwm_motor2 = 0;
-bool reset = 0;
+static INT8S pwm_motor1 = 0;
+static INT8S pwm_motor2 = 0;
+static INT32S pos1;
+static INT32S pos2;
+
 
 static INT32S calc_position(INT32S last_pos, INT8S change);
 static double calc_speed(INT32U time, INT8S encode_pulses);
 static void emergency_stop(void);
-static void do_reset_stuff(void);
 
 
+INT32S get_position1(void)
+{
+  return pos1;
+}
+
+INT32S get_position2(void)
+{
+  return pos2;
+}
+
+
+void set_pwm1(INT8S pwm)
+{
+  pwm_motor1 = pwm;
+}
+
+void set_pwm2(INT8S pwm)
+{
+  pwm_motor2 = pwm;
+}
 
 
 INT32S calc_position(INT32S last_pos, INT8S change)
@@ -36,17 +57,11 @@ void emergency_stop()
 {
   while(1)
   {
-    INT16U outdata = (INT8U)0 | 0 << 8 | reset << 9;
+    INT16U outdata = (INT8U)0 | 0 << 8 | 0 << 9;
     ssi0_out_16bit(outdata);
     ssi0_out_16bit(1 << 8);
     ssi0_out_16bit(1 << 8);
   }
-}
-
-void do_reset_stuff()
-{
-  //just reset the arm board for now.
-  do_reset();
 }
 
 void calibrate_sampler1(void)
@@ -60,7 +75,7 @@ void calibrate_sampler1(void)
     INT8S pwm_speed = 0;
     if(end_detected) pwm_speed =  SAMPLER1_CALIB_PWM * 1.5;
     else             pwm_speed =  -SAMPLER1_CALIB_PWM;
-    INT16U outdata = (INT8U)pwm_speed | 0 << 8 | reset << 9;
+    INT16U outdata = (INT8U)pwm_speed | 0 << 8 | 0 << 9;
     ssi0_out_16bit(outdata);
     ssi0_out_16bit(1 << 8);
     ssi0_out_16bit(1 << 8);
@@ -94,7 +109,7 @@ void sampler1_task(void __attribute__((unused)) *pvParameters)
   xLastWakeTime = xTaskGetTickCount();
   while(1)
   {
-    outdata = (INT8U)pwm_motor1 | 0 << 8 | reset << 9;
+    outdata = (INT8U)pwm_motor1 | 0 << 8 | 0 << 9;
     ssi0_out_16bit(outdata);
     ssi0_out_16bit(1 << 8);
     ssi0_out_16bit(1 << 8);
@@ -118,6 +133,7 @@ void sampler1_task(void __attribute__((unused)) *pvParameters)
       last_pos = 0;
     else
       last_pos = calc_position(last_pos, encoder_val);
+    pos1 = last_pos;//set position variable
     if(end) emergency_stop();
     sample_element element;
     element.position = last_pos;
@@ -142,7 +158,7 @@ void calibrate_sampler2(void)
   while(!index_detected)
   {
     INT8S pwm_speed = SAMPLER2_CALIB_PWM;
-    INT16U outdata = (INT8U)pwm_speed | 0 << 8 | reset << 9;
+    INT16U outdata = (INT8U)pwm_speed | 0 << 8 | 0 << 9;
     ssi3_out_16bit(outdata);
     ssi3_out_16bit(1 << 8);
     ssi3_out_16bit(1 << 8);
@@ -172,7 +188,7 @@ void sampler2_task(void __attribute__((unused)) *pvParameters)
   xLastWakeTime = xTaskGetTickCount();
   while(1)
   {
-    outdata = (INT8U)pwm_motor2 | 0 << 8 | reset << 9;
+    outdata = (INT8U)pwm_motor2 | 0 << 8 | 0 << 9;
     ssi3_out_16bit(outdata);
     ssi3_out_16bit(1 << 8);
     ssi3_out_16bit(1 << 8);
@@ -188,12 +204,13 @@ void sampler2_task(void __attribute__((unused)) *pvParameters)
     INT8S encoder_val = (in_data & 0xff000000) >> 24;
     if(reset_but)
     {
-      do_reset_stuff();
+      do_reset();
     }
     if(index)
       last_pos = 0;
     else
       last_pos = calc_position(last_pos, encoder_val);
+    pos2 = last_pos;//set position variable
 
     sample_element element;
     element.position = last_pos;

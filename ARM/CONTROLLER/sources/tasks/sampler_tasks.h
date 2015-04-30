@@ -24,9 +24,6 @@ extern xQueueHandle sampler1_queue;
 extern xQueueHandle sampler2_queue;
 extern xSemaphoreHandle sampler1_queue_sem;
 extern xSemaphoreHandle sampler2_queue_sem;
-extern INT8S pwm_motor1;
-extern INT8S pwm_motor2;
-extern bool reset;
 
 
 
@@ -36,3 +33,7 @@ void init_sampler1(void);
 void init_sampler2(void);
 void calibrate_sampler2(void);
 void calibrate_sampler1(void);
+void set_pwm1(INT8S pwm);
+void set_pwm2(INT8S pwm);
+INT32S get_position1(void);
+INT32S get_position2(void);
