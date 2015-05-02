@@ -570,4 +570,3 @@ static void vPortEnableVFP( void )
 		"	bx r14						"
 	);
 }
-

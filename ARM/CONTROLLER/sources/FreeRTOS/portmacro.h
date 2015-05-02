@@ -110,7 +110,7 @@ extern "C" {
 
 /* Architecture specifics. */
 #define portSTACK_GROWTH			( -1 )
-#define portTICK_RATE_NS			( ( portTickType ) 1000000 / configTICK_RATE_HZ )
+#define portTICK_RATE_US			( ( portTickType ) 1000000 / configTICK_RATE_HZ )
 #define portBYTE_ALIGNMENT			8
 /*-----------------------------------------------------------*/
 

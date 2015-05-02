@@ -88,7 +88,7 @@ void calibrate_sampler1(void)
     bool end =          in_data & 0x800000;
     if(end) end_detected = true;
     index_detected = index;
-    vTaskDelayUntil(&xLastWakeTime, SAMPLE_TIME / portTICK_RATE_NS );
+    vTaskDelayUntil(&xLastWakeTime, SAMPLE_TIME / portTICK_RATE_US );
   }
   return;
 }
@@ -146,7 +146,7 @@ void sampler1_task(void __attribute__((unused)) *pvParameters)
 
     //resume the controller task
     vTaskResume(controller1_handle);
-    vTaskDelayUntil(&xLastWakeTime, SAMPLE_TIME / portTICK_RATE_NS );
+    vTaskDelayUntil(&xLastWakeTime, SAMPLE_TIME / portTICK_RATE_US );
   }
 }
 
@@ -169,7 +169,7 @@ void calibrate_sampler2(void)
     in_data |= ssi3_in_16bit();
     bool index =        in_data & 0x400000;
     index_detected = index;
-    vTaskDelayUntil(&xLastWakeTime, SAMPLE_TIME / portTICK_RATE_NS );
+    vTaskDelayUntil(&xLastWakeTime, SAMPLE_TIME / portTICK_RATE_US );
   }
   return;
 }
@@ -221,7 +221,7 @@ void sampler2_task(void __attribute__((unused)) *pvParameters)
     xQueueSendToBack(sampler2_queue, &element, 0);
     xSemaphoreGive(sampler2_queue_sem);
     vTaskResume(controller2_handle);
-    vTaskDelayUntil(&xLastWakeTime, SAMPLE_TIME / portTICK_RATE_NS );
+    vTaskDelayUntil(&xLastWakeTime, SAMPLE_TIME / portTICK_RATE_US );
   }
 }
 
