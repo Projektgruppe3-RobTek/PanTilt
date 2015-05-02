@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include "Primitives.h"
 #include "TextDrawer.h"
-drawer::drawer(std::string port, int baudrate)
+drawer::drawer(std::string port, int baudrate, WiiController *wii_controller)
 :timer(Timer(FPS))
 {
   //Init SDL
@@ -44,9 +44,9 @@ drawer::drawer(std::string port, int baudrate)
     SDL_Quit();
     TTF_Quit();
   }
-  e_handler = new EventHandler(window, renderer, &pan_tilt_coordinate, &stop);
+  e_handler = new EventHandler(window, renderer, &pan_tilt_coordinate, &stop, wii_controller);
   arm_board = new controller_communicator(port.c_str(), baudrate);
-  arm_board->start_reciever();
+  //arm_board->start_reciever();
   //load textures for the pieces
 }
 
@@ -67,8 +67,8 @@ void drawer::loop()
     e_handler->stateHandler();
     e_handler->handleEvents();
     draw();
-    arm_board->set_pos(0, pan_tilt_coordinate.x);
-    arm_board->set_pos(1, pan_tilt_coordinate.y);
+    //arm_board->set_pos(0, pan_tilt_coordinate.x);
+    //arm_board->set_pos(1, pan_tilt_coordinate.y);
     timer.tick();
   }
 }
@@ -92,10 +92,10 @@ void drawer::draw_text()
   for(int i = 0; i < 10; i++)
   {
     //x
-    TDrawer.DrawText(renderer, std::to_string(i * w / 10 - w/2).c_str(), i * w / 10 - 3, -pan_tilt_coordinate.y + h/2 + w/60, 0, 255, 0, 255);
+    TDrawer.DrawText(renderer, std::to_string((i * w / 10 - w/2) * ASIXSCALE ).c_str(), i * w / 10 - 3, - (pan_tilt_coordinate.y / ASIXSCALE) + h/2 + w/60, 0, 255, 0, 255);
 
     //y
-    TDrawer.DrawText(renderer, std::to_string(-(i * h / 10 - h/2)).c_str(), pan_tilt_coordinate.x + w/2 + w/40, i * h / 10 -10, 0, 255, 0, 255);
+    TDrawer.DrawText(renderer, std::to_string((-(i * h / 10 - h/2)) * ASIXSCALE ).c_str(), (pan_tilt_coordinate.x / ASIXSCALE) + w/2 + w/40, i * h / 10 -10, 0, 255, 0, 255);
   }
 
   //info boxes
@@ -119,13 +119,13 @@ void drawer::draw_axis()
   SDL_SetRenderDrawColor(renderer, 0,0,255,0);
 
 
-  SDL_RenderDrawThickLine(renderer, 0, -pan_tilt_coordinate.y + h/2, w, -pan_tilt_coordinate.y + h/2, w/100); //draw x-axis
+  SDL_RenderDrawThickLine(renderer, 0, -(pan_tilt_coordinate.y / ASIXSCALE) + h/2, w, -(pan_tilt_coordinate.y / ASIXSCALE) + h/2, w/100); //draw x-axis
   //draw y-axis
-  SDL_RenderDrawThickLine(renderer, pan_tilt_coordinate.x + w/2, 0,
-    pan_tilt_coordinate.x + w/2, h, w/100); //draw x-axis
+  SDL_RenderDrawThickLine(renderer, (pan_tilt_coordinate.x / ASIXSCALE) + w/2, 0,
+    (pan_tilt_coordinate.x / ASIXSCALE) + w/2, h, w/100); //draw x-axis
 
   SDL_SetRenderDrawColor(renderer, 255,0,0,0);
-  drawFilledCircle(renderer, pan_tilt_coordinate.x + w/2, -pan_tilt_coordinate.y + h/2, w/75);
+  drawFilledCircle(renderer, (pan_tilt_coordinate.x / ASIXSCALE) + w/2, -(pan_tilt_coordinate.y / ASIXSCALE) + h/2, w/75);
 
 
 }

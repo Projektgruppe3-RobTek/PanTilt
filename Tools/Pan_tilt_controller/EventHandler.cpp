@@ -1,11 +1,12 @@
 #include "EventHandler.h"
 #include <iostream>
-EventHandler::EventHandler(SDL_Window *window_, SDL_Renderer* renderer_, coordinate *pan_tilt_coordinate_, bool *glob_stop_)
+EventHandler::EventHandler(SDL_Window *window_, SDL_Renderer* renderer_, coordinate *pan_tilt_coordinate_, bool *glob_stop_, WiiController *wii_controller_)
 {
     window=window_;
     renderer=renderer_;
     pan_tilt_coordinate = pan_tilt_coordinate_;
     glob_stop = glob_stop_;
+    wii_controller = wii_controller_;
 }
 
 void EventHandler::stateHandler()
@@ -44,6 +45,23 @@ void EventHandler::stateHandler()
       x = pan_tilt_coordinate->x;
       pan_tilt_coordinate->y = -(ypos - h/2);
       y= pan_tilt_coordinate->y;
+    }
+    //wiimote
+    if(wii_controller)
+    {
+      bool has_reset = 0;
+      bool *buttons = wii_controller->get_buttons();
+      if(buttons[BUT_B])
+      {
+        wii_controller->reset_combined_angles(0, 0, 0);
+      }
+      if(buttons[BUT_A])
+      {
+        float roll, pitch, yaw;
+        wii_controller->getcombinedangle(roll, pitch, yaw);
+        pan_tilt_coordinate->y = -pitch * ANGLE_TO_PANTILT;
+        pan_tilt_coordinate->x = -yaw * ANGLE_TO_PANTILT;
+      }
     }
 }
 
