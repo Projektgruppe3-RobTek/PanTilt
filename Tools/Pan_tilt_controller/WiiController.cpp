@@ -245,7 +245,8 @@ void WiiController::poll_loop()
 {
   int wiimote_count = 1;
   int reloadWiimotes = 0;
-
+  int8_t counter = 0;
+  int prescaler = 0;
   std::vector<CWiimote>& wiimotes = wii.GetWiimotes();;
   wiimote_count = wiimotes.size();
 
@@ -262,6 +263,14 @@ void WiiController::poll_loop()
     if(wii.Poll())
     {
       CWiimote &wiimote = wiimotes[0];
+      //Make LED's go crazy
+      if(prescaler++ == 4 )
+      {
+        prescaler = 0;
+        counter+=16;
+        wiimote.SetLEDs( counter );
+      }
+
       switch(wiimote.GetEvent())
       {
 

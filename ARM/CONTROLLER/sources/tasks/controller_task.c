@@ -15,8 +15,8 @@ void controller1_task(void __attribute__((unused)) *pvParameters)
 {
   sample_element sample;
 
-  PID_s PID_inner = {0.1, 0, 0}; //fast
-  PID_s PID_outer = {0.4, 0, 0}; //slow
+  PID_s PID_inner = init_PID(0.1, 0, 0); //fast
+  PID_s PID_outer = init_PID(0.4, 0, 0); //slow
 
   vTaskSuspend(NULL);
 
@@ -59,8 +59,8 @@ void controller2_task(void __attribute__((unused)) *pvParameters)
 {
   sample_element sample;
 
-  PID_s PID_inner = {0.1, 0, 0}; //fast
-  PID_s PID_outer = {0.4, 0, 0}; //slow
+  PID_s PID_inner = init_PID(0.1, 0, 0); //fast
+  PID_s PID_outer = init_PID(0.4, 0, 0); //slow
 
   vTaskSuspend(NULL);
 
