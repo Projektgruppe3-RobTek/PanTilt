@@ -100,12 +100,13 @@ int main(void)
 
   //create the controller tasks
   return_value &= xTaskCreate( controller1_task, (signed portCHAR *) "Controller 1", 200, NULL,HIGH_PRIO, &controller1_handle);
-  return_value &= xTaskCreate( controller2_task, (signed portCHAR *) "Controller 1", 200, NULL,HIGH_PRIO, &controller2_handle);
+  return_value &= xTaskCreate( controller2_task, (signed portCHAR *) "Controller 2", 200, NULL,HIGH_PRIO, &controller2_handle);
   return_value &= xTaskCreate( sampler1_task, (signed portCHAR *) "Sampler1", 200, NULL, LOW_PRIO,NULL);
   return_value &= xTaskCreate( sampler2_task, (signed portCHAR *) "Sampler2", 200, NULL, LOW_PRIO,NULL);
   //return_value &= xTaskCreate( debug_task, (signed portCHAR *) "debug", 100,NULL,LOW_PRIO,NULL);
   return_value &= xTaskCreate( status_led_task, ( signed portCHAR * ) "Status_led", 200, NULL, LOW_PRIO, NULL );
-  return_value &= xTaskCreate( uart_control, ( signed portCHAR * ) "Status_led", 200, NULL, LOW_PRIO, NULL );
+  return_value &= xTaskCreate( uart_control, ( signed portCHAR * ) "Uart control", 200, NULL, LOW_PRIO, NULL );
+  return_value &= xTaskCreate( uart_response, ( signed portCHAR * ) "Uart response", 200, NULL, LOW_PRIO, NULL );
 
 
   if (return_value != pdTRUE)
@@ -113,7 +114,7 @@ int main(void)
     vprintf_(uart0_out_string, 200, "CRASH IN SETUP\n");
     while(1);  // cold not create one or more tasks.
   }
-    vprintf_(uart0_out_string, 200, "Board is booted\n");
+    //vprintf_(uart0_out_string, 200, "Board is booted\n");
 
 
 
