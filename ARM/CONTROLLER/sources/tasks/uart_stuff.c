@@ -25,12 +25,12 @@ void uart_control(void __attribute__((unused)) *pvParameters)
 			if(motor_num == 0)
 			{
 				if(position < 100 && position > -100)
-				goal1 = position;
+					set_goal1(position);
 				//goal1 = 50;
 			}
 			else
 			{
-				goal2 = position;
+				set_goal2(position);
 				//goal2 = 0;
 			}
 			//vprintf_(uart0_out_string, 200, "%d\n%d\n%d\n",

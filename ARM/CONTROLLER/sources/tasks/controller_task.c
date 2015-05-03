@@ -8,8 +8,17 @@
 
 xTaskHandle controller1_handle;
 xTaskHandle controller2_handle;
-INT16S goal1 = 0;
-INT16S goal2 = 0;
+static INT16S goal1 = 0;
+static INT16S goal2 = 0;
+
+void set_goal1(INT16S goal)
+{
+  goal1 = goal;
+}
+void set_goal2(INT16S goal)
+{
+  goal2 = goal;
+}
 
 void controller1_task(void __attribute__((unused)) *pvParameters)
 {
