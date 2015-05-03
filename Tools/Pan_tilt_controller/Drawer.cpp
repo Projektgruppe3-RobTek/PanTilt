@@ -67,8 +67,8 @@ void drawer::loop()
     e_handler->stateHandler();
     e_handler->handleEvents();
     draw();
-    //arm_board->set_pos(0, pan_tilt_coordinate.x);
-    //arm_board->set_pos(1, pan_tilt_coordinate.y);
+    arm_board->set_pos(0, -pan_tilt_coordinate.x);
+    arm_board->set_pos(1, -pan_tilt_coordinate.y);
     timer.tick();
   }
 }
