@@ -1,5 +1,6 @@
 //code for keeping a live, updating, average
 //new values a waited less and less when more are added
+#include "../../headers/emp_type.h"
 
 #define MIN_WEIGHT 1000000 //a sample will not be weighted less than this
 #pragma once
