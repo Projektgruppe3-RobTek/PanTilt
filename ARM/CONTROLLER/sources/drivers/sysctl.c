@@ -41,6 +41,10 @@ void set_sysclk(INT32U freq)
 	//calculate sysdiv
 	INT32U SYSDIV = PLL_CLOCK / freq;
 	SYSCTL_RCC2_R |= SYSDIV << 22;
+	if(freq % 2 == 1)
+		SYSCTL_RCC2_R |= SYSCTL_RCC2_SYSDIV2LSB;
+	else
+		SYSCTL_RCC2_R &= ~SYSCTL_RCC2_SYSDIV2LSB;
 
 	//Set USESYS
 	SYSCTL_RCC_R |= SYSCTL_RCC_USESYSDIV;
@@ -52,11 +56,6 @@ void set_sysclk(INT32U freq)
 	//Clear bypass
 	SYSCTL_RCC_R &= ~SYSCTL_RCC_BYPASS;
 	SYSCTL_RCC2_R &= ~SYSCTL_RCC2_BYPASS2;
-}
-
-INT32U get_sysclk(void) //return current frequency.
-{
-  return (SYSCTL_RCC2_R & SYSCTL_RCC2_SYSDIV2_M) >> 22;
 }
 
 void do_reset()

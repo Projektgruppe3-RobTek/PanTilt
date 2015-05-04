@@ -59,7 +59,7 @@ void uart_response(void __attribute__((unused)) *pvParameters)
 		uart0_out_char(last);
 
 		//send data for motor2
-		position = get_position1();
+		position = get_position2();
 		data = position;
 	  data &= ~(1 << 15);
 	  data &= ~(1 << 14);
