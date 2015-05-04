@@ -12,4 +12,4 @@ typedef struct
 } avg_s;
 
 void add_value(avg_s *avg_struct, double newvalue);
-double normailze(avg_s *avg_struct, double value, double norm_val);
+double normalize(avg_s *avg_struct, double value, double norm_val);

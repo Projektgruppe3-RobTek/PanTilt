@@ -17,7 +17,6 @@ static INT32S pos2;
 
 
 static INT32S calc_position(INT32S last_pos, INT8S change);
-static double calc_speed(INT32U time, INT8S encode_pulses);
 static void emergency_stop(void);
 
 
@@ -48,10 +47,7 @@ INT32S calc_position(INT32S last_pos, INT8S change)
   return last_pos + change;
 }
 
-double calc_speed(INT32U __attribute__((unused)) time, INT8S encode_pulses)
-{
-  return encode_pulses;
-}
+
 
 void emergency_stop()
 {
@@ -129,6 +125,7 @@ void sampler1_task(void __attribute__((unused)) *pvParameters)
     bool end =          in_data & 0x800000;
     INT8S encoder_val = (in_data & 0xff000000) >> 24;
 
+
     if(index)
       last_pos = 0;
     else
@@ -137,7 +134,7 @@ void sampler1_task(void __attribute__((unused)) *pvParameters)
     if(end) emergency_stop();
     sample_element element;
     element.position = last_pos;
-    element.speed = calc_speed(timer_val, encoder_val);
+    element.speed = encoder_val; //speed is noramlised against average sampling time
     element.time_delta = timer_val;
 
     xSemaphoreTake(sampler1_queue_sem, portMAX_DELAY);
@@ -202,6 +199,7 @@ void sampler2_task(void __attribute__((unused)) *pvParameters)
     bool index =        in_data & 0x400000;
     bool reset_but =          in_data & 0x800000;
     INT8S encoder_val = (in_data & 0xff000000) >> 24;
+
     if(reset_but)
     {
       do_reset();
@@ -214,7 +212,7 @@ void sampler2_task(void __attribute__((unused)) *pvParameters)
 
     sample_element element;
     element.position = last_pos;
-    element.speed = calc_speed(timer_val, encoder_val);
+    element.speed = encoder_val; //speed is noramlised against average sampling time
     element.time_delta = timer_val;
 
     xSemaphoreTake(sampler2_queue_sem, portMAX_DELAY);

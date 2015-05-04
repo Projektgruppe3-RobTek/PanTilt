@@ -40,7 +40,7 @@ int vprintf_(void (*destfunc)(char *), size_t __attribute__((unused)) max_size, 
 						INT64S converted_to_int= (int)(number_float*100);
 						outstring_index += itoa(converted_to_int / 100, outstring+outstring_index,  10);
 						//find out how many zeros to append after the comma.
-						INT64S modulus = abs(converted_to_int % 100);
+						INT64S modulus = llabs(converted_to_int % 100);
 						outstring[outstring_index++] = ',';
 						INT8S zeros = 0;
 						if(modulus < 10) zeros = 1;
