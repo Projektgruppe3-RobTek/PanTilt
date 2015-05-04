@@ -22,7 +22,7 @@ static INT8U ssi0_buffer_out;
 
 static void disable_ssi0_int(void)
 {
-	NVIC_DIS0_R |= (0x01 << (INT_SSI0-16));
+	NVIC_DIS0_R = (1 << (INT_SSI0-16));
 }
 static void enable_ssi0_int(void)
 {

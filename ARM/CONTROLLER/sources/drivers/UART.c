@@ -11,7 +11,7 @@ static void enable_uart0_int(void);
 
 static void disable_uart0_int(void)
 {
-  NVIC_DIS0_R |= (0x01 << (INT_UART0-16));
+  NVIC_DIS0_R = (0x01 << (INT_UART0-16));
 }
 static void enable_uart0_int(void)
 {

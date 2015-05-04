@@ -22,7 +22,7 @@ static INT8U ssi2_buffer_out;
 
 static void disable_ssi2_int(void)
 {
-	NVIC_DIS1_R |= (0x01 << (INT_SSI2-(16+32)));
+	NVIC_DIS1_R = (0x01 << (INT_SSI2-(16+32)));
 }
 static void enable_ssi2_int(void)
 {

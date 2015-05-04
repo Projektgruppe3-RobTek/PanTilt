@@ -22,7 +22,7 @@ static INT8U ssi3_buffer_out;
 
 static void disable_ssi3_int(void)
 {
-	NVIC_DIS1_R |= (0x01 << (INT_SSI3-(16+32)));
+	NVIC_DIS1_R = (0x01 << (INT_SSI3-(16+32)));
 }
 static void enable_ssi3_int(void)
 {

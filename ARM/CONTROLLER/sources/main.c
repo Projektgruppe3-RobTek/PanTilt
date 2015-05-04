@@ -40,6 +40,8 @@
 #include "../headers/GLOBAL_DEFINITIONS.h"
 #include "tasks/controller_task.h"
 #include "tasks/uart_stuff.h"
+#include "drivers/timer1.h"
+#include "drivers/leds.h"
 
 
 /*****************************    Defines    *******************************/
@@ -72,6 +74,7 @@ static void setupHardware(void)
 
   // Warning: If you do not initialize the hardware clock, the timings will be inaccurate
   enable_fpu();
+  setup_leds();
   init_sampler1();
   init_sampler2();
   sys_ringbuf_uchar_init();
@@ -79,6 +82,7 @@ static void setupHardware(void)
   setup_ssi0();
   setup_ssi3();
   status_led_init();
+  setup_timer1();
   set_sysclk(FCPU / 1000);
 }
 
@@ -93,7 +97,6 @@ int main(void)
   portBASE_TYPE return_value = pdTRUE;
 
   setupHardware();
-
   /*
    Start the tasks defined within this file/specific to this demo.
    */
@@ -104,10 +107,9 @@ int main(void)
   return_value &= xTaskCreate( sampler1_task, (signed portCHAR *) "Sampler1", 200, NULL, LOW_PRIO,NULL);
   return_value &= xTaskCreate( sampler2_task, (signed portCHAR *) "Sampler2", 200, NULL, LOW_PRIO,NULL);
   //return_value &= xTaskCreate( debug_task, (signed portCHAR *) "debug", 100,NULL,LOW_PRIO,NULL);
-  return_value &= xTaskCreate( status_led_task, ( signed portCHAR * ) "Status_led", 200, NULL, LOW_PRIO, NULL );
+  //return_value &= xTaskCreate( status_led_task, ( signed portCHAR * ) "Status_led", 200, NULL, LOW_PRIO, NULL );
   return_value &= xTaskCreate( uart_control, ( signed portCHAR * ) "Uart control", 200, NULL, LOW_PRIO, NULL );
   return_value &= xTaskCreate( uart_response, ( signed portCHAR * ) "Uart response", 200, NULL, LOW_PRIO, NULL );
-
 
   if (return_value != pdTRUE)
   {

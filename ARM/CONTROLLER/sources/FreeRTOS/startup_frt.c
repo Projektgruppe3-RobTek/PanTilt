@@ -51,6 +51,7 @@ void xPortSysTickHandler( void );
 extern void ssi0_isr(void);
 extern void ssi3_isr(void);
 extern void uart0_isr(void);
+extern void timer1_int(void);
 
 /*----------Symbols defined in linker script----------------------------------*/
 extern unsigned long __etext;    /*!< Start address for the initialization
@@ -111,7 +112,7 @@ void (* const g_pfnVectors[])(void) =
   IntDefaultHandler,                      // Watchdog timer
   IntDefaultHandler,                      // Timer 0 subtimer A
   IntDefaultHandler,                      // Timer 0 subtimer B
-  IntDefaultHandler,                      // Timer 1 subtimer A
+  timer1_int,                             // Timer 1 subtimer A
   IntDefaultHandler,                      // Timer 1 subtimer B
   IntDefaultHandler,                      // Timer 2 subtimer A
   IntDefaultHandler,                      // Timer 2 subtimer B
