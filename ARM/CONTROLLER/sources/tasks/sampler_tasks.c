@@ -6,19 +6,51 @@
 #include "../drivers/UART.h"
 #include "controller_task.h"
 #include "../drivers/sysctl.h"
+#include "../drivers/leds.h"
 xQueueHandle sampler1_queue;
 xQueueHandle sampler2_queue;
 xSemaphoreHandle sampler1_queue_sem;
 xSemaphoreHandle sampler2_queue_sem;
+xTaskHandle sampler1_handle;
+xTaskHandle sampler2_handle;
+
+
+
 static INT8S pwm_motor1 = 0;
 static INT8S pwm_motor2 = 0;
 static INT32S pos1;
 static INT32S pos2;
-
+static bool sampler1_rdy = 0;
+static bool sampler2_rdy = 0;
 
 static INT32S calc_position(INT32S last_pos, INT8S change);
 static void emergency_stop(void);
+void timer1_int(void);
 
+
+void timer1_int()
+{
+	//in the timer interrupt, send pwm to ssi, and resume sampling tasks.
+	TIMER1_ICR_R = TIMER_ICR_TATOCINT;
+  if(sampler1_rdy)
+  {
+    INT16U outdata = (INT8U)pwm_motor1 | 0 << 8 | 0 << 9;
+    ssi0_out_16bit(outdata);
+    ssi0_out_16bit(1 << 8);
+    ssi0_out_16bit(1 << 8);
+    xTaskResumeFromISR(sampler1_handle);
+
+  }
+  if(sampler2_rdy)
+  {
+    INT16U outdata = (INT8U)pwm_motor2 | 0 << 8 | 0 << 9;
+    ssi3_out_16bit(outdata);
+    ssi3_out_16bit(1 << 8);
+    ssi3_out_16bit(1 << 8);
+    xTaskResumeFromISR(sampler2_handle);
+  }
+
+}
 
 INT32S get_position1(void)
 {
@@ -53,28 +85,18 @@ void emergency_stop()
 {
   while(1)
   {
-    INT16U outdata = (INT8U)0 | 0 << 8 | 0 << 9;
-    ssi0_out_16bit(outdata);
-    ssi0_out_16bit(1 << 8);
-    ssi0_out_16bit(1 << 8);
+    set_pwm1(0);
   }
 }
 
 void calibrate_sampler1(void)
 {
-  portTickType xLastWakeTime;
-  xLastWakeTime = xTaskGetTickCount();
   bool index_detected = false;
   bool end_detected = false;
   while(!index_detected)
   {
-    INT8S pwm_speed = 0;
-    if(end_detected) pwm_speed =  SAMPLER1_CALIB_PWM * 1.5;
-    else             pwm_speed =  -SAMPLER1_CALIB_PWM;
-    INT16U outdata = (INT8U)pwm_speed | 0 << 8 | 0 << 9;
-    ssi0_out_16bit(outdata);
-    ssi0_out_16bit(1 << 8);
-    ssi0_out_16bit(1 << 8);
+    if(end_detected) set_pwm1(SAMPLER1_CALIB_PWM * 1.5);
+    else             set_pwm1(-SAMPLER1_CALIB_PWM);
     while(ssi0_data_available() < 3)
     ;
     ssi0_in_16bit();
@@ -84,7 +106,7 @@ void calibrate_sampler1(void)
     bool end =          in_data & 0x800000;
     if(end) end_detected = true;
     index_detected = index;
-    vTaskDelayUntil(&xLastWakeTime, SAMPLE_TIME / portTICK_RATE_US );
+    vTaskSuspend(NULL);
   }
   return;
 }
@@ -97,19 +119,15 @@ void sampler1_task(void __attribute__((unused)) *pvParameters)
   ssi0_out_16bit(outdata);
   while(!ssi0_data_available());
   ssi0_in_16bit();
+  sampler1_rdy = 1;
+  if(sampler1_rdy && sampler2_rdy)
+  TIMER1_CTL_R |= TIMER_CTL_TAEN; // Enable TIMER1_A/sampling.
 
-
+  vTaskSuspend(NULL);
   calibrate_sampler1();
   INT32S last_pos = 0;
-  portTickType xLastWakeTime;
-  xLastWakeTime = xTaskGetTickCount();
   while(1)
   {
-    outdata = (INT8U)pwm_motor1 | 0 << 8 | 0 << 9;
-    ssi0_out_16bit(outdata);
-    ssi0_out_16bit(1 << 8);
-    ssi0_out_16bit(1 << 8);
-
     //#ifdef SAMPLE_DEBUG
     //toggle pin to show frequency
     //GPIO_PORTB_DATA_R ^= (1 << 0);
@@ -143,22 +161,16 @@ void sampler1_task(void __attribute__((unused)) *pvParameters)
 
     //resume the controller task
     vTaskResume(controller1_handle);
-    vTaskDelayUntil(&xLastWakeTime, SAMPLE_TIME / portTICK_RATE_US );
+    vTaskSuspend(NULL);
   }
 }
 
 void calibrate_sampler2(void)
 {
-  portTickType xLastWakeTime;
-  xLastWakeTime = xTaskGetTickCount();
   bool index_detected = false;
   while(!index_detected)
   {
-    INT8S pwm_speed = SAMPLER2_CALIB_PWM;
-    INT16U outdata = (INT8U)pwm_speed | 0 << 8 | 0 << 9;
-    ssi3_out_16bit(outdata);
-    ssi3_out_16bit(1 << 8);
-    ssi3_out_16bit(1 << 8);
+    set_pwm2(SAMPLER2_CALIB_PWM);
     while(ssi3_data_available() < 3)
     ;
     ssi3_in_16bit();
@@ -166,7 +178,7 @@ void calibrate_sampler2(void)
     in_data |= ssi3_in_16bit();
     bool index =        in_data & 0x400000;
     index_detected = index;
-    vTaskDelayUntil(&xLastWakeTime, SAMPLE_TIME / portTICK_RATE_US );
+    vTaskSuspend(NULL);
   }
   return;
 }
@@ -179,17 +191,14 @@ void sampler2_task(void __attribute__((unused)) *pvParameters)
   while(!ssi3_data_available());
   ssi3_in_16bit();
 
+  sampler2_rdy = 1;
+  TIMER1_CTL_R |= TIMER_CTL_TAEN; // Enable TIMER1_A/sampling.
+  vTaskSuspend(NULL);
+
   calibrate_sampler2();
   INT32S last_pos = 0;
-  portTickType xLastWakeTime;
-  xLastWakeTime = xTaskGetTickCount();
   while(1)
   {
-    outdata = (INT8U)pwm_motor2 | 0 << 8 | 0 << 9;
-    ssi3_out_16bit(outdata);
-    ssi3_out_16bit(1 << 8);
-    ssi3_out_16bit(1 << 8);
-
     while(ssi3_data_available() < 3)
     ;
     ssi3_in_16bit();
@@ -218,8 +227,9 @@ void sampler2_task(void __attribute__((unused)) *pvParameters)
     xSemaphoreTake(sampler2_queue_sem, portMAX_DELAY);
     xQueueSendToBack(sampler2_queue, &element, 0);
     xSemaphoreGive(sampler2_queue_sem);
+
     vTaskResume(controller2_handle);
-    vTaskDelayUntil(&xLastWakeTime, SAMPLE_TIME / portTICK_RATE_US );
+    vTaskSuspend(NULL); //suspend. Will be woken up by timer interrupt
   }
 }
 

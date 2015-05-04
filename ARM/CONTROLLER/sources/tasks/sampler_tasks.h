@@ -6,6 +6,8 @@
 #include "../../headers/emp_type.h"
 #include "../../headers/GLOBAL_DEFINITIONS.h"
 #include <stdbool.h>
+#include "task.h"
+
 #define TIME_RES 80//resulution of time in ns
 #define SAMPLE_FREQ 1000 // HZ
 #define SAMPLE_TIME (1000000 / SAMPLE_FREQ) //sample time in µs
@@ -24,6 +26,9 @@ extern xQueueHandle sampler1_queue;
 extern xQueueHandle sampler2_queue;
 extern xSemaphoreHandle sampler1_queue_sem;
 extern xSemaphoreHandle sampler2_queue_sem;
+extern xTaskHandle sampler1_handle;
+extern xTaskHandle sampler2_handle;
+
 
 
 

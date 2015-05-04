@@ -46,7 +46,6 @@ void uart_response(void __attribute__((unused)) *pvParameters)
 	xLastWakeTime = xTaskGetTickCount();
 	while(1)
 	{
-		/*//send data for motor1
 		INT16S position = get_position1();
 		INT16U data = position;
 	  data &= ~(1 << 15);
@@ -71,8 +70,6 @@ void uart_response(void __attribute__((unused)) *pvParameters)
 	  last  = data & 0xff;
 		uart0_out_char(first);
 		uart0_out_char(last);
-		*/
-		vprintf_(uart0_out_string, 200, "%d\n", TIMER1_TAV_R);
 		vTaskDelayUntil(&xLastWakeTime, UART_RESPONSE_WAIT_TIME / portTICK_RATE_US );
 	}
 

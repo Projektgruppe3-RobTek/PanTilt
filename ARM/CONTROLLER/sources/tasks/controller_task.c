@@ -5,6 +5,7 @@
 #include "../libs/PID.h"
 #include "../libs/print.h"
 #include "../drivers/UART.h"
+#include "../drivers/leds.h"
 
 xTaskHandle controller1_handle;
 xTaskHandle controller2_handle;

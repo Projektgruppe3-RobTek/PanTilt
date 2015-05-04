@@ -1,6 +1,6 @@
 #include "timer1.h"
 
-#define TIMER_FREQUENCY 2
+#define TIMER_FREQUENCY 1000
 #define INTERRUPT_INTERVAL (1000000 / TIMER_FREQUENCY)//interval in µs
 #define TAILR_VAL (FCPU / 1000000 * INTERRUPT_INTERVAL - 1)
 #include "leds.h"
@@ -21,12 +21,7 @@ void setup_timer1()
 	TIMER1_ICR_R = TIMER_ICR_TATOCINT;														//clear interrupt flags
 
   TIMER1_IMR_R   =  TIMER_IMR_TATOIM;         									//Enable timer a interrupts
-  NVIC_EN0_R |= (1 << (INT_TIMER1A-16));                     //enable interrupt
-	TIMER1_CTL_R |= TIMER_CTL_TAEN; 										        // Enable TIMER1_A.
-}
+  NVIC_EN0_R |= (1 << (INT_TIMER1A-16));                     		//enable interrupt
+  TIMER1_CTL_R |= TIMER_CTL_TAEN; // Enable TIMER1_A/sampling.
 
-void timer1_int()
-{
-  LED_RGB_PORT ^= LED_GREEN;
-	TIMER1_ICR_R = TIMER_ICR_TATOCINT;
 }
