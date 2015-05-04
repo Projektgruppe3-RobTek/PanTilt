@@ -137,8 +137,6 @@ void sampler1_task(void __attribute__((unused)) *pvParameters)
   {
 	  if( xSemaphoreTake(sampling1_semaphore, 0xFFFFFF) == pdTRUE )
 		{
-			GPIO_PORTB_DATA_R ^= (1 << 0);
-			LED_RGB_PORT ^= LED_GREEN;
 	    //#ifdef SAMPLE_DEBUG
 	    //toggle pin to show frequency
 	    //GPIO_PORTB_DATA_R ^= (1 << 0);
