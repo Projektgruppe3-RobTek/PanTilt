@@ -1,0 +1,20 @@
+ARM        | FPGA
+
+SSI0       | SSI0
+PA2 -- CLK | JC1
+PA3 -- SS  | JC2
+PA4 -- RX  | JC4 -- MISO
+PA5 -- TX  | JC3 -- MOSI
+
+SSI3       | SSI1
+PD0 -- CLK | JC7
+PD1 -- SS  | JC8
+PD2 -- RX  | JC10 -- MISO
+PD3 -- TX  | JC9  -- MOSI
+
+Index0
+PE1        | JD1
+Index1
+PE2        | JD2
+Reset
+PE3        | JD3

@@ -217,7 +217,7 @@ void setup_ssi3()
 	SSI3_CR0_R |= SSI_CR0_DSS_16;
 
 	// Connect MISO to MOSI
-	SSI3_CR1_R |= SSI_CR1_LBM;			// Only for test !!!!!!!!!!!!
+	//SSI3_CR1_R |= SSI_CR1_LBM;			// Only for test !!!!!!!!!!!!
 
 
 	//Enable SSI
