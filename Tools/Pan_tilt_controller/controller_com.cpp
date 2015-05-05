@@ -3,8 +3,6 @@
 
 static void reciever_dummy(controller_communicator *obj);
 
-
-
 controller_communicator::controller_communicator(std::string portname, int buad_rate)
 {
   this->port = new boost::asio::serial_port(this->io_service, portname);
@@ -27,9 +25,16 @@ void controller_communicator::set_pos(bool motor, int16_t position)
   data |= (position < 0) << 13;
   uint8_t first = data >> 8;
   uint8_t last  = data & 0xff;
-	boost::asio::write(*(this->port), boost::asio::buffer(&first, 1));
+  boost::asio::write(*(this->port), boost::asio::buffer(&first, 1));
   boost::asio::write(*(this->port), boost::asio::buffer(&last, 1));
 
+}
+
+Motor controller_communicator::get_pos(){
+	uint16_t data = read_char() << 8 | read_char();
+	data &= ();
+	Motor motor(indata & (1 << 14), (indata << 2) / 4);
+	return motor;
 }
 
 void controller_communicator::send_reset()
@@ -37,7 +42,7 @@ void controller_communicator::send_reset()
   uint16_t data = 1 << 15;
   uint8_t first = data >> 8;
   uint8_t last  = data & 0xff;
-	boost::asio::write(*(this->port), boost::asio::buffer(&first, 1));
+  boost::asio::write(*(this->port), boost::asio::buffer(&first, 1));
   boost::asio::write(*(this->port), boost::asio::buffer(&last, 1));
 }
 
@@ -47,7 +52,6 @@ char controller_communicator::read_char() //read a char from the serial port
   while(boost::asio::read(*(this->port), boost::asio::buffer(&out_char, 1)) == 0);
   return out_char;
 }
-
 
 std::string controller_communicator::read_line() //read a line from the serial port
 {
@@ -67,7 +71,7 @@ void controller_communicator::start_reciever()
 
 void controller_communicator::stop_reciever()
 {
-  if(reciever_thread != nullptr && reciever_thread->joinable())
+  if (reciever_thread != nullptr && reciever_thread->joinable())
   {
     this->stop = true;
     reciever_thread->detach();
