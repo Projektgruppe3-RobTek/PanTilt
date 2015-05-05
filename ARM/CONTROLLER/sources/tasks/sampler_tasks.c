@@ -208,7 +208,6 @@ void sampler2_task(void __attribute__((unused)) *pvParameters)
   {
 	  if( xSemaphoreTake(sampling2_semaphore, 0xFFFFFF) == pdTRUE )
 		{
-
 	    while(ssi3_data_available() < 3)
 	    ;
 	    ssi3_in_16bit();
@@ -260,8 +259,8 @@ void init_sampler1()
 
   __asm__("NOP");
 
-  GPIO_PORTB_DIR_R |= 0x04 | 0x01;
-  GPIO_PORTB_DEN_R |= 0x04 | 0x01;
+  GPIO_PORTB_DIR_R |= (1<<3) | 0x01;
+  GPIO_PORTB_DEN_R |= (1<<3) | 0x01;
   //#endif
 }
 

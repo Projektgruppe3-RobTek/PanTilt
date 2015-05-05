@@ -1,4 +1,5 @@
 #include "EventHandler.h"
+#include "Drawer.h"
 #include <iostream>
 EventHandler::EventHandler(SDL_Window *window_, SDL_Renderer* renderer_, coordinate *pan_tilt_coordinate_, bool *glob_stop_, WiiController *wii_controller_)
 {
@@ -41,9 +42,9 @@ void EventHandler::stateHandler()
     int xpos,ypos;
     if(SDL_GetMouseState(&xpos,&ypos) & SDL_BUTTON(SDL_BUTTON_LEFT))
     {
-      pan_tilt_coordinate->x = xpos - w/2;
+      pan_tilt_coordinate->x = (xpos - w/2) * ASIXSCALE;
       x = pan_tilt_coordinate->x;
-      pan_tilt_coordinate->y = -(ypos - h/2);
+      pan_tilt_coordinate->y = -(ypos - h/2) * ASIXSCALE;
       y= pan_tilt_coordinate->y;
     }
     //wiimote

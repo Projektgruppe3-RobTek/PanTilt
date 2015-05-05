@@ -4,6 +4,15 @@
 #include "controller_task.h"
 #include "../drivers/sysctl.h"
 #include "sampler_tasks.h"
+
+#define MIN_0 -212
+#define MIN_0_STOP -190
+#define MAX_0 230
+#define MAX_0_STOP 205
+#define MIN_1 -1068
+#define MIN_1_STOP -1000
+#define MAX_1 1067
+#define MAX_1_STOP 1000
 void uart_control(void __attribute__((unused)) *pvParameters)
 {
 	portTickType xLastWakeTime;
@@ -24,13 +33,14 @@ void uart_control(void __attribute__((unused)) *pvParameters)
 			}
 			if(motor_num == 0)
 			{
-				if(position < 100 && position > -100)
+				if(position < MAX_0_STOP && position > MIN_0_STOP)
 					set_goal1(position);
 				//goal1 = 50;
 			}
 			else
 			{
-				set_goal2(position);
+				if(position < MAX_1_STOP && position > MIN_1_STOP)
+					set_goal2(position);
 				//goal2 = 0;
 			}
 			//vprintf_(uart0_out_string, 200, "%d\n%d\n%d\n",

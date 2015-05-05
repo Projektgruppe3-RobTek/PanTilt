@@ -26,7 +26,7 @@ void controller1_task(void __attribute__((unused)) *pvParameters)
   sample_element sample;
 
   PID_s PID_inner = init_PID(0.1, 0, 0); //fast
-  PID_s PID_outer = init_PID(0.4, 0, 0); //slow
+  PID_s PID_outer = init_PID(0.4, 0, 1); //slow
 
   vTaskSuspend(NULL);
 
@@ -35,6 +35,7 @@ void controller1_task(void __attribute__((unused)) *pvParameters)
     //use peak, us we need to use the sample in the forloop
     xSemaphoreTake(sampler1_queue_sem, portMAX_DELAY);
     xQueuePeek(sampler1_queue, &sample, 0);
+	   //GPIO_PORTB_DATA_R ^= (1 << 0);
 
     double position_error = goal1 - sample.position;
     double PID_speed = PID(&PID_outer, position_error);
@@ -47,6 +48,7 @@ void controller1_task(void __attribute__((unused)) *pvParameters)
       xSemaphoreTake(sampler1_queue_sem, portMAX_DELAY);
       while(xQueueReceive(sampler1_queue, &sample, 0))
       {
+        //GPIO_PORTB_DATA_R ^= (1 << 3);
         double speed_error = PID_speed - sample.speed;
         double PID_output = PID(&PID_inner, speed_error);
         //pwm output calculation.
