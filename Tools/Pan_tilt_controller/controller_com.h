@@ -3,6 +3,12 @@
 #include <string>
 #include <cstdint>
 #include <thread>
+
+struct Motor{
+	uint8_t id;
+	int16_t pos;
+};
+
 class controller_communicator
 {
   private:
@@ -16,6 +22,7 @@ class controller_communicator
     controller_communicator(std::string portname, int buad_rate);
     ~controller_communicator();
     void set_pos(bool motor, int16_t position);
+    Motor controller_communicator::get_pos();
     void send_reset();
     char read_char(); //read a char from the serial port
     std::string read_line(); //read a line from the serial port
