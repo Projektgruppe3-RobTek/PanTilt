@@ -11,9 +11,9 @@
 #define MAX_0 230
 #define MAX_0_STOP 205
 #define MIN_1 -1068
-#define MIN_1_STOP -1000
+#define MIN_1_STOP -540
 #define MAX_1 1067
-#define MAX_1_STOP 1000
+#define MAX_1_STOP 540
 void uart_control(void __attribute__((unused)) *pvParameters)
 {
 	portTickType xLastWakeTime;
@@ -57,7 +57,7 @@ void uart_response(void __attribute__((unused)) *pvParameters)
 	xLastWakeTime = xTaskGetTickCount();
 	while(1)
 	{
-		INT16S position = get_speed2();
+		INT16S position = get_position2();
 		INT16U position_abs = abs(position);
 		INT16U data = position_abs;
 	  data &= ~(1 << 15);

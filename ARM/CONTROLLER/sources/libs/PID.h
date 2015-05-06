@@ -4,7 +4,6 @@ typedef struct {
   double last_sample;
   double s_last_sample;
   double last_sum;
-
   double a;
   double b;
   double c;

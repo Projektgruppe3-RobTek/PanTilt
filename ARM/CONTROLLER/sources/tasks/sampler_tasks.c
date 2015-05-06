@@ -68,6 +68,10 @@ INT16S get_position1(void)
 {
   return (INT16S)pos1;
 }
+INT16S get_position2(void)
+{
+  return (INT16S)pos2;
+}
 
 INT16S get_speed1(void)
 {
@@ -214,7 +218,8 @@ void sampler2_task(void __attribute__((unused)) *pvParameters)
   sampler2_rdy = 1;
   calibrate_sampler2();
   INT32S last_pos = 0;
-	avg_s average= {0, 0, 50};
+	avg_s average_speed = {0, 0, 50};
+	avg_s average_pos = {0, 0, 20};
   while(1)
   {
 	  if( xSemaphoreTake(sampling2_semaphore, 0xFFFFFF) == pdTRUE )
@@ -239,11 +244,13 @@ void sampler2_task(void __attribute__((unused)) *pvParameters)
 	      last_pos = calc_position(last_pos, encoder_val);
 	    pos2 = last_pos;//set position variable
 
-	    sample_element element;
-	    element.position = last_pos;
-			add_value(&average, encoder_val);
 			speed2 = encoder_val;
-	    element.speed = average.average; //speed is noramlised against average sampling time
+
+	    sample_element element;
+			add_value(&average_pos, last_pos);
+	    element.position = average_pos.average;
+			add_value(&average_speed, encoder_val);
+	    element.speed = average_speed.average; //speed is noramlised against average sampling time
 	    element.time_delta = timer_val;
 
 	    xSemaphoreTake(sampler2_queue_sem, portMAX_DELAY);

@@ -1,4 +1,5 @@
 #include "PID.h"
+#include <math.h>
 double PID(PID_s *PID_struct, double error)
 {
   //Propotional gain
@@ -6,6 +7,8 @@ double PID(PID_s *PID_struct, double error)
   sum += PID_struct->a * error;
   sum += PID_struct->b * PID_struct->last_sample;
   sum += PID_struct->c * PID_struct->s_last_sample;
+
+  double return_val = sum;
 
   PID_struct->s_last_sample = PID_struct->last_sample;
   PID_struct->last_sample = error;
@@ -27,7 +30,7 @@ double PID(PID_s *PID_struct, double error)
 
   double derivative_part   = PID_struct->K_d * (PID_struct->error_running.average - old_avg);*/
   //return proportional_part + integral_part + derivative_part;
-  return sum;
+  return return_val;
 
 }
 
