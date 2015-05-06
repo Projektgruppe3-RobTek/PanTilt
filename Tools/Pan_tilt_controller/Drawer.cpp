@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include "Primitives.h"
 #include "TextDrawer.h"
+
 drawer::drawer(std::string port, int baudrate, WiiController *wii_controller)
 :timer(Timer(FPS))
 {
