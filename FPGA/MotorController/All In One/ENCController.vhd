@@ -10,7 +10,6 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity ENCController is
 	generic(
-		constant CLKScale	:	positive := 25; -- 50MHz / (Scale * 2) = 1MHz
 		constant TimeBitWidth	:	positive := 8;	-- Bit width of timer counter
 		constant CountBitWidth	:	positive := 8	-- Encoder counter bit width
 	);
@@ -46,19 +45,7 @@ architecture logic of ENCController is
 		);
 	end component;
 
-	component Prescaler is
-		generic(
-			constant Scale	:	positive := 25 -- 50MHz / (Scale * 2) = 1MHz
-		);
-		port(
-			RST		:	in  std_logic;
-			CLK		:	in  std_logic;
-
-			ScaledCLK	:	out std_logic
-		);
-	end component;
-
-	component Counter is
+	component Timer is
 		generic(
 			constant BitWidth	:	positive := 8 -- Bit width of counter
 		);
@@ -71,9 +58,6 @@ architecture logic of ENCController is
 	end component;
 
 ----------   Signals   ----------
-
-	-- Scaled Clock
-	signal sCLK	:	std_logic;
 
 begin
 
@@ -88,19 +72,8 @@ begin
 		Input => ENCInput,
 		Output => ENCCount
 	);
-
-	Prescaler0: Prescaler
-	generic map(
-		Scale => CLKScale
-	)
-	port map(
-		RST => RST,
-		CLK => CLK,
-
-		ScaledCLK => sCLK
-	);
-
-	Timer: Counter
+	
+	Timer: Timer
 	generic map(
 		BitWidth => TimeBitWidth
 	)
