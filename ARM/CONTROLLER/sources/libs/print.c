@@ -1,6 +1,7 @@
 #include "print.h"
 #include "FreeRTOS.h"
 //static char stringalloced[100];
+
 int vprintf_(void (*destfunc)(char *), size_t __attribute__((unused)) max_size, char *string, ...)
 {	//subset of vprintf. Only implents integers. Not threadsafe
 
@@ -104,6 +105,7 @@ int vprintf_(void (*destfunc)(char *), size_t __attribute__((unused)) max_size, 
 	vPortFree(outstring);
 	return 0;
 }
+#pragma GCC optimize "-O0"
 
 INT8U itoa(INT64S number, char * string, INT8U base)
 { //converts the number to a string. returns lenght of string(without null)

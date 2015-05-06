@@ -69,6 +69,15 @@ void drawer::loop()
     draw();
     arm_board->set_pos(0, -pan_tilt_coordinate.x);
     arm_board->set_pos(1, -pan_tilt_coordinate.y);
+    Motor motor1 = arm_board->get_pos();
+    Motor motor2 = arm_board->get_pos();
+    //std::cout << std::endl;
+    std::cout << -pan_tilt_coordinate.x << "\t";
+    std::cout << -pan_tilt_coordinate.y << "\t";
+    std::cout << motor1.pos << "\t";
+    std::cout << motor2.pos << "\t";
+    std::cout << std::endl;
+
     timer.tick();
   }
 }

@@ -5,7 +5,7 @@ void add_value(avg_s *avg_struct, double newvalue)
   total += newvalue;
   avg_struct->average = total / (avg_struct->number_of_samples + 1);
 
-  if(avg_struct->number_of_samples < MIN_WEIGHT)
+  if(avg_struct->number_of_samples < avg_struct->max_samples)
     avg_struct->number_of_samples++;
 }
 

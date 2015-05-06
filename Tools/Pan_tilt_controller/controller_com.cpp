@@ -1,5 +1,6 @@
 #include "controller_com.h"
 #include <iostream>
+#include <bitset>
 
 static void reciever_dummy(controller_communicator *obj);
 
@@ -7,6 +8,9 @@ controller_communicator::controller_communicator(std::string portname, int buad_
 {
   this->port = new boost::asio::serial_port(this->io_service, portname);
   this->port->set_option( boost::asio::serial_port_base::baud_rate( buad_rate ) );
+  this->port->set_option( boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one) );
+  this->port->set_option( boost::asio::serial_port_base::character_size( 8 ) );
+
 }
 
 controller_communicator::~controller_communicator()
@@ -31,9 +35,21 @@ void controller_communicator::set_pos(bool motor, int16_t position)
 }
 
 Motor controller_communicator::get_pos(){
-	uint16_t data = read_char() << 8 | read_char();
-	data &= ();
-	Motor motor(indata & (1 << 14), (indata << 2) / 4);
+	char indata1 = read_char();
+	char indata2 = read_char();
+	bool reset = indata2 & 0b10000000;
+  bool motor_num = indata2 & 0b01000000;
+  bool sign = indata2 & 0b00100000;
+	int16_t position = ((uint8_t)indata2 & 0b00011111) << 8;
+  position += (uint8_t)indata1;
+  if(sign) position = -position;
+  //std::cout << position << " " << motor_num << std::endl;
+  std::bitset<8> bits1(indata1);
+  std::bitset<8> bits2(indata2);
+  //std::cout << bits1 << " " << bits2 << std::endl;
+  Motor motor;
+  motor.id = motor_num;
+  motor.pos = position;
 	return motor;
 }
 

@@ -25,8 +25,8 @@ void controller1_task(void __attribute__((unused)) *pvParameters)
 {
   sample_element sample;
 
-  PID_s PID_inner = init_PID(0.1, 0, 0); //fast
-  PID_s PID_outer = init_PID(0.4, 0, 1); //slow
+  PID_s PID_inner = init_PID(0, 0, 0, 0, 0); //fast
+  PID_s PID_outer = init_PID(0, 0, 0.0, 0, 0); //slow
 
   vTaskSuspend(NULL);
 
@@ -52,9 +52,9 @@ void controller1_task(void __attribute__((unused)) *pvParameters)
         double speed_error = PID_speed - sample.speed;
         double PID_output = PID(&PID_inner, speed_error);
         //pwm output calculation.
-        INT8S wanted_pwm = PID_output * 50;
-        if(PID_output > 1) wanted_pwm = 50;
-        else if(PID_output < -1) wanted_pwm = -51;
+        INT8S wanted_pwm = PID_output * 127;
+        if(PID_output > 1) wanted_pwm = 127;
+        else if(PID_output < -1) wanted_pwm = -128;
         //put out pwm value
         set_pwm1(wanted_pwm);
       }
@@ -71,9 +71,8 @@ void controller2_task(void __attribute__((unused)) *pvParameters)
 {
   sample_element sample;
 
-  PID_s PID_inner = init_PID(0.1, 0, 0); //fast
-  PID_s PID_outer = init_PID(0.4, 0, 0); //slow
-
+  PID_s PID_inner = init_PID(0.30, 0, 0, 0, 0); //fast
+  PID_s PID_outer = init_PID(50, -49.8, 0, -1, 0); //slow
   vTaskSuspend(NULL);
 
   while(1)

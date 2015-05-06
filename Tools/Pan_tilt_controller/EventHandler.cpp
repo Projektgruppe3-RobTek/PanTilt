@@ -37,6 +37,21 @@ void EventHandler::stateHandler()
         y-=CHANGE;
         pan_tilt_coordinate->y = (int)y;
     }
+    if(keyState[SDL_SCANCODE_E])
+    {
+        y = -270;
+        x = -100;
+        pan_tilt_coordinate->y = (int)y;
+        pan_tilt_coordinate->x = (int)x;
+    }
+    if(keyState[SDL_SCANCODE_O])
+    {
+        y = 0;
+        x = 0;
+        pan_tilt_coordinate->y = (int)y;
+        pan_tilt_coordinate->x = (int)x;
+    }
+
 
     //Mouse
     int xpos,ypos;

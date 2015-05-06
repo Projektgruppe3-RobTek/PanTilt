@@ -7,6 +7,7 @@
 #include "controller_task.h"
 #include "../drivers/sysctl.h"
 #include "../drivers/leds.h"
+#include "../libs/average.h"
 
 xSemaphoreHandle sampling1_semaphore;
 xSemaphoreHandle sampling2_semaphore;
@@ -26,8 +27,8 @@ xTaskHandle sampler2_handle;
 
 static INT8S pwm_motor1 = 0;
 static INT8S pwm_motor2 = 0;
-static INT32S pos1;
-static INT32S pos2;
+static INT16S pos1;
+static INT16S pos2;
 static bool sampler1_rdy = 0;
 static bool sampler2_rdy = 0;
 
@@ -39,6 +40,7 @@ void timer1_int(void);
 void timer1_int()
 {
 	//in the timer interrupt, send pwm to ssi, and resume sampling tasks.
+	GPIO_PORTB_DATA_R ^= (1 << 0);
 	TIMER1_ICR_R = TIMER_ICR_TATOCINT;
 	portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
   if(sampler1_rdy)
@@ -60,14 +62,14 @@ void timer1_int()
 	portEND_SWITCHING_ISR(xHigherPriorityTaskWoken);
 }
 
-INT32S get_position1(void)
+INT16S get_position1(void)
 {
-  return pos1;
+  return (INT16S)pos1;
 }
 
-INT32S get_position2(void)
+INT16S get_position2(void)
 {
-  return pos2;
+  return (INT16S)pos2;
 }
 
 
@@ -152,9 +154,9 @@ void sampler1_task(void __attribute__((unused)) *pvParameters)
 	    INT8S encoder_val = (in_data & 0xff000000) >> 24;
 
 
-	    if(index)
-	      last_pos = 0;
-	    else
+	    //if(index)
+	    //  last_pos = 0;
+	    //else
 	      last_pos = calc_position(last_pos, encoder_val);
 	    pos1 = last_pos;//set position variable
 	    if(end) emergency_stop();
@@ -204,6 +206,7 @@ void sampler2_task(void __attribute__((unused)) *pvParameters)
   sampler2_rdy = 1;
   calibrate_sampler2();
   INT32S last_pos = 0;
+	avg_s average= {0, 0, 10};
   while(1)
   {
 	  if( xSemaphoreTake(sampling2_semaphore, 0xFFFFFF) == pdTRUE )
@@ -222,14 +225,15 @@ void sampler2_task(void __attribute__((unused)) *pvParameters)
 	    {
 	      do_reset();
 	    }
-	    if(index)
-	      last_pos = 0;
-	    else
+	    //if(index)
+	    //  last_pos = 0;
+	    //else
 	      last_pos = calc_position(last_pos, encoder_val);
 	    pos2 = last_pos;//set position variable
 
 	    sample_element element;
 	    element.position = last_pos;
+			add_value(&average, encoder_val);
 	    element.speed = encoder_val; //speed is noramlised against average sampling time
 	    element.time_delta = timer_val;
 

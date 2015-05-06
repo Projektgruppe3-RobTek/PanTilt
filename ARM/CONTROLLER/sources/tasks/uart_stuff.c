@@ -4,6 +4,7 @@
 #include "controller_task.h"
 #include "../drivers/sysctl.h"
 #include "sampler_tasks.h"
+#include "../drivers/leds.h"
 
 #define MIN_0 -212
 #define MIN_0_STOP -190
@@ -56,8 +57,9 @@ void uart_response(void __attribute__((unused)) *pvParameters)
 	xLastWakeTime = xTaskGetTickCount();
 	while(1)
 	{
-		INT16S position = get_position1();
-		INT16U data = position;
+		INT16S position = get_position2();
+		INT16U position_abs = abs(position);
+		INT16U data = position_abs;
 	  data &= ~(1 << 15);
 	  data &= ~(1 << 14);
 	  data &= ~(1 << 13);
@@ -65,21 +67,25 @@ void uart_response(void __attribute__((unused)) *pvParameters)
 	  data |= (position < 0) << 13;
 	  INT8U first = data >> 8;
 	  INT8U last  = data & 0xff;
-		uart0_out_char(first);
-		uart0_out_char(last);
+
 
 		//send data for motor2
-		position = get_position2();
-		data = position;
-	  data &= ~(1 << 15);
-	  data &= ~(1 << 14);
-	  data &= ~(1 << 13);
-	  data |= 1 << 14;
-	  data |= (position < 0) << 13;
-	  first = data >> 8;
-	  last  = data & 0xff;
+		INT16S position2 = get_position1();
+		INT16U position_abs2 = abs(position2);
+		INT16U data2 = position_abs2;
+	  data2 &= ~(1 << 15);
+	  data2 &= ~(1 << 14);
+	  data2 &= ~(1 << 13);
+	  data2 |= 1 << 14;
+	  data2 |= (position2 < 0) << 13;
+	  INT8U first2 = data2 >> 8;
+	  INT8U last2  = data2 & 0xff;
+
 		uart0_out_char(first);
+		uart0_out_char(last2);
+		uart0_out_char(first2);
 		uart0_out_char(last);
+
 		vTaskDelayUntil(&xLastWakeTime, UART_RESPONSE_WAIT_TIME / portTICK_RATE_US );
 	}
 

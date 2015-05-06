@@ -6,7 +6,7 @@
 #include "WiiController.h"
 #define ANGLE_TO_PANTILT ((270 * 4) / 360)
 
-#define SPEED 200. //changes per second when holding arrow keys
+#define SPEED 2000. //changes per second when holding arrow keys
 #define CHANGE (SPEED / FPS)
 class EventHandler
 {
