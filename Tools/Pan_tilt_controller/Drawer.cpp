@@ -62,6 +62,7 @@ drawer::~drawer()
 
 void drawer::loop()
 {
+  double last_pos = 0;
   while(!stop)
   {
     e_handler->stateHandler();
@@ -76,9 +77,10 @@ void drawer::loop()
     std::cout << -pan_tilt_coordinate.y << "\t";
     std::cout << motor1.pos << "\t";
     std::cout << motor2.pos << "\t";
+    last_pos = motor2.pos;
     std::cout << std::endl;
 
-    timer.tick();
+    //timer.tick();
   }
 }
 

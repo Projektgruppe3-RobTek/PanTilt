@@ -11,7 +11,7 @@
 
 #define WINDOWSIZE_X 750
 #define WINDOWSIZE_Y 600
-#define ASIXSCALE 2
+#define ASIXSCALE 8
 
 class drawer
 {

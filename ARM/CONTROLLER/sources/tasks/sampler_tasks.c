@@ -29,6 +29,8 @@ static INT8S pwm_motor1 = 0;
 static INT8S pwm_motor2 = 0;
 static INT16S pos1;
 static INT16S pos2;
+static INT16S speed1;
+static INT16S speed2;
 static bool sampler1_rdy = 0;
 static bool sampler2_rdy = 0;
 
@@ -67,9 +69,15 @@ INT16S get_position1(void)
   return (INT16S)pos1;
 }
 
-INT16S get_position2(void)
+INT16S get_speed1(void)
 {
-  return (INT16S)pos2;
+  return (INT16S)speed1;
+}
+
+
+INT16S get_speed2(void)
+{
+  return (INT16S)speed2;
 }
 
 
@@ -206,7 +214,7 @@ void sampler2_task(void __attribute__((unused)) *pvParameters)
   sampler2_rdy = 1;
   calibrate_sampler2();
   INT32S last_pos = 0;
-	avg_s average= {0, 0, 10};
+	avg_s average= {0, 0, 50};
   while(1)
   {
 	  if( xSemaphoreTake(sampling2_semaphore, 0xFFFFFF) == pdTRUE )
@@ -234,7 +242,8 @@ void sampler2_task(void __attribute__((unused)) *pvParameters)
 	    sample_element element;
 	    element.position = last_pos;
 			add_value(&average, encoder_val);
-	    element.speed = encoder_val; //speed is noramlised against average sampling time
+			speed2 = encoder_val;
+	    element.speed = average.average; //speed is noramlised against average sampling time
 	    element.time_delta = timer_val;
 
 	    xSemaphoreTake(sampler2_queue_sem, portMAX_DELAY);

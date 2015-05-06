@@ -57,7 +57,7 @@ void uart_response(void __attribute__((unused)) *pvParameters)
 	xLastWakeTime = xTaskGetTickCount();
 	while(1)
 	{
-		INT16S position = get_position2();
+		INT16S position = get_speed2();
 		INT16U position_abs = abs(position);
 		INT16U data = position_abs;
 	  data &= ~(1 << 15);

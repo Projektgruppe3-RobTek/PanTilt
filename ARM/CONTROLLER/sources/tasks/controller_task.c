@@ -25,8 +25,8 @@ void controller1_task(void __attribute__((unused)) *pvParameters)
 {
   sample_element sample;
 
-  PID_s PID_inner = init_PID(0, 0, 0, 0, 0); //fast
-  PID_s PID_outer = init_PID(0, 0, 0.0, 0, 0); //slow
+  PID_s PID_inner = init_PID(0, 0, 0, 1000); //fast
+  PID_s PID_outer = init_PID(0, 0, 0.000, 100); //slow
 
   vTaskSuspend(NULL);
 
@@ -71,8 +71,8 @@ void controller2_task(void __attribute__((unused)) *pvParameters)
 {
   sample_element sample;
 
-  PID_s PID_inner = init_PID(0.30, 0, 0, 0, 0); //fast
-  PID_s PID_outer = init_PID(50, -49.8, 0, -1, 0); //slow
+  PID_s PID_inner = init_PID(1, 0.005, 0.005, 1000); //fast
+  PID_s PID_outer = init_PID(0.4, 1.9, 0.00, 100); //slow
   vTaskSuspend(NULL);
 
   while(1)
@@ -82,7 +82,7 @@ void controller2_task(void __attribute__((unused)) *pvParameters)
     xQueuePeek(sampler2_queue, &sample, 0);
 
     double position_error = goal2 - sample.position;
-    double PID_speed = PID(&PID_outer, position_error);
+    double PID_speed = goal2 / 20.;//PID(&PID_outer, position_error);
 
     xSemaphoreGive(sampler2_queue_sem);
 

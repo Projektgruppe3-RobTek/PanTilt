@@ -2,17 +2,17 @@
 double PID(PID_s *PID_struct, double error)
 {
   //Propotional gain
-  double sum = PID_struct->b_0 * error;
-  sum += PID_struct->b_1 * PID_struct->last_sample;
-  sum += PID_struct->b_2 * PID_struct->s_last_sample;
-  sum -= PID_struct->a_1 * PID_struct->last_sum;
-  sum -= PID_struct->a_2 * PID_struct->s_last_sum;
+  double sum =  PID_struct->last_sum;
+  sum += PID_struct->a * error;
+  sum += PID_struct->b * PID_struct->last_sample;
+  sum += PID_struct->c * PID_struct->s_last_sample;
 
   PID_struct->s_last_sample = PID_struct->last_sample;
   PID_struct->last_sample = error;
-
-  PID_struct->s_last_sum = PID_struct->last_sum;
   PID_struct->last_sum = sum;
+
+
+
 
 
   //double proportional_part = error * PID_struct->K_p;
@@ -31,25 +31,18 @@ double PID(PID_s *PID_struct, double error)
 
 }
 
-PID_s init_PID(double b_0, double b_1, double b_2, double a_1, double a_2)
+PID_s init_PID(double K_p, double K_i, double K_d, double Ts)
 {
   PID_s PID_struct;
-  PID_struct.b_0 = b_0;
-  PID_struct.b_1 = b_1;
-  PID_struct.b_2 = b_2;
-  PID_struct.a_1 = a_1;
-  PID_struct.a_2 = a_2;
-
   PID_struct.last_sample = 0;
   PID_struct.s_last_sample = 0;
   PID_struct.last_sum = 0;
-  PID_struct.s_last_sum = 0;
+  double sampling_time = 1./Ts;
+  PID_struct.a = K_p + K_i * (sampling_time / 2) + (K_d / sampling_time);
+  PID_struct.b = -K_p + K_i * (sampling_time / 2) - ((2 * K_d) / sampling_time);
+  PID_struct.c = K_d / sampling_time;
 
 
-  PID_struct.integral   = 0;
-  PID_struct.error_running.average = 0;
-  PID_struct.error_running.number_of_samples = 0;
-  PID_struct.error_running.max_samples = 10;
 
   return PID_struct;
 }
