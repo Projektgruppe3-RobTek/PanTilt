@@ -28,7 +28,7 @@ void controller1_task(void __attribute__((unused)) *pvParameters)
   sample_element sample;
 
   PID_s PID_inner = init_PID(0.05, 0.000, 0.000, 1000); //fast
-  PID_s PID_outer = init_PID(1.6, 4.2, 0.05, 100); //slow
+  PID_s PID_outer = init_PID(3.4275, 0.89326, -0.00335, 100); //slow
   vTaskSuspend(NULL);
 
   while(1)

@@ -18,7 +18,7 @@
 #include "task.h"
 void uart_control(void __attribute__((unused)) *pvParameters);
 void uart_response(void __attribute__((unused)) *pvParameters);
-#define UART_CONTROL_FREQ 100
+#define UART_CONTROL_FREQ 300
 #define UART_CONTROL_WAIT_TIME (1000000 / UART_CONTROL_FREQ)
 #define UART_RESPONSE_FREQ 100
 #define UART_RESPONSE_WAIT_TIME (1000000 / UART_RESPONSE_FREQ)

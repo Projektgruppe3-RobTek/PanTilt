@@ -102,9 +102,9 @@ int main(void)
    */
 
   //create the controller tasks
-  //return_value &= xTaskCreate( controller1_task, (signed portCHAR *) "Controller 1", 350, NULL,HIGH_PRIO, &controller1_handle);
+  return_value &= xTaskCreate( controller1_task, (signed portCHAR *) "Controller 1", 350, NULL,HIGH_PRIO, &controller1_handle);
   return_value &= xTaskCreate( controller2_task, (signed portCHAR *) "Controller 2", 350, NULL,HIGH_PRIO, &controller2_handle);
-  //return_value &= xTaskCreate( sampler1_task, (signed portCHAR *) "Sampler1", 400, NULL, HIGH_PRIO, &sampler1_handle);
+  return_value &= xTaskCreate( sampler1_task, (signed portCHAR *) "Sampler1", 400, NULL, HIGH_PRIO, &sampler1_handle);
   return_value &= xTaskCreate( sampler2_task, (signed portCHAR *) "Sampler2", 400, NULL, HIGH_PRIO, &sampler2_handle);
   //return_value &= xTaskCreate( debug_task, (signed portCHAR *) "debug", 100,NULL,LOW_PRIO,NULL);
   return_value &= xTaskCreate( status_led_task, ( signed portCHAR * ) "Status_led", 350, NULL, LOW_PRIO, NULL );
