@@ -9,7 +9,7 @@ drawer::drawer(std::string port, int baudrate, WiiController *wii_controller)
 :timer(Timer(FPS))
 {
   //Init SDL
-  pan_tilt_coordinate = {0, 0};
+  pan_tilt_coordinate = {0, 0, 0};
 
   if(SDL_Init(SDL_INIT_VIDEO) != 0)
   {
@@ -37,7 +37,7 @@ drawer::drawer(std::string port, int baudrate, WiiController *wii_controller)
     exit(0);
   }
   //Create Renderer
-  renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+  renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
   if(renderer == nullptr)
   {
     SDL_DestroyWindow(window);
@@ -71,6 +71,11 @@ void drawer::loop()
     draw();
     arm_board->set_pos(0, -pan_tilt_coordinate.x);
     arm_board->set_pos(1, -pan_tilt_coordinate.y);
+    if(pan_tilt_coordinate.reset)
+    {
+      arm_board->send_reset();
+      pan_tilt_coordinate.reset = false;
+    }
     Motor motor1 = arm_board->get_pos();
     Motor motor2 = arm_board->get_pos();
     //std::cout << std::endl;
@@ -78,10 +83,18 @@ void drawer::loop()
     std::cout << -pan_tilt_coordinate.y << "\t";
     std::cout << motor1.pos << "\t";
     std::cout << motor2.pos << "\t";
-    last_pos = motor2.pos;
+    if(-pan_tilt_coordinate.y > 0 )
+    {
+      if(motor2.pos * 0.98 <= -pan_tilt_coordinate.y) std::cout << "X";
+    }
+    else
+    {
+      if(motor2.pos * 0.98 >= -pan_tilt_coordinate.y) std::cout << "X";
+    }
     std::cout << std::endl;
 
-    //timer.tick();
+
+    timer.tick();
   }
 }
 
@@ -118,6 +131,7 @@ void drawer::draw_text()
   pos_string += ")";
 
   TDrawer.DrawText(renderer, pos_string.c_str(), 0, 0, 0, 255, 0, 255);
+  TDrawer.DrawText(renderer, std::string(std::to_string(timer.getFPS())).c_str(),0, 40, 0, 255, 0, 255);
 
 
 }

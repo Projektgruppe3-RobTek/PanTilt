@@ -1,7 +1,9 @@
 #include "sysctl.h"
 
-void set_sysclk(INT32U freq)
+void set_sysclk(void)
 {
+	//set sysclk to 20Mhz
+
   //Bypass PLL and clock divisors, and clear sysdiv bits
 	SYSCTL_RCC_R |= SYSCTL_RCC_BYPASS;
 	SYSCTL_RCC2_R |= SYSCTL_RCC2_BYPASS2;
@@ -39,12 +41,9 @@ void set_sysclk(INT32U freq)
 	SYSCTL_RCC2_R &= ~SYSCTL_RCC2_SYSDIV2_M;
 
 	//calculate sysdiv
-	INT32U SYSDIV = PLL_CLOCK / freq;
+	INT32U SYSDIV = 0x12;
 	SYSCTL_RCC2_R |= SYSDIV << 22;
-	if(freq % 2 == 1)
-		SYSCTL_RCC2_R |= SYSCTL_RCC2_SYSDIV2LSB;
-	else
-		SYSCTL_RCC2_R &= ~SYSCTL_RCC2_SYSDIV2LSB;
+	SYSCTL_RCC2_R |= SYSCTL_RCC2_SYSDIV2LSB;
 
 	//Set USESYS
 	SYSCTL_RCC_R |= SYSCTL_RCC_USESYSDIV;

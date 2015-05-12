@@ -22,6 +22,8 @@ xSemaphoreHandle sampler1_queue_sem;
 xSemaphoreHandle sampler2_queue_sem;
 xTaskHandle sampler1_handle;
 xTaskHandle sampler2_handle;
+xSemaphoreHandle pos1_sem;
+xSemaphoreHandle pos2_sem;
 
 
 
@@ -42,7 +44,6 @@ void timer1_int(void);
 void timer1_int()
 {
 	//in the timer interrupt, send pwm to ssi, and resume sampling tasks.
-	GPIO_PORTB_DATA_R ^= (1 << 0);
 	TIMER1_ICR_R = TIMER_ICR_TATOCINT;
 	portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
   if(sampler1_rdy)
@@ -68,6 +69,7 @@ INT16S get_position1(void)
 {
   return (INT16S)pos1;
 }
+
 INT16S get_position2(void)
 {
   return (INT16S)pos2;
@@ -143,45 +145,49 @@ void sampler1_task(void __attribute__((unused)) *pvParameters)
   ssi0_out_16bit(outdata);
   while(!ssi0_data_available());
   ssi0_in_16bit();
-  sampler1_rdy = 1;
 
+  sampler1_rdy = 1;
   calibrate_sampler1();
   INT32S last_pos = 0;
+	avg_s average_speed = {0, 0, 50};
+	avg_s average_pos = {0, 0, 20};
   while(1)
   {
 	  if( xSemaphoreTake(sampling1_semaphore, 0xFFFFFF) == pdTRUE )
 		{
-	    //#ifdef SAMPLE_DEBUG
-	    //toggle pin to show frequency
-	    //GPIO_PORTB_DATA_R ^= (1 << 0);
-	    //#endif
+			//GPIO_PORTB_DATA_R ^= (1 << 0);
 	    while(ssi0_data_available() < 3)
 	    ;
 	    ssi0_in_16bit();
 	    INT32U in_data = ssi0_in_16bit() << 16;
 	    in_data |= ssi0_in_16bit();
 	    INT32U timer_val =  in_data & 0x3fffff;
-	    bool index =        in_data & 0x400000;
+	    //bool index =        in_data & 0x400000;
 	    bool end =          in_data & 0x800000;
 	    INT8S encoder_val = (in_data & 0xff000000) >> 24;
 
-
+	    if(end)
+	    {
+	      emergency_stop();
+	    }
 	    //if(index)
 	    //  last_pos = 0;
 	    //else
-	      last_pos = calc_position(last_pos, encoder_val);
+	    last_pos = calc_position(last_pos, encoder_val);
 	    pos1 = last_pos;//set position variable
-	    if(end) emergency_stop();
+			//speed1 = encoder_val;
+
 	    sample_element element;
-	    element.position = last_pos;
-	    element.speed = encoder_val; //speed is noramlised against average sampling time
+			add_value(&average_pos, last_pos);
+	    element.position = average_pos.average;
+			add_value(&average_speed, encoder_val);
+	    element.speed = average_speed.average;
 	    element.time_delta = timer_val;
 
 	    xSemaphoreTake(sampler1_queue_sem, portMAX_DELAY);
 	    xQueueSendToBack(sampler1_queue, &element, 0);
 	    xSemaphoreGive(sampler1_queue_sem);
 
-	    //resume the controller task
 	    vTaskResume(controller1_handle);
 		}
   }
@@ -230,7 +236,7 @@ void sampler2_task(void __attribute__((unused)) *pvParameters)
 	    INT32U in_data = ssi3_in_16bit() << 16;
 	    in_data |= ssi3_in_16bit();
 	    INT32U timer_val =  in_data & 0x3fffff;
-	    bool index =        in_data & 0x400000;
+	    //bool index =        in_data & 0x400000;
 	    bool reset_but =          in_data & 0x800000;
 	    INT8S encoder_val = (in_data & 0xff000000) >> 24;
 
@@ -241,16 +247,15 @@ void sampler2_task(void __attribute__((unused)) *pvParameters)
 	    //if(index)
 	    //  last_pos = 0;
 	    //else
-	      last_pos = calc_position(last_pos, encoder_val);
+	    last_pos = calc_position(last_pos, encoder_val);
 	    pos2 = last_pos;//set position variable
-
-			speed2 = encoder_val;
+			//speed2 = encoder_val;
 
 	    sample_element element;
 			add_value(&average_pos, last_pos);
 	    element.position = average_pos.average;
 			add_value(&average_speed, encoder_val);
-	    element.speed = average_speed.average; //speed is noramlised against average sampling time
+	    element.speed = average_speed.average;
 	    element.time_delta = timer_val;
 
 	    xSemaphoreTake(sampler2_queue_sem, portMAX_DELAY);
@@ -271,6 +276,7 @@ void init_sampler1()
 
 	sampling1_semaphore = xSemaphoreCreateCounting(100, 0);
 	controller1_semaphore = xSemaphoreCreateCounting(100, 0);
+	vSemaphoreCreateBinary(pos1_sem);
 
 
   //#ifdef SAMPLE_DEBUG
@@ -288,6 +294,8 @@ void init_sampler2()
 { //setup the queues and semaphores
 	sampler2_queue =  xQueueCreate(128, sizeof(sample_element));
   vSemaphoreCreateBinary(sampler2_queue_sem);
+	vSemaphoreCreateBinary(pos2_sem);
+
 
 	sampling2_semaphore = xSemaphoreCreateCounting(100, 0);
 	controller2_semaphore = xSemaphoreCreateCounting(100, 0);

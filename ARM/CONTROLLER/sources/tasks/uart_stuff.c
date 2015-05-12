@@ -11,9 +11,9 @@
 #define MAX_0 230
 #define MAX_0_STOP 205
 #define MIN_1 -1068
-#define MIN_1_STOP -540
+#define MIN_1_STOP -270
 #define MAX_1 1067
-#define MAX_1_STOP 540
+#define MAX_1_STOP 270
 void uart_control(void __attribute__((unused)) *pvParameters)
 {
 	portTickType xLastWakeTime;
@@ -34,14 +34,22 @@ void uart_control(void __attribute__((unused)) *pvParameters)
 			}
 			if(motor_num == 0)
 			{
-				if(position < MAX_0_STOP && position > MIN_0_STOP)
+				if(position <= MAX_0_STOP && position >= MIN_0_STOP)
 					set_goal1(position);
-				//goal1 = 50;
+				else if(position > MAX_0_STOP)
+					set_goal1(MAX_0_STOP);
+				else
+					set_goal1(MIN_0_STOP);
 			}
 			else
 			{
-				if(position < MAX_1_STOP && position > MIN_1_STOP)
+				if(position <= MAX_1_STOP && position >= MIN_1_STOP)
 					set_goal2(position);
+				else if(position > MAX_1_STOP)
+					set_goal2(MAX_1_STOP);
+				else
+					set_goal2(MIN_1_STOP);
+
 				//goal2 = 0;
 			}
 			//vprintf_(uart0_out_string, 200, "%d\n%d\n%d\n",

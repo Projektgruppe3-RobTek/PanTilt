@@ -51,8 +51,73 @@ void EventHandler::stateHandler()
         pan_tilt_coordinate->y = (int)y;
         pan_tilt_coordinate->x = (int)x;
     }
-
-
+    if(keyState[SDL_SCANCODE_0])
+    {
+        y = 0;
+        x = 0;
+        pan_tilt_coordinate->y = (int)y;
+        pan_tilt_coordinate->x = (int)x;
+    }
+    if(keyState[SDL_SCANCODE_1])
+    {
+        y = 270;
+        x = 0;
+        pan_tilt_coordinate->y = (int)y;
+        pan_tilt_coordinate->x = (int)x;
+    }
+    if(keyState[SDL_SCANCODE_2])
+    {
+        y = -270;
+        x = 0;
+        pan_tilt_coordinate->y = (int)y;
+        pan_tilt_coordinate->x = (int)x;
+    }
+    if(keyState[SDL_SCANCODE_3])
+    {
+        y = 135;
+        x = 0;
+        pan_tilt_coordinate->y = (int)y;
+        pan_tilt_coordinate->x = (int)x;
+    }
+    if(keyState[SDL_SCANCODE_4])
+    {
+        y = -135;
+        x = 0;
+        pan_tilt_coordinate->y = (int)y;
+        pan_tilt_coordinate->x = (int)x;
+    }
+    if(keyState[SDL_SCANCODE_5])
+    {
+        y = 50;
+        x = 50;
+        pan_tilt_coordinate->y = (int)y;
+        pan_tilt_coordinate->x = (int)x;
+    }
+    if(keyState[SDL_SCANCODE_6])
+    {
+        y = 50;
+        x = 50;
+        pan_tilt_coordinate->y = (int)y;
+        pan_tilt_coordinate->x = (int)x;
+    }
+    if(keyState[SDL_SCANCODE_7])
+    {
+        y = 50;
+        x = 50;
+        pan_tilt_coordinate->y = (int)y;
+        pan_tilt_coordinate->x = (int)x;
+    }
+    if(keyState[SDL_SCANCODE_8])
+    {
+        y = 50;
+        x = 50;
+        pan_tilt_coordinate->y = (int)y;
+        pan_tilt_coordinate->x = (int)x;
+    }
+    if(keyState[SDL_SCANCODE_R])
+    {
+        pan_tilt_coordinate->reset = true;
+    }
     //Mouse
     int xpos,ypos;
     if(SDL_GetMouseState(&xpos,&ypos) & SDL_BUTTON(SDL_BUTTON_LEFT))
