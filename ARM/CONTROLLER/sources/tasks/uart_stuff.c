@@ -7,9 +7,9 @@
 #include "../drivers/leds.h"
 
 #define MIN_0 -212
-#define MIN_0_STOP -190
+#define MIN_0_STOP -120
 #define MAX_0 230
-#define MAX_0_STOP 205
+#define MAX_0_STOP 140
 #define MIN_1 -1068
 #define MIN_1_STOP -270
 #define MAX_1 1067

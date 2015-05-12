@@ -7,7 +7,9 @@
 #include "../drivers/UART.h"
 #include "../drivers/leds.h"
 
-#define MAX_OUTPUT_OUTER_1 (330/20.)
+#define MAX_OUTPUT_OUTER_1 (318/20.)
+#define MAX_OUTPUT_OUTER_2 (175/20.)
+
 
 xTaskHandle controller1_handle;
 xTaskHandle controller2_handle;
@@ -28,7 +30,7 @@ void controller1_task(void __attribute__((unused)) *pvParameters)
   sample_element sample;
 
   PID_s PID_inner = init_PID(0.05, 0.000, 0.000, 1000); //fast
-  PID_s PID_outer = init_PID(3.4275, 0.89326, -0.00335, 100); //slow
+  PID_s PID_outer = init_PID(3, 0, 0.035, 100); //slow
   vTaskSuspend(NULL);
 
   while(1)
@@ -40,8 +42,8 @@ void controller1_task(void __attribute__((unused)) *pvParameters)
     double position_error = goal1 - sample.position;
     double PID_speed = PID(&PID_outer, position_error);
 
-    if(fabs(PID_speed) > MAX_OUTPUT_OUTER_1)
-      PID_speed = (PID_speed/fabs(PID_speed)) * MAX_OUTPUT_OUTER_1;
+    if(fabs(PID_speed) > MAX_OUTPUT_OUTER_2)
+      PID_speed = (PID_speed/fabs(PID_speed)) * MAX_OUTPUT_OUTER_2;
 
     xSemaphoreGive(sampler1_queue_sem);
 

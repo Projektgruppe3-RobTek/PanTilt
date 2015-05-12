@@ -109,7 +109,7 @@ void emergency_stop()
 {
   while(1)
   {
-    set_pwm1(0);
+    do_reset();
   }
 }
 

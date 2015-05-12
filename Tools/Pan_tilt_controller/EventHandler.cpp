@@ -61,28 +61,28 @@ void EventHandler::stateHandler()
     if(keyState[SDL_SCANCODE_1])
     {
         y = 270;
-        x = 0;
+        x = 120;
         pan_tilt_coordinate->y = (int)y;
         pan_tilt_coordinate->x = (int)x;
     }
     if(keyState[SDL_SCANCODE_2])
     {
         y = -270;
-        x = 0;
+        x = -120;
         pan_tilt_coordinate->y = (int)y;
         pan_tilt_coordinate->x = (int)x;
     }
     if(keyState[SDL_SCANCODE_3])
     {
         y = 135;
-        x = 0;
+        x = 60;
         pan_tilt_coordinate->y = (int)y;
         pan_tilt_coordinate->x = (int)x;
     }
     if(keyState[SDL_SCANCODE_4])
     {
         y = -135;
-        x = 0;
+        x = -60;
         pan_tilt_coordinate->y = (int)y;
         pan_tilt_coordinate->x = (int)x;
     }
@@ -95,22 +95,22 @@ void EventHandler::stateHandler()
     }
     if(keyState[SDL_SCANCODE_6])
     {
-        y = 50;
+        y = -50;
         x = 50;
         pan_tilt_coordinate->y = (int)y;
         pan_tilt_coordinate->x = (int)x;
     }
     if(keyState[SDL_SCANCODE_7])
     {
-        y = 50;
-        x = 50;
+        y = -50;
+        x = -50;
         pan_tilt_coordinate->y = (int)y;
         pan_tilt_coordinate->x = (int)x;
     }
     if(keyState[SDL_SCANCODE_8])
     {
         y = 50;
-        x = 50;
+        x = -50;
         pan_tilt_coordinate->y = (int)y;
         pan_tilt_coordinate->x = (int)x;
     }
@@ -140,7 +140,7 @@ void EventHandler::stateHandler()
       {
         float roll, pitch, yaw;
         wii_controller->getcombinedangle(roll, pitch, yaw);
-        pan_tilt_coordinate->y = -pitch * ANGLE_TO_PANTILT;
+        pan_tilt_coordinate->y = pitch * ANGLE_TO_PANTILT;
         pan_tilt_coordinate->x = -yaw * ANGLE_TO_PANTILT;
       }
     }
