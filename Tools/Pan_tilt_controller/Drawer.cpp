@@ -63,12 +63,12 @@ drawer::~drawer()
 
 void drawer::loop()
 {
+  double t = 0;
   double last_pos = 0;
   while(!stop)
   {
     e_handler->stateHandler();
     e_handler->handleEvents();
-    draw();
     arm_board->set_pos(0, -pan_tilt_coordinate.x);
     arm_board->set_pos(1, -pan_tilt_coordinate.y);
     if(pan_tilt_coordinate.reset)
@@ -79,21 +79,38 @@ void drawer::loop()
     Motor motor1 = arm_board->get_pos();
     Motor motor2 = arm_board->get_pos();
     //std::cout << std::endl;
+
     std::cout << -pan_tilt_coordinate.x << "\t";
     std::cout << -pan_tilt_coordinate.y << "\t";
     std::cout << motor1.pos << "\t";
     std::cout << motor2.pos << "\t";
-    if(-pan_tilt_coordinate.y > 0 )
+    std::cout << std::endl;
+    if(motor1.id == 0)
     {
-      if(motor2.pos * 0.98 <= -pan_tilt_coordinate.y) std::cout << "X";
+      motor_pos1.push_back(motor1);
     }
     else
     {
-      if(motor2.pos * 0.98 >= -pan_tilt_coordinate.y) std::cout << "X";
+      motor_pos1.push_back(motor1);
     }
-    std::cout << std::endl;
+    if(motor2.id == 0)
+    {
+      motor_pos1.push_back(motor2);
+    }
+    else
+    {
+      motor_pos2.push_back(motor2);
+    }
+    while(motor_pos1.size() > SNAKELENGHT)
+    {
+      motor_pos1.erase(motor_pos1.begin());
+    }
 
-
+    while(motor_pos2.size() > SNAKELENGHT)
+    {
+      motor_pos2.erase(motor_pos2.begin());
+    }
+    draw();
     timer.tick();
   }
 }
@@ -103,9 +120,26 @@ void drawer::draw()
   SDL_SetRenderDrawColor(renderer, 0,0,0,0);
   SDL_RenderClear(renderer);
   draw_axis();
+  draw_position();
   draw_text();
   SDL_RenderPresent(renderer);
 }
+
+void drawer::draw_position()
+{
+  int w, h;
+  SDL_GetWindowSize(window,&w,&h);
+
+  for(int i = 0; i < motor_pos1.size() - 1; i++)
+  {
+    SDL_SetRenderDrawColor(renderer, (50./motor_pos1.size()) * i + 100, (50./motor_pos1.size()) * i + 50, (50./motor_pos1.size()) * i + 50,0);
+
+    drawFilledCircle(renderer, (-motor_pos1[i].pos / ASIXSCALE) + w/2, -(-motor_pos2[i].pos / ASIXSCALE) + h/2, (w/100. / motor_pos1.size() * i) );
+  }
+  SDL_SetRenderDrawColor(renderer, 255, 255,125,0);
+  drawFilledCircle(renderer, (-motor_pos1.back().pos / ASIXSCALE) + w/2, -(-motor_pos2.back().pos / ASIXSCALE) + h/2, w/100 );
+}
+
 
 void drawer::draw_text()
 {
@@ -124,14 +158,21 @@ void drawer::draw_text()
   }
 
   //info boxes
-  std::string pos_string = "Current position: (";
+  std::string pos_string = "Set position: (";
   pos_string += std::to_string(pan_tilt_coordinate.x);
   pos_string += ",";
   pos_string += std::to_string(pan_tilt_coordinate.y);
   pos_string += ")";
 
+  std::string measured_pos_string = "Current position: (";
+  measured_pos_string += std::to_string(motor_pos1.back().pos);
+  measured_pos_string += ",";
+  measured_pos_string += std::to_string(motor_pos2.back().pos);
+  measured_pos_string += ")";
+
   TDrawer.DrawText(renderer, pos_string.c_str(), 0, 0, 0, 255, 0, 255);
-  TDrawer.DrawText(renderer, std::string(std::to_string(timer.getFPS())).c_str(),0, 40, 0, 255, 0, 255);
+  TDrawer.DrawText(renderer, measured_pos_string.c_str(), 0, 40, 0, 255, 0, 255);
+  TDrawer.DrawText(renderer, std::string(std::to_string(timer.getFPS())).c_str(),0, 80, 0, 255, 0, 255);
 
 
 }

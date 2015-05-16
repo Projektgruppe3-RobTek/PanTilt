@@ -11,7 +11,8 @@
 
 #define WINDOWSIZE_X 750
 #define WINDOWSIZE_Y 600
-#define ASIXSCALE 3
+#define ASIXSCALE 1
+#define SNAKELENGHT 100
 
 class drawer
 {
@@ -24,8 +25,11 @@ class drawer
     controller_communicator *arm_board;
     void draw_axis();
     void draw();
+    void draw_position();
     void draw_text();
     bool stop = false;
+    std::vector<Motor> motor_pos1;
+    std::vector<Motor> motor_pos2;
   public:
     drawer(std::string port, int baudrate, WiiController *wii_controller);
     ~drawer();
