@@ -12,7 +12,7 @@
 #define WINDOWSIZE_X 750
 #define WINDOWSIZE_Y 600
 #define ASIXSCALE 1
-#define SNAKELENGHT 100
+#define SNAKELENGHT 50
 
 class drawer
 {

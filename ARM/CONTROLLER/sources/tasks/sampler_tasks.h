@@ -40,6 +40,9 @@ void calibrate_sampler2(void);
 void calibrate_sampler1(void);
 void set_pwm1(INT8S pwm);
 void set_pwm2(INT8S pwm);
+INT8S get_pwm1(void);
+INT8S get_pwm2(void);
+
 INT16S get_position1(void);
 INT16S get_position2(void);
 INT16S get_speed1(void);

@@ -75,6 +75,16 @@ INT16S get_position2(void)
   return (INT16S)pos2;
 }
 
+INT8S get_pwm1(void)
+{
+  return pwm_motor1;
+}
+
+INT8S get_pwm2(void)
+{
+  return pwm_motor2;
+}
+
 INT16S get_speed1(void)
 {
   return (INT16S)speed1;
@@ -131,7 +141,8 @@ void calibrate_sampler1(void)
 	    bool index =        in_data & 0x400000;
 	    bool end =          in_data & 0x800000;
 	    if(end) end_detected = true;
-	    index_detected = index;
+	    if(end_detected)
+				index_detected = index;
 		}
   }
   return;
@@ -195,8 +206,9 @@ void sampler1_task(void __attribute__((unused)) *pvParameters)
 
 void calibrate_sampler2(void)
 {
-  bool index_detected = false;
-  while(!index_detected)
+	bool first = true;
+  bool index_detected = true;
+  while((index_detected && first) || (!index_detected && !first))
   {
 		if( xSemaphoreTake(sampling2_semaphore, 0xFFFFFF) == pdTRUE )
 		{
@@ -208,6 +220,8 @@ void calibrate_sampler2(void)
 	    in_data |= ssi3_in_16bit();
 	    bool index =        in_data & 0x400000;
 	    index_detected = index;
+			if(!index_detected) first = false;
+			if(!first && index_detected) break;
 		}
   }
   return;
