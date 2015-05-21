@@ -26,7 +26,7 @@ drawer::drawer(std::string port, int baudrate, WiiController *wii_controller)
   }
 
   //Create a window
-  window = SDL_CreateWindow("PanTile Controller", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+  window = SDL_CreateWindow("PanTilt Controller", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                       WINDOWSIZE_X, WINDOWSIZE_Y,
                       SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
   if(window == nullptr)
@@ -64,6 +64,7 @@ drawer::~drawer()
 void drawer::loop()
 {
   double t = 0;
+  bool dir = false;
   double last_pos = 0;
   while(!stop)
   {
@@ -79,7 +80,6 @@ void drawer::loop()
     Motor motor1 = arm_board->get_pos();
     Motor motor2 = arm_board->get_pos();
     //std::cout << std::endl;
-
 
     std::cout << -pan_tilt_coordinate.y << "\t";
     std::cout << -pan_tilt_coordinate.x << "\t";
@@ -121,7 +121,7 @@ void drawer::loop()
 
 void drawer::draw()
 {
-  SDL_SetRenderDrawColor(renderer, 0,0,0,0);
+  SDL_SetRenderDrawColor(renderer, 255,255,255,0);
   SDL_RenderClear(renderer);
   draw_axis();
   draw_position();
@@ -155,10 +155,10 @@ void drawer::draw_text()
   for(int i = 0; i < 10; i++)
   {
     //x
-    TDrawer.DrawText(renderer, std::to_string((i * w / 10 - w/2) * ASIXSCALE ).c_str(), i * w / 10 - 3, - (pan_tilt_coordinate.y / ASIXSCALE) + h/2 + w/60, 0, 255, 0, 255);
+    TDrawer.DrawText(renderer, std::to_string(int((i * w / 10 - w/2) * ASIXSCALE) ).c_str(), i * w / 10 - 3, - (pan_tilt_coordinate.y / ASIXSCALE) + h/2 + w/60, 0, 0, 0, 255);
 
     //y
-    TDrawer.DrawText(renderer, std::to_string((-(i * h / 10 - h/2)) * ASIXSCALE ).c_str(), (pan_tilt_coordinate.x / ASIXSCALE) + w/2 + w/40, i * h / 10 -10, 0, 255, 0, 255);
+    TDrawer.DrawText(renderer, std::to_string(int((-(i * h / 10 - h/2)) * ASIXSCALE )).c_str(), (pan_tilt_coordinate.x / ASIXSCALE) + w/2 + w/40, i * h / 10 -10, 0, 0, 0, 255);
   }
 
   //info boxes
@@ -174,10 +174,9 @@ void drawer::draw_text()
   measured_pos_string += std::to_string(motor_pos2.back().pos);
   measured_pos_string += ")";
 
-  TDrawer.DrawText(renderer, pos_string.c_str(), 0, 0, 0, 255, 0, 255);
-  TDrawer.DrawText(renderer, measured_pos_string.c_str(), 0, 40, 0, 255, 0, 255);
-  TDrawer.DrawText(renderer, std::string(std::to_string(timer.getFPS())).c_str(),0, 80, 0, 255, 0, 255);
-
+  TDrawer.DrawText(renderer, pos_string.c_str(), 0, 0, 0, 0, 0, 255);
+  TDrawer.DrawText(renderer, measured_pos_string.c_str(), 0, 40, 0, 0, 0, 255);
+  TDrawer.DrawText(renderer, std::string(std::to_string(timer.getFPS())).c_str(),0, 80, 0, 0, 0, 255);
 
 }
 
@@ -187,7 +186,7 @@ void drawer::draw_axis()
   SDL_GetWindowSize(window,&w,&h);
 
   //draw vertical line
-  SDL_SetRenderDrawColor(renderer, 0,0,255,0);
+  SDL_SetRenderDrawColor(renderer, 200,200,200,0);
 
 
   SDL_RenderDrawThickLine(renderer, 0, -(pan_tilt_coordinate.y / ASIXSCALE) + h/2, w, -(pan_tilt_coordinate.y / ASIXSCALE) + h/2, w/100); //draw x-axis
@@ -195,7 +194,7 @@ void drawer::draw_axis()
   SDL_RenderDrawThickLine(renderer, (pan_tilt_coordinate.x / ASIXSCALE) + w/2, 0,
     (pan_tilt_coordinate.x / ASIXSCALE) + w/2, h, w/100); //draw x-axis
 
-  SDL_SetRenderDrawColor(renderer, 255,0,0,0);
+  SDL_SetRenderDrawColor(renderer, 0,0,0,0);
   drawFilledCircle(renderer, (pan_tilt_coordinate.x / ASIXSCALE) + w/2, -(pan_tilt_coordinate.y / ASIXSCALE) + h/2, w/75);
 
 
