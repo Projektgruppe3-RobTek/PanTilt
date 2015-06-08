@@ -11,9 +11,9 @@
 #define MAX_0 230
 #define MAX_0_STOP 140
 #define MIN_1 -1068
-#define MIN_1_STOP -270
+#define MIN_1_STOP (-270 + 270)
 #define MAX_1 1067
-#define MAX_1_STOP 270
+#define MAX_1_STOP (270 + 270)
 void uart_control(void __attribute__((unused)) *pvParameters)
 {
 	portTickType xLastWakeTime;
