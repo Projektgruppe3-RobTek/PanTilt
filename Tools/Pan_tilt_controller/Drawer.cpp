@@ -80,8 +80,7 @@ void drawer::loop()
     Motor motor1 = arm_board->get_pos();
     Motor motor2 = arm_board->get_pos();
     //std::cout << std::endl;
-
-    std::cout << -pan_tilt_coordinate.y << "\t";
+    std::cout << -pan_tilt_coordinate.y + 270 << "\t";
     std::cout << -pan_tilt_coordinate.x << "\t";
 
     std::cout << motor2.pos << "\t";
@@ -138,10 +137,10 @@ void drawer::draw_position()
   {
     SDL_SetRenderDrawColor(renderer, (50./motor_pos1.size()) * i + 100, (50./motor_pos1.size()) * i + 50, (50./motor_pos1.size()) * i + 50,0);
 
-    drawFilledCircle(renderer, (-motor_pos1[i].pos / ASIXSCALE) + w/2, -(-motor_pos2[i].pos / ASIXSCALE) + h/2, (w/100. / motor_pos1.size() * i) );
+    drawFilledCircle(renderer, (-motor_pos1[i].pos / ASIXSCALE) + w/2, -((motor_pos2[i].pos-270) / ASIXSCALE) + h/2, (w/100. / motor_pos1.size() * i) );
   }
   SDL_SetRenderDrawColor(renderer, 255, 255,125,0);
-  drawFilledCircle(renderer, (-motor_pos1.back().pos / ASIXSCALE) + w/2, -(-motor_pos2.back().pos / ASIXSCALE) + h/2, w/100 );
+  drawFilledCircle(renderer, (-motor_pos1.back().pos / ASIXSCALE) + w/2, -((motor_pos2.back().pos-270) / ASIXSCALE) + h/2, w/100 );
 }
 
 
@@ -155,7 +154,7 @@ void drawer::draw_text()
   for(int i = 0; i < 10; i++)
   {
     //x
-    TDrawer.DrawText(renderer, std::to_string(int((i * w / 10 - w/2) * ASIXSCALE) ).c_str(), i * w / 10 - 3, - (pan_tilt_coordinate.y / ASIXSCALE) + h/2 + w/60, 0, 0, 0, 255);
+    TDrawer.DrawText(renderer, std::to_string(int((i * w / 10 - w/2) * ASIXSCALE) ).c_str(), i * w / 10 - 3, - (-(pan_tilt_coordinate.y+270) / ASIXSCALE) + h/2 + w/60, 0, 0, 0, 255);
 
     //y
     TDrawer.DrawText(renderer, std::to_string(int((-(i * h / 10 - h/2)) * ASIXSCALE )).c_str(), (pan_tilt_coordinate.x / ASIXSCALE) + w/2 + w/40, i * h / 10 -10, 0, 0, 0, 255);
@@ -165,13 +164,13 @@ void drawer::draw_text()
   std::string pos_string = "Set position: (";
   pos_string += std::to_string(pan_tilt_coordinate.x);
   pos_string += ",";
-  pos_string += std::to_string(pan_tilt_coordinate.y);
+  pos_string += std::to_string(-(pan_tilt_coordinate.y+270));
   pos_string += ")";
 
   std::string measured_pos_string = "Current position: (";
-  measured_pos_string += std::to_string(motor_pos1.back().pos);
+  measured_pos_string += std::to_string(-motor_pos1.back().pos);
   measured_pos_string += ",";
-  measured_pos_string += std::to_string(motor_pos2.back().pos);
+  measured_pos_string += std::to_string(motor_pos2.back().pos-270);
   measured_pos_string += ")";
 
   TDrawer.DrawText(renderer, pos_string.c_str(), 0, 0, 0, 0, 0, 255);
@@ -189,13 +188,13 @@ void drawer::draw_axis()
   SDL_SetRenderDrawColor(renderer, 200,200,200,0);
 
 
-  SDL_RenderDrawThickLine(renderer, 0, -(pan_tilt_coordinate.y / ASIXSCALE) + h/2, w, -(pan_tilt_coordinate.y / ASIXSCALE) + h/2, w/100); //draw x-axis
+  SDL_RenderDrawThickLine(renderer, 0, -(-(pan_tilt_coordinate.y+270) / ASIXSCALE) + h/2, w, -(-(pan_tilt_coordinate.y+270) / ASIXSCALE) + h/2, w/100); //draw x-axis
   //draw y-axis
   SDL_RenderDrawThickLine(renderer, (pan_tilt_coordinate.x / ASIXSCALE) + w/2, 0,
     (pan_tilt_coordinate.x / ASIXSCALE) + w/2, h, w/100); //draw x-axis
 
   SDL_SetRenderDrawColor(renderer, 0,0,0,0);
-  drawFilledCircle(renderer, (pan_tilt_coordinate.x / ASIXSCALE) + w/2, -(pan_tilt_coordinate.y / ASIXSCALE) + h/2, w/75);
+  drawFilledCircle(renderer, (pan_tilt_coordinate.x / ASIXSCALE) + w/2, -(-(pan_tilt_coordinate.y+270) / ASIXSCALE) + h/2, w/75);
 
 
 }

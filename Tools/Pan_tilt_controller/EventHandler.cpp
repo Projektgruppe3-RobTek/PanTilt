@@ -140,7 +140,7 @@ void EventHandler::stateHandler()
       {
         float roll, pitch, yaw;
         wii_controller->getcombinedangle(roll, pitch, yaw);
-        pan_tilt_coordinate->y = pitch * ANGLE_TO_PANTILT;
+        pan_tilt_coordinate->y = (pitch * ANGLE_TO_PANTILT) - 270;
         pan_tilt_coordinate->x = -yaw * ANGLE_TO_PANTILT;
       }
     }
